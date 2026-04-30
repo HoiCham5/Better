@@ -52,41 +52,41 @@ const ProductForm = ({ product, onSave, onCancel }) => {
 
   const handleAiFill = async () => {
     if (!formData.name) {
-      alert("Vui lòng nhập Tên sản phẩm trước khi cào dữ liệu!");
+      alert("Vui lòng nhập Tên sản phẩm trước khi sinh dữ liệu!");
       return;
     }
     setIsThinking(true);
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/scrape?query=${encodeURIComponent(formData.name)}`);
-      if (!res.ok) throw new Error("Không thể tìm thấy thông tin sản phẩm");
+      if (!res.ok) throw new Error("Không thể kết nối với AI Server");
       const data = await res.json();
       
       setFormData(prev => ({
         ...prev,
         name: data.name || prev.name,
-        brand: prev.brand || (prev.name.toLowerCase().includes('iphone') || prev.name.toLowerCase().includes('macbook') ? 'Apple' : 'Samsung'),
+        brand: data.brand || prev.brand,
         price: data.price || prev.price,
         image: data.image || prev.image,
         specs: {
-          screen: prev.specs.screen || '6.7 inch / 14 inch, 120Hz',
-          brightness: prev.specs.brightness || '2000 nits đỉnh',
-          chip: prev.specs.chip || 'Vi xử lý thế hệ mới mạnh mẽ',
-          gpu: prev.specs.gpu || (prev.category === 'laptop' ? 'Đồ hoạ tích hợp cao cấp' : ''),
-          ram: prev.specs.ram || '8 GB / 12 GB',
-          storage: prev.specs.storage || '256 GB / 512 GB',
-          camera: prev.specs.camera || 'Cụm camera đa ống kính sắc nét',
-          cameraSelfie: prev.specs.cameraSelfie || (prev.category === 'phone' ? '12MP Selfie' : ''),
-          battery: prev.specs.battery || 'Thời lượng tối thiểu 15 giờ liên tục',
-          os: prev.specs.os || 'Hệ điều hành mới nhất',
-          network: prev.specs.network || '5G / Wi-Fi 6E',
-          weight: prev.specs.weight || 'Trọng lượng siêu nhẹ',
-          materials: prev.specs.materials || 'Khung kim loại, mặt kính cao cấp',
-          releaseDate: prev.specs.releaseDate || 'Năm 2024 / 2025',
-          aiFeatures: prev.specs.aiFeatures || 'Hỗ trợ tính năng AI thông minh'
+          screen: data.specs?.screen || prev.specs.screen,
+          brightness: data.specs?.brightness || prev.specs.brightness,
+          chip: data.specs?.chip || prev.specs.chip,
+          gpu: data.specs?.gpu || prev.specs.gpu,
+          ram: data.specs?.ram || prev.specs.ram,
+          storage: data.specs?.storage || prev.specs.storage,
+          camera: data.specs?.camera || prev.specs.camera,
+          cameraSelfie: data.specs?.cameraSelfie || prev.specs.cameraSelfie,
+          battery: data.specs?.battery || prev.specs.battery,
+          os: data.specs?.os || prev.specs.os,
+          network: data.specs?.network || prev.specs.network,
+          weight: data.specs?.weight || prev.specs.weight,
+          materials: data.specs?.materials || prev.specs.materials,
+          releaseDate: data.specs?.releaseDate || prev.specs.releaseDate,
+          aiFeatures: data.specs?.aiFeatures || prev.specs.aiFeatures
         }
       }));
     } catch (err) {
-      alert("Lỗi Cào dữ liệu: " + err.message);
+      alert("Lỗi AI: " + err.message);
     } finally {
       setIsThinking(false);
     }
@@ -114,7 +114,7 @@ const ProductForm = ({ product, onSave, onCancel }) => {
             </label>
             <button type="button" onClick={handleAiFill} disabled={isThinking} className="btn" style={{ padding: '8px 15px', background: 'var(--gradient-accent)', color: 'white', border: 'none', borderRadius: '5px', display: 'flex', gap: '5px', alignItems: 'center', height: '35px' }}>
               {isThinking ? <Sparkles size={16} className="animate-spin" /> : <Sparkles size={16} />} 
-              {isThinking ? 'Đang cào dữ liệu...' : 'Cào Dữ Liệu (Bot)'}
+              {isThinking ? 'Đang suy nghĩ...' : '✨ Sinh Dữ Liệu (AI)'}
             </button>
           </div>
           <label>Thương hiệu: <input required name="brand" value={formData.brand} onChange={(e) => handleChange(e)} style={{ width: '100%', padding: '8px', marginTop: '5px' }} /></label>

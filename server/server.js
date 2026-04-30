@@ -81,8 +81,8 @@ app.get('/api/scrape', async (req, res) => {
   if (!query) return res.status(400).json({ error: 'Missing query parameter' });
   
   try {
-    const { scrapeProductData } = require('./scraper');
-    const data = await scrapeProductData(query);
+    const { generateProductData } = require('./aiGenerator');
+    const data = await generateProductData(query);
     if (!data) return res.status(404).json({ error: 'Không tìm thấy dữ liệu' });
     res.json(data);
   } catch (error) {
