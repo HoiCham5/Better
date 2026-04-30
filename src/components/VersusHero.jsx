@@ -189,8 +189,13 @@ const VersusHero = ({ products = [], onCompare }) => {
           background: linear-gradient(135deg, #0f0c29 0%, #302b63 45%, #24243e 100%);
           position: relative;
           overflow: hidden;
-          padding: 80px 20px 100px;
+          padding: 0 20px;
           text-align: center;
+          min-height: calc(100vh - 62px);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
         }
 
         /* Floating orbs */
@@ -234,6 +239,8 @@ const VersusHero = ({ products = [], onCompare }) => {
           z-index: 10;
           max-width: 800px;
           margin: 0 auto;
+          width: 100%;
+          padding: 60px 0 100px;
         }
 
         .hero-badge {
