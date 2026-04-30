@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Bot, Sparkles, Check, ChevronDown, ChevronUp, Monitor, Cpu, Camera, Battery, Weight, Wifi } from 'lucide-react';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
 // ─── Helper: generate score (deterministic from name) ────────────────────────
 const getScore = (device) => {
@@ -115,6 +116,24 @@ const CompareSection = ({ products, initialDeviceIds }) => {
     setAiResponse('');
   };
 
+  const radarData = useMemo(() => {
+    return SPEC_CATEGORIES.map(cat => {
+      const getCatScore = (dev) => {
+        if (!dev) return 0;
+        let h = 0;
+        const str = dev.name + cat.id;
+        for (let i = 0; i < str.length; i++) h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
+        return Math.abs(h % 41) + 60; // 60-100
+      };
+      return {
+        subject: cat.label,
+        A: getCatScore(devA),
+        B: getCatScore(devB),
+        fullMark: 100,
+      };
+    });
+  }, [devA, devB]);
+
   const toggleCat = (id) => setExpandedCats(p => ({ ...p, [id]: !p[id] }));
 
   const handleAI = () => {
@@ -208,35 +227,54 @@ const CompareSection = ({ products, initialDeviceIds }) => {
         </div>
       </div>
 
-      {/* ── 2. REASONS TO BUY ─────────────────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '32px' }}>
-        <div className="reasons-card">
-          <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '16px', color: 'var(--vs-text-primary)' }}>
-            Tại sao chọn <span style={{ color: colorA }}>{devA.name}</span>?
-          </h3>
-          {REASONS_A.map((r, i) => (
-            <div key={i} className="reason-item">
-              <div className="reason-check" style={{ background: colorA }}>✓</div>
-              <div>
-                <div className="reason-title">{r.title}</div>
-                <div className="reason-sub">{r.sub}</div>
-              </div>
-            </div>
-          ))}
+      {/* ── 2. RADAR CHART & REASONS TO BUY ─────────────────────────────────────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '20px', marginBottom: '32px' }}>
+        {/* Radar Chart (Left) */}
+        <div className="reasons-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '350px', background: 'var(--vs-surface)' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '20px', color: 'var(--vs-text-primary)' }}>Tổng Quan Thông Số</h3>
+          <div style={{ width: '100%', height: '300px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
+                <PolarGrid stroke="var(--vs-border)" />
+                <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--vs-text-secondary)', fontSize: 10, fontWeight: 600 }} />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                <Radar name={devA.name} dataKey="A" stroke={colorA} fill={colorA} fillOpacity={0.5} />
+                <Radar name={devB.name} dataKey="B" stroke={colorB} fill={colorB} fillOpacity={0.5} />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-        <div className="reasons-card">
-          <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '16px', color: 'var(--vs-text-primary)' }}>
-            Tại sao chọn <span style={{ color: colorB }}>{devB.name}</span>?
-          </h3>
-          {REASONS_B.map((r, i) => (
-            <div key={i} className="reason-item">
-              <div className="reason-check" style={{ background: colorB }}>✓</div>
-              <div>
-                <div className="reason-title">{r.title}</div>
-                <div className="reason-sub">{r.sub}</div>
+
+        {/* Reasons To Buy (Right) */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div className="reasons-card" style={{ flex: 1 }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '16px', color: 'var(--vs-text-primary)' }}>
+              Tại sao chọn <span style={{ color: colorA }}>{devA.name}</span>?
+            </h3>
+            {REASONS_A.map((r, i) => (
+              <div key={i} className="reason-item">
+                <div className="reason-check" style={{ background: colorA }}>✓</div>
+                <div>
+                  <div className="reason-title">{r.title}</div>
+                  <div className="reason-sub">{r.sub}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          <div className="reasons-card" style={{ flex: 1 }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '16px', color: 'var(--vs-text-primary)' }}>
+              Tại sao chọn <span style={{ color: colorB }}>{devB.name}</span>?
+            </h3>
+            {REASONS_B.map((r, i) => (
+              <div key={i} className="reason-item">
+                <div className="reason-check" style={{ background: colorB }}>✓</div>
+                <div>
+                  <div className="reason-title">{r.title}</div>
+                  <div className="reason-sub">{r.sub}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

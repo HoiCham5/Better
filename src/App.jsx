@@ -100,6 +100,54 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const toggleCompare = (id) => {
+    setCompareIds(prev => {
+      if (prev.includes(id)) return prev.filter(x => x !== id);
+      if (prev.length >= 2) return [prev[1], id];
+      return [...prev, id];
+    });
+  };
+
+  const renderComparePopup = () => {
+    if (compareIds.length === 0) return null;
+    return (
+      <div className="animate-fade-in" style={{ position: 'fixed', bottom: '20px', right: '20px', background: 'var(--vs-surface)', borderRadius: '16px', boxShadow: '0 8px 30px rgba(0,0,0,0.3)', border: '1px solid var(--vs-border)', zIndex: 1000, width: '320px', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--gradient-accent)', padding: '12px 16px', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold' }}>
+            <span style={{ background: 'rgba(255,255,255,0.2)', padding: '4px 8px', borderRadius: '4px' }}>VS</span>
+            Danh sách so sánh
+          </div>
+          <button onClick={() => setCompareIds([])} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: '4px' }}><X size={18} /></button>
+        </div>
+        <div style={{ padding: '10px' }}>
+          {compareIds.map(id => {
+            const p = products.find(x => x.id === id);
+            if (!p) return null;
+            return (
+              <div key={id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid var(--vs-border)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <img src={p.image} style={{ width: '30px', height: '30px', objectFit: 'contain' }} />
+                  <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--vs-text-primary)' }}>{p.name}</span>
+                </div>
+                <button onClick={() => toggleCompare(id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--vs-text-secondary)', padding: '4px' }}><X size={16} /></button>
+              </div>
+            );
+          })}
+          <div style={{ padding: '10px' }}>
+            <button 
+              onClick={() => { setActiveTab('compare'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              disabled={compareIds.length < 2}
+              className="btn hover-lift" 
+              style={{ width: '100%', padding: '10px', borderRadius: '8px', background: compareIds.length < 2 ? 'var(--vs-border)' : 'var(--gradient-accent)', color: compareIds.length < 2 ? 'var(--vs-text-secondary)' : 'white', fontWeight: 'bold', border: 'none', cursor: compareIds.length < 2 ? 'not-allowed' : 'pointer' }}
+            >
+              So Sánh Ngay ({compareIds.length}/2)
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <Header 
@@ -134,6 +182,8 @@ function App() {
                       product={phone} 
                       userPreference={userPreference === 'Không thiết lập' ? '' : userPreference} 
                       onViewDetails={() => setSelectedProduct(phone)}
+                      compareIds={compareIds}
+                      onToggleCompare={toggleCompare}
                     />
                   ))
                 ) : (
@@ -176,6 +226,8 @@ function App() {
                        product={laptop} 
                        userPreference={userPreference === 'Không thiết lập' ? '' : userPreference} 
                        onViewDetails={() => setSelectedProduct(laptop)}
+                       compareIds={compareIds}
+                       onToggleCompare={toggleCompare}
                      />
                    ))
                  ) : (
@@ -222,10 +274,11 @@ function App() {
 
         {activeTab === 'store' && (
           <div className="animate-fade-in">
-             <StoreSection products={products} onViewDetails={setSelectedProduct} />
+             <StoreSection products={products} onViewDetails={setSelectedProduct} compareIds={compareIds} onToggleCompare={toggleCompare} />
           </div>
         )}
 
+        {renderComparePopup()}
       </main>
 
       <footer className="glass-panel" style={{ marginTop: '80px', padding: '40px 0', textAlign: 'center', borderRadius: 0, borderBottom: 0, borderLeft: 0, borderRight: 0 }}>

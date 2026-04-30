@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ProductCard from './ProductCard';
 import { ShoppingBag, Search, Smartphone, Laptop } from 'lucide-react';
 
-const StoreSection = ({ products, onViewDetails }) => {
+const StoreSection = ({ products, onViewDetails, compareIds, onToggleCompare }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all'); // all, phone, laptop
 
@@ -65,7 +65,7 @@ const StoreSection = ({ products, onViewDetails }) => {
             <Smartphone className="text-accent-primary" /> Tất Cả Cấp Bậc Điện Thoại
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
-            {phones.map(p => <ProductCard key={p.id} product={p} onViewDetails={() => onViewDetails(p)} />)}
+            {phones.map(p => <ProductCard key={p.id} product={p} onViewDetails={() => onViewDetails(p)} compareIds={compareIds} onToggleCompare={onToggleCompare} />)}
           </div>
         </div>
       )}
@@ -77,7 +77,7 @@ const StoreSection = ({ products, onViewDetails }) => {
             <Laptop className="text-accent-secondary" /> Tất Cả Dòng Laptop
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
-            {laptops.map(p => <ProductCard key={p.id} product={p} onViewDetails={() => onViewDetails(p)} />)}
+            {laptops.map(p => <ProductCard key={p.id} product={p} onViewDetails={() => onViewDetails(p)} compareIds={compareIds} onToggleCompare={onToggleCompare} />)}
           </div>
         </div>
       )}

@@ -3,11 +3,12 @@ import { ShoppingCart, Video, Cpu, Monitor, Battery, Camera, MemoryStick, Award,
 import Tooltip from './Tooltip';
 import { useAuth } from '../context/AuthContext';
 
-const ProductCard = ({ product, userPreference = '', onViewDetails }) => {
+const ProductCard = ({ product, userPreference = '', onViewDetails, compareIds = [], onToggleCompare }) => {
   const { userProfile, toggleWishlist } = useAuth() || {};
   if (!product) return null;
 
   const isSaved = userProfile?.wishlist?.includes(product.id);
+  const isComparing = compareIds.includes(product.id);
 
   return (
     <div className="product-card glass-panel animate-fade-in">
@@ -41,6 +42,16 @@ const ProductCard = ({ product, userPreference = '', onViewDetails }) => {
               <Award size={14} className="text-accent-primary" />
               <b style={{ color: 'var(--text-primary)', fontSize: '0.85rem' }}>Phù hợp: {Math.floor(Math.random() * 20 + 80)}%</b>
             </div>
+          )}
+          {onToggleCompare && (
+            <button 
+              onClick={(e) => { e.stopPropagation(); onToggleCompare(product.id); }}
+              className={`btn hover-lift ${isComparing ? 'bg-accent-primary' : ''}`}
+              style={{ background: isComparing ? 'var(--gradient-accent)' : 'rgba(0,0,0,0.5)', color: 'white', border: '1px solid var(--glass-border)', padding: '8px', borderRadius: '50%', backdropFilter: 'blur(5px)', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              title={isComparing ? "Bỏ so sánh" : "Thêm vào so sánh"}
+            >
+              <span style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>VS</span>
+            </button>
           )}
           <button
             onClick={(e) => { e.stopPropagation(); toggleWishlist && toggleWishlist(product.id); }}
