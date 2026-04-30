@@ -103,7 +103,7 @@ function App() {
   const toggleCompare = (id) => {
     setCompareIds(prev => {
       if (prev.includes(id)) return prev.filter(x => x !== id);
-      if (prev.length >= 2) return [prev[1], id];
+      if (prev.length >= 3) return [prev[1], prev[2], id];
       return [...prev, id];
     });
   };
@@ -140,7 +140,7 @@ function App() {
               className="btn hover-lift" 
               style={{ width: '100%', padding: '10px', borderRadius: '8px', background: compareIds.length < 2 ? 'var(--vs-border)' : 'var(--gradient-accent)', color: compareIds.length < 2 ? 'var(--vs-text-secondary)' : 'white', fontWeight: 'bold', border: 'none', cursor: compareIds.length < 2 ? 'not-allowed' : 'pointer' }}
             >
-              So Sánh Ngay ({compareIds.length}/2)
+              So Sánh Ngay ({compareIds.length})
             </button>
           </div>
         </div>

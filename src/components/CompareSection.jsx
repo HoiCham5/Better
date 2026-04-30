@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Bot, Sparkles, Check, ChevronDown, ChevronUp, Monitor, Cpu, Camera, Battery, Weight, Wifi } from 'lucide-react';
+import { Bot, Sparkles, Monitor, Cpu, Camera, Battery, Weight, Wifi, Plus, X, Check } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
-// ─── Helper: generate score (deterministic from name) ────────────────────────
 const getScore = (device) => {
   if (!device) return 0;
   let h = 0;
@@ -10,131 +9,91 @@ const getScore = (device) => {
   return Math.abs(h % 21) + 75; // 75–95
 };
 
-// ─── Generate bar widths (deterministic) ─────────────────────────────────────
-const getBarWidth = (text, seed) => {
-  if (!text || text === '-') return 40;
-  let h = seed;
-  for (let i = 0; i < text.length; i++) h = (Math.imul(17, h) + text.charCodeAt(i)) | 0;
-  return Math.abs(h % 45) + 50; // 50–95
+const getCatScore = (dev, catId) => {
+  if (!dev) return 0;
+  let h = 0;
+  const str = dev.name + catId;
+  for (let i = 0; i < str.length; i++) h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
+  return Math.abs(h % 31) + 70; // 70-100 (which is 7.0-10.0)
 };
 
-// ─── Spec categories mirroring Versus.com ─────────────────────────────────────
 const SPEC_CATEGORIES = [
-  {
-    id: 'design', label: 'Thiết Kế', icon: Weight,
-    keys: [
-      { k: 'weight',    l: 'Trọng lượng' },
-      { k: 'materials', l: 'Chất liệu vỏ máy' },
-      { k: 'thickness', l: 'Độ mỏng' },
-    ]
-  },
-  {
-    id: 'display', label: 'Màn Hình', icon: Monitor,
-    keys: [
-      { k: 'screen',     l: 'Kích thước màn hình' },
-      { k: 'resolution', l: 'Độ phân giải' },
-      { k: 'brightness', l: 'Độ sáng tối đa' },
-      { k: 'refreshRate',l: 'Tốc độ làm mới' },
-    ]
-  },
-  {
-    id: 'performance', label: 'Hiệu Năng', icon: Cpu,
-    keys: [
-      { k: 'chip',    l: 'Vi xử lý (CPU)' },
-      { k: 'gpu',     l: 'Chip đồ hoạ (GPU)' },
-      { k: 'ram',     l: 'Bộ nhớ RAM' },
-      { k: 'storage', l: 'Bộ nhớ trong' },
-      { k: 'os',      l: 'Hệ điều hành' },
-    ]
-  },
-  {
-    id: 'camera', label: 'Camera', icon: Camera,
-    keys: [
-      { k: 'camera',       l: 'Camera chính' },
-      { k: 'cameraSelfie', l: 'Camera selfie' },
-      { k: 'videoRecord',  l: 'Quay video' },
-    ]
-  },
-  {
-    id: 'battery', label: 'Pin & Sạc', icon: Battery,
-    keys: [
-      { k: 'battery',      l: 'Dung lượng pin' },
-      { k: 'chargingSpeed',l: 'Sạc nhanh' },
-      { k: 'wirelessCharge',l:'Sạc không dây' },
-    ]
-  },
-  {
-    id: 'connectivity', label: 'Kết Nối', icon: Wifi,
-    keys: [
-      { k: 'network',  l: 'Mạng di động' },
-      { k: 'wifi',     l: 'Wi-Fi' },
-      { k: 'bluetooth',l: 'Bluetooth' },
-      { k: 'ports',    l: 'Cổng giao tiếp' },
-      { k: 'nfc',      l: 'NFC' },
-    ]
-  },
+  { id: 'design', label: 'Thiết Kế', icon: Weight, keys: [{ k: 'weight', l: 'Trọng lượng' }, { k: 'materials', l: 'Chất liệu vỏ máy' }, { k: 'thickness', l: 'Độ mỏng' }] },
+  { id: 'display', label: 'Màn Hình', icon: Monitor, keys: [{ k: 'screen', l: 'Kích thước' }, { k: 'resolution', l: 'Độ phân giải' }, { k: 'brightness', l: 'Độ sáng' }, { k: 'refreshRate', l: 'Tần số quét' }] },
+  { id: 'performance', label: 'Hiệu Năng', icon: Cpu, keys: [{ k: 'chip', l: 'Vi xử lý (CPU)' }, { k: 'gpu', l: 'Chip đồ hoạ (GPU)' }, { k: 'ram', l: 'RAM' }, { k: 'storage', l: 'Bộ nhớ trong' }, { k: 'os', l: 'Hệ điều hành' }] },
+  { id: 'camera', label: 'Camera', icon: Camera, keys: [{ k: 'camera', l: 'Camera chính' }, { k: 'cameraSelfie', l: 'Camera selfie' }, { k: 'videoRecord', l: 'Quay video' }] },
+  { id: 'battery', label: 'Pin & Sạc', icon: Battery, keys: [{ k: 'battery', l: 'Dung lượng pin' }, { k: 'chargingSpeed', l: 'Sạc nhanh' }] },
+  { id: 'connectivity', label: 'Kết Nối', icon: Wifi, keys: [{ k: 'network', l: 'Mạng di động' }, { k: 'wifi', l: 'Wi-Fi' }, { k: 'bluetooth', l: 'Bluetooth' }] },
 ];
 
-// ─── Reasons to buy (static, contextual) ────────────────────────────────────
-const REASONS_A = [
-  { title: 'Hiệu năng tổng thể vượt trội', sub: 'Chip xử lý mạnh hơn, tốc độ cao hơn' },
-  { title: 'Pin bền hơn', sub: 'Dung lượng pin lớn hơn, sạc nhanh hơn' },
-  { title: 'Camera chụp ảnh rõ nét', sub: 'Độ phân giải cao, xử lý ảnh tốt hơn' },
-];
-const REASONS_B = [
-  { title: 'Thiết kế mỏng nhẹ hơn', sub: 'Cầm nắm thoải mái, dễ di chuyển' },
-  { title: 'Màn hình sắc nét hơn', sub: 'Độ phân giải cao, màu sắc chuẩn xác' },
-  { title: 'Giá thành hợp lý hơn', sub: 'Tỷ lệ giá trị / hiệu năng tốt hơn' },
-];
+const getReasons = (dev) => {
+  if (!dev) return [];
+  const allReasons = [
+    { title: 'Hiệu năng vượt trội', sub: 'Chip xử lý mạnh mẽ, mở app nhanh chóng' },
+    { title: 'Pin bền hơn', sub: 'Dung lượng pin lớn, thời gian sử dụng dài' },
+    { title: 'Camera sắc nét', sub: 'Chụp đêm tốt, độ phân giải cao' },
+    { title: 'Thiết kế cao cấp', sub: 'Mỏng nhẹ, cầm nắm chắc tay' },
+    { title: 'Màn hình rực rỡ', sub: 'Độ sáng cao, màu sắc trung thực' },
+    { title: 'Giá trị xứng đáng', sub: 'Tỷ lệ p/p (giá trên hiệu năng) tốt' }
+  ];
+  let h = 0; 
+  for(let i=0; i<dev.name.length; i++) h += dev.name.charCodeAt(i);
+  return [allReasons[h % 6], allReasons[(h+1) % 6], allReasons[(h+2) % 6]];
+};
 
-// ─── Component ────────────────────────────────────────────────────────────────
+const COLORS = ['#3858f6', '#10b981', '#8224e3']; // Blue, Green, Purple
+
 const CompareSection = ({ products, initialDeviceIds }) => {
   const [selectedIds, setSelectedIds] = useState(
-    initialDeviceIds?.length === 2 ? initialDeviceIds : [products[0]?.id || '', products[1]?.id || '']
+    initialDeviceIds?.length >= 2 ? initialDeviceIds.slice(0, 3) : [products[0]?.id || '', products[1]?.id || '']
   );
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [expandedCats, setExpandedCats] = useState({});
   const [isThinking, setIsThinking] = useState(false);
   const [aiResponse, setAiResponse] = useState('');
 
   useEffect(() => {
-    if (initialDeviceIds?.length === 2) setSelectedIds(initialDeviceIds);
+    if (initialDeviceIds?.length >= 2) {
+      setSelectedIds(initialDeviceIds.slice(0, 3));
+    }
   }, [initialDeviceIds]);
 
-  const devA = products.find(p => p.id === selectedIds[0]);
-  const devB = products.find(p => p.id === selectedIds[1]);
-  const scoreA = useMemo(() => getScore(devA), [devA]);
-  const scoreB = useMemo(() => getScore(devB), [devB]);
+  const selectedDevs = selectedIds.map(id => products.find(p => p.id === id)).filter(Boolean);
+  const scores = selectedDevs.map(d => getScore(d));
+  const maxScore = Math.max(...scores);
 
-  const colorA = '#8224e3'; // Versus purple
-  const colorB = '#ff2e51'; // Versus red
-
-  const handleChange = (idx, id) => {
+  const handleChange = (idx, newId) => {
     const next = [...selectedIds];
-    next[idx] = id;
+    next[idx] = newId;
     setSelectedIds(next);
     setAiResponse('');
   };
 
+  const handleAdd = (newId) => {
+    if (selectedIds.length < 3 && !selectedIds.includes(newId)) {
+      setSelectedIds([...selectedIds, newId]);
+      setAiResponse('');
+    }
+  };
+
+  const handleRemove = (idx) => {
+    if (selectedIds.length > 2) {
+      const next = [...selectedIds];
+      next.splice(idx, 1);
+      setSelectedIds(next);
+      setAiResponse('');
+    } else {
+      alert("Cần ít nhất 2 sản phẩm để so sánh!");
+    }
+  };
+
   const radarData = useMemo(() => {
     return SPEC_CATEGORIES.map(cat => {
-      const getCatScore = (dev) => {
-        if (!dev) return 0;
-        let h = 0;
-        const str = dev.name + cat.id;
-        for (let i = 0; i < str.length; i++) h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
-        return Math.abs(h % 41) + 60; // 60-100
-      };
-      return {
-        subject: cat.label,
-        A: getCatScore(devA),
-        B: getCatScore(devB),
-        fullMark: 100,
-      };
+      const row = { subject: cat.label, fullMark: 100 };
+      selectedDevs.forEach((dev, i) => {
+        row[`dev${i}`] = getCatScore(dev, cat.id);
+      });
+      return row;
     });
-  }, [devA, devB]);
-
-  const toggleCat = (id) => setExpandedCats(p => ({ ...p, [id]: !p[id] }));
+  }, [selectedDevs]);
 
   const handleAI = () => {
     setIsThinking(true);
@@ -142,265 +101,226 @@ const CompareSection = ({ products, initialDeviceIds }) => {
     setTimeout(() => {
       setIsThinking(false);
       setAiResponse(
-        `Dựa trên điểm số tổng hợp, **${devA?.name}** đạt **${scoreA}/100** và **${devB?.name}** đạt **${scoreB}/100**.\n\n` +
-        (scoreA >= scoreB
-          ? `➤ **${devA?.name}** nổi trội hơn về hiệu năng và camera. Nếu bạn cần máy mạnh, đây là lựa chọn tốt hơn.\n\n➤ **${devB?.name}** phù hợp hơn nếu bạn ưu tiên thiết kế mỏng nhẹ và giá thành hợp lý.`
-          : `➤ **${devB?.name}** nổi trội hơn về hiệu năng và camera. Nếu bạn cần máy mạnh, đây là lựa chọn tốt hơn.\n\n➤ **${devA?.name}** phù hợp hơn nếu bạn ưu tiên thiết kế mỏng nhẹ và giá thành hợp lý.`)
+        `Dựa trên phân tích toàn diện, tôi nhận thấy các thiết bị có những thế mạnh riêng:\n\n` +
+        selectedDevs.map(d => `➤ **${d.name}** có ưu điểm ở ${getReasons(d)[0].title.toLowerCase()}.`).join('\n') +
+        `\n\nTùy vào nhu cầu cá nhân (ngân sách, thiết kế, pin hay camera) mà bạn có thể chọn sản phẩm phù hợp nhất.`
       );
     }, 1800);
   };
 
-  if (!devA || !devB) return (
-    <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6b7280' }}>
-      <p style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Chọn 2 sản phẩm để bắt đầu so sánh</p>
-    </div>
-  );
+  if (selectedDevs.length < 2) return null;
 
-  // Score circle component
-  const ScoreCircle = ({ score, color, size = 110 }) => {
-    const r = (size / 2) - 8;
+  const ScoreCircle = ({ score, color, size = 60 }) => {
+    const r = (size / 2) - 4;
     const circ = 2 * Math.PI * r;
     const dash = (score / 100) * circ;
     return (
       <div style={{ position: 'relative', width: size, height: size }}>
         <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-          <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--vs-border)" strokeWidth="8" />
-          <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth="8"
-            strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
-            style={{ transition: 'stroke-dasharray 1s ease' }}
+          <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--vs-border)" strokeWidth="4" />
+          <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth="4"
+            strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" style={{ transition: 'stroke-dasharray 1s ease' }}
           />
         </svg>
-        <div style={{
-          position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center'
-        }}>
-          <span style={{ fontSize: '1.6rem', fontWeight: 900, color, lineHeight: 1 }}>{score}</span>
-          <span style={{ fontSize: '0.6rem', color: 'var(--vs-text-secondary)', textTransform: 'uppercase', fontWeight: 600 }}>điểm</span>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ fontSize: size * 0.35 + 'px', fontWeight: 900, color, lineHeight: 1 }}>{score}</span>
+          <span style={{ fontSize: size * 0.15 + 'px', color: 'var(--vs-text-secondary)', textTransform: 'uppercase', fontWeight: 600 }}>pts</span>
         </div>
       </div>
     );
   };
 
-  const getVal = (dev, key) => dev?.specs?.[key] || dev?.[key] || null;
-
-  const shownCats = activeCategory === 'all'
-    ? SPEC_CATEGORIES
-    : SPEC_CATEGORIES.filter(c => c.id === activeCategory);
+  const getVal = (dev, key) => dev?.specs?.[key] || dev?.[key] || '-';
 
   return (
     <section className="compare-view animate-fade-in" style={{ paddingBottom: '40px' }}>
 
-      {/* ── 1. DEVICE SELECTOR HEADER ─────────────────────────────────── */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '16px',
-        alignItems: 'center', marginBottom: '32px',
-        background: 'var(--vs-surface)', borderRadius: '16px', padding: '24px',
-        boxShadow: 'var(--vs-card-shadow)', border: '1px solid var(--vs-border)'
-      }}>
-        {/* Device A */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-          <select className="select-input" value={devA.id} onChange={e => handleChange(0, e.target.value)}
-            style={{ borderLeft: `4px solid ${colorA}`, fontWeight: 700, fontSize: '0.9rem', textAlign: 'center' }}>
-            <optgroup label="📱 Điện thoại">{products.filter(p=>p.category==='phone').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
-            <optgroup label="💻 Laptop">{products.filter(p=>p.category==='laptop').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
-          </select>
-          <img src={devA.image} alt={devA.name} style={{ width: '90px', height: '90px', objectFit: 'contain' }} />
-          <ScoreCircle score={scoreA} color={colorA} />
-          <div style={{ fontWeight: 700, fontSize: '0.85rem', color: colorA }}>{devA.name}</div>
-          <div style={{ fontSize: '0.85rem', color: '#6b7280' }}>{devA.price}</div>
-        </div>
+      {/* ── 1. HEADER HERO ─────────────────────────────────────────────── */}
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'stretch', gap: '10px', marginBottom: '40px', background: 'var(--vs-surface)', padding: '30px', borderRadius: '16px', border: '1px solid var(--vs-border)' }}>
+        {selectedDevs.map((dev, i) => {
+          const isWinner = scores[i] === maxScore;
+          return (
+            <React.Fragment key={dev.id + i}>
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+                {selectedDevs.length > 2 && (
+                  <button onClick={() => handleRemove(i)} className="btn hover-lift" style={{ position: 'absolute', top: 0, right: 0, background: 'var(--bg-tertiary)', border: 'none', padding: '6px', borderRadius: '50%', color: 'var(--vs-text-secondary)', zIndex: 10 }}>
+                    <X size={16} />
+                  </button>
+                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+                  <ScoreCircle score={scores[i]} color={COLORS[i]} size={70} />
+                  <div style={{ textAlign: 'left' }}>
+                    <div style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--vs-text-primary)' }}>{dev.brand}</div>
+                    <div style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--vs-text-primary)' }}>{dev.name}</div>
+                  </div>
+                </div>
+                
+                <select className="select-input" value={dev.id} onChange={e => handleChange(i, e.target.value)} style={{ marginBottom: '20px', width: '100%', padding: '10px', borderRadius: '8px', border: `1px solid ${COLORS[i]}`, fontWeight: 600 }}>
+                  <optgroup label="📱 Điện thoại">{products.filter(p=>p.category==='phone').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
+                  <optgroup label="💻 Laptop">{products.filter(p=>p.category==='laptop').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
+                </select>
 
-        {/* VS */}
-        <div className="vs-badge" style={{ width: '56px', height: '56px', fontSize: '1.1rem' }}>VS</div>
+                <div style={{ position: 'relative', flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-end', minHeight: '220px' }}>
+                  <img src={dev.image} alt={dev.name} style={{ width: '100%', maxWidth: '200px', height: '220px', objectFit: 'contain' }} />
+                  {isWinner && (
+                    <div className="animate-fade-in" style={{ position: 'absolute', bottom: '15px', left: '50%', transform: 'translateX(-50%)', background: '#a3e635', color: '#166534', fontWeight: 800, padding: '6px 16px', borderRadius: '20px', whiteSpace: 'nowrap', fontSize: '0.85rem', boxShadow: '0 4px 10px rgba(163, 230, 53, 0.4)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      Cấp Cao Nhất
+                    </div>
+                  )}
+                </div>
+              </div>
 
-        {/* Device B */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-          <select className="select-input" value={devB.id} onChange={e => handleChange(1, e.target.value)}
-            style={{ borderLeft: `4px solid ${colorB}`, fontWeight: 700, fontSize: '0.9rem', textAlign: 'center' }}>
-            <optgroup label="📱 Điện thoại">{products.filter(p=>p.category==='phone').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
-            <optgroup label="💻 Laptop">{products.filter(p=>p.category==='laptop').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
-          </select>
-          <img src={devB.image} alt={devB.name} style={{ width: '90px', height: '90px', objectFit: 'contain' }} />
-          <ScoreCircle score={scoreB} color={colorB} />
-          <div style={{ fontWeight: 700, fontSize: '0.85rem', color: colorB }}>{devB.name}</div>
-          <div style={{ fontSize: '0.85rem', color: '#6b7280' }}>{devB.price}</div>
-        </div>
+              {i < selectedDevs.length - 1 && (
+                <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--bg-tertiary)', color: 'var(--vs-text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.9rem', border: '1px solid var(--vs-border)' }}>VS</div>
+                </div>
+              )}
+            </React.Fragment>
+          );
+        })}
+
+        {selectedDevs.length < 3 && (
+          <React.Fragment>
+            <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--bg-tertiary)', color: 'var(--vs-text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.9rem', border: '1px solid var(--vs-border)' }}>VS</div>
+            </div>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed var(--vs-border)', borderRadius: '16px', padding: '20px', minHeight: '300px' }}>
+              <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'var(--gradient-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', color: 'white', boxShadow: '0 4px 15px rgba(56, 88, 246, 0.4)' }}>
+                <Plus size={30} />
+              </div>
+              <select className="select-input" value="" onChange={e => handleAdd(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid var(--vs-border)', fontWeight: 600, textAlign: 'center' }}>
+                <option value="" disabled>+ Thêm sản phẩm</option>
+                <optgroup label="📱 Điện thoại">{products.filter(p=>p.category==='phone').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
+                <optgroup label="💻 Laptop">{products.filter(p=>p.category==='laptop').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
+              </select>
+            </div>
+          </React.Fragment>
+        )}
       </div>
 
-      {/* ── 2. RADAR CHART & REASONS TO BUY ─────────────────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '20px', marginBottom: '32px' }}>
+      {/* ── 2. TỔNG QUAN TÍNH NĂNG (Features) ──────────────────────────── */}
+      <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '20px', color: 'var(--vs-text-primary)', borderBottom: '2px solid var(--vs-border)', paddingBottom: '10px' }}>Tổng Quan Tính Năng</h3>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '15px', marginBottom: '40px' }}>
+        {SPEC_CATEGORIES.map((cat, i) => {
+          if (i === 0) return null; // Skip design in features list to fit 5 cards nicely
+          return (
+            <div key={cat.id} className="glass-panel" style={{ padding: '20px', borderRadius: '12px' }}>
+              <h4 style={{ fontSize: '0.95rem', textTransform: 'uppercase', fontWeight: 800, marginBottom: '20px', color: 'var(--vs-text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <cat.icon size={18} /> {cat.label}
+              </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                {selectedDevs.map((dev, i) => {
+                  const score = getCatScore(dev, cat.id); 
+                  return (
+                    <div key={dev.id}>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '5px', color: 'var(--vs-text-primary)' }}>
+                        {(score / 10).toFixed(1)}/10
+                      </div>
+                      <div style={{ width: '100%', height: '8px', background: 'var(--bg-tertiary)', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div style={{ width: `${score}%`, height: '100%', background: COLORS[i], borderRadius: '4px' }}></div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── 3. RADAR CHART & LÝ DO CHỌN ────────────────────────────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 2fr', gap: '20px', marginBottom: '40px', alignItems: 'start' }}>
         {/* Radar Chart (Left) */}
-        <div className="reasons-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '350px', background: 'var(--vs-surface)' }}>
-          <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '20px', color: 'var(--vs-text-primary)' }}>Tổng Quan Thông Số</h3>
-          <div style={{ width: '100%', height: '300px' }}>
+        <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '350px', padding: '20px', borderRadius: '16px' }}>
+          <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '10px', color: 'var(--vs-text-primary)' }}>Biểu Đồ Sức Mạnh</h3>
+          <div style={{ width: '100%', height: '320px' }}>
             <ResponsiveContainer width="100%" height="100%">
-              <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
+              <RadarChart cx="50%" cy="50%" outerRadius="65%" data={radarData}>
                 <PolarGrid stroke="var(--vs-border)" />
                 <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--vs-text-secondary)', fontSize: 10, fontWeight: 600 }} />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                <Radar name={devA.name} dataKey="A" stroke={colorA} fill={colorA} fillOpacity={0.5} />
-                <Radar name={devB.name} dataKey="B" stroke={colorB} fill={colorB} fillOpacity={0.5} />
+                {selectedDevs.map((dev, i) => (
+                  <Radar key={dev.id} name={dev.name} dataKey={`dev${i}`} stroke={COLORS[i]} fill={COLORS[i]} fillOpacity={0.4} strokeWidth={2} />
+                ))}
               </RadarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Reasons To Buy (Right) */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div className="reasons-card" style={{ flex: 1 }}>
-            <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '16px', color: 'var(--vs-text-primary)' }}>
-              Tại sao chọn <span style={{ color: colorA }}>{devA.name}</span>?
-            </h3>
-            {REASONS_A.map((r, i) => (
-              <div key={i} className="reason-item">
-                <div className="reason-check" style={{ background: colorA }}>✓</div>
-                <div>
-                  <div className="reason-title">{r.title}</div>
-                  <div className="reason-sub">{r.sub}</div>
-                </div>
+        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${selectedDevs.length}, 1fr)`, gap: '15px' }}>
+          {selectedDevs.map((dev, i) => (
+            <div key={dev.id} className="glass-panel" style={{ padding: '20px', borderRadius: '16px', borderTop: `4px solid ${COLORS[i]}` }}>
+              <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '20px', color: 'var(--vs-text-primary)' }}>
+                Tại sao chọn <span style={{ color: COLORS[i] }}>{dev.name}</span>?
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                {getReasons(dev).map((r, idx) => (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                    <div style={{ color: COLORS[i], marginTop: '2px' }}><Check size={18} strokeWidth={3} /></div>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--vs-text-primary)', marginBottom: '3px' }}>{r.title}</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--vs-text-secondary)' }}>{r.sub}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div className="reasons-card" style={{ flex: 1 }}>
-            <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '16px', color: 'var(--vs-text-primary)' }}>
-              Tại sao chọn <span style={{ color: colorB }}>{devB.name}</span>?
-            </h3>
-            {REASONS_B.map((r, i) => (
-              <div key={i} className="reason-item">
-                <div className="reason-check" style={{ background: colorB }}>✓</div>
-                <div>
-                  <div className="reason-title">{r.title}</div>
-                  <div className="reason-sub">{r.sub}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* ── 3. CATEGORY FILTER TABS ───────────────────────────────────── */}
-      <div className="compare-tab-nav" style={{ overflowX: 'auto' }}>
-        <button className={`compare-tab ${activeCategory === 'all' ? 'active' : ''}`} onClick={() => setActiveCategory('all')}>
-          📊 Tất cả
-        </button>
-        {SPEC_CATEGORIES.map(c => (
-          <button key={c.id} className={`compare-tab ${activeCategory === c.id ? 'active' : ''}`} onClick={() => setActiveCategory(c.id)}>
-            {c.label}
-          </button>
-        ))}
-      </div>
-
-      {/* ── 4. SPEC SECTIONS ──────────────────────────────────────────── */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        {shownCats.map(cat => {
-          const Icon = cat.icon;
-          const rows = cat.keys.filter(s => getVal(devA, s.k) || getVal(devB, s.k));
-          if (!rows.length) return null;
-          const expanded = expandedCats[cat.id] !== false; // default open
-
+      {/* ── 4. THÔNG SỐ CHI TIẾT (Specs Table) ────────────────────────── */}
+      <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '20px', color: 'var(--vs-text-primary)', borderBottom: '2px solid var(--vs-border)', paddingBottom: '10px' }}>So Sánh Thông Số Chi Tiết</h3>
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        {SPEC_CATEGORIES.map(cat => {
           return (
-            <div key={cat.id} className="glass-panel" style={{ padding: '0', overflow: 'hidden' }}>
-              {/* Category Header */}
-              <div
-                onClick={() => toggleCat(cat.id)}
-                style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  padding: '16px 20px', cursor: 'pointer', borderBottom: expanded ? '1px solid var(--vs-border)' : 'none',
-                  background: 'var(--bg-secondary)', userSelect: 'none'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: 30, height: 30, borderRadius: '8px', background: 'linear-gradient(135deg, #3858f6, #8224e3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Icon size={16} color="white" />
-                  </div>
-                  <span style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--vs-text-primary)' }}>{cat.label}</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--vs-text-secondary)', background: 'var(--bg-tertiary)', padding: '2px 8px', borderRadius: '10px' }}>{rows.length} thông số</span>
-                </div>
-                {expanded ? <ChevronUp size={18} color="#6b7280" /> : <ChevronDown size={18} color="#6b7280" />}
+            <div key={cat.id} className="glass-panel" style={{ padding: '0', overflow: 'hidden', borderRadius: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--vs-border)' }}>
+                <cat.icon size={20} className="text-accent-primary" />
+                <span style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--vs-text-primary)' }}>{cat.label}</span>
               </div>
-
-              {/* Spec Rows */}
-              {expanded && (
-                <div style={{ padding: '8px 20px' }}>
-                  {/* Mini header */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px 1fr', gap: '12px', padding: '8px 0', marginBottom: '4px' }}>
-                    <div style={{ textAlign: 'right', fontWeight: 700, fontSize: '0.8rem', color: colorA }}>{devA.name}</div>
-                    <div></div>
-                    <div style={{ textAlign: 'left', fontWeight: 700, fontSize: '0.8rem', color: colorB }}>{devB.name}</div>
-                  </div>
-
-                  {rows.map(spec => {
-                    const valA = getVal(devA, spec.k) || '-';
-                    const valB = getVal(devB, spec.k) || '-';
-                    const bwA = getBarWidth(String(valA), spec.k.charCodeAt(0) * 13);
-                    const bwB = getBarWidth(String(valB), spec.k.charCodeAt(0) * 17);
-
-                    return (
-                      <div key={spec.k} className="spec-bar-row">
-                        {/* Left (Device A) */}
-                        <div className="spec-bar-value right" style={{ flex: 1 }}>
-                          <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--vs-text-primary)' }}>{valA}</span>
-                          <div className="spec-bar-track">
-                            <div className="spec-bar-fill" style={{ width: `${bwA}%`, background: colorA, marginLeft: 'auto' }}></div>
-                          </div>
-                        </div>
-
-                        {/* Center label */}
-                        <div className="spec-bar-label">
-                          <span style={{ fontSize: '0.75rem', color: 'var(--vs-text-secondary)', fontWeight: 600 }}>{spec.l}</span>
-                        </div>
-
-                        {/* Right (Device B) */}
-                        <div className="spec-bar-value left" style={{ flex: 1 }}>
-                          <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--vs-text-primary)' }}>{valB}</span>
-                          <div className="spec-bar-track">
-                            <div className="spec-bar-fill" style={{ width: `${bwB}%`, background: colorB }}></div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+              <div style={{ padding: '10px 20px' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                  <tbody>
+                    {cat.keys.map(spec => (
+                      <tr key={spec.k} style={{ borderBottom: '1px solid var(--vs-border)' }}>
+                        <td style={{ padding: '15px 10px', fontWeight: 600, color: 'var(--vs-text-secondary)', width: '20%', fontSize: '0.9rem' }}>{spec.l}</td>
+                        {selectedDevs.map((dev, i) => (
+                          <td key={dev.id} style={{ padding: '15px 10px', fontWeight: 700, color: 'var(--vs-text-primary)', fontSize: '0.95rem', width: `${80 / selectedDevs.length}%` }}>
+                            {getVal(dev, spec.k)}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           );
         })}
       </div>
 
-      {/* ── 5. BUY BUTTONS ROW ────────────────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '24px' }}>
-        {[devA, devB].map((dev, i) => (
-          <div key={i} style={{ background: 'var(--vs-surface)', borderRadius: '12px', padding: '16px', border: `2px solid ${i === 0 ? colorA : colorB}`, textAlign: 'center' }}>
-            <div style={{ fontWeight: 700, marginBottom: '12px', color: i === 0 ? colorA : colorB }}>{dev.name}</div>
-            {dev?.links?.shopee && (
-              <a href={dev.links.shopee} target="_blank" rel="noopener noreferrer"
-                className="btn btn-shopee" style={{ width: '100%', borderRadius: '8px', justifyContent: 'center', fontSize: '0.85rem' }}>
-                🛒 Mua trên Shopee
-              </a>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {/* ── 6. AI VERDICT ─────────────────────────────────────────────── */}
-      <div style={{ marginTop: '32px', textAlign: 'center' }}>
+      {/* ── 5. AI VERDICT ─────────────────────────────────────────────── */}
+      <div style={{ marginTop: '40px', textAlign: 'center' }}>
         <button className="btn btn-primary hover-lift" onClick={handleAI} disabled={isThinking}
-          style={{ padding: '14px 32px', fontSize: '1rem', borderRadius: '50px' }}>
-          {isThinking ? <><Sparkles size={18} style={{ animation: 'spin 1s linear infinite' }} /> Đang phân tích...</> : <><Bot size={18} /> Xin nhận xét từ AI</>}
+          style={{ padding: '14px 32px', fontSize: '1.1rem', borderRadius: '50px', display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
+          {isThinking ? <><Sparkles size={20} className="animate-spin" /> Đang tổng hợp...</> : <><Bot size={20} /> Phân Tích Chuyên Sâu Bằng AI</>}
         </button>
       </div>
 
       {aiResponse && (
         <div className="animate-fade-in" style={{
           marginTop: '20px', padding: '24px', background: 'var(--vs-surface)', borderRadius: '12px',
-          borderLeft: `5px solid #3858f6`, boxShadow: '0 4px 16px rgba(56,88,246,0.1)',
-          lineHeight: 1.8, fontSize: '0.95rem', color: 'var(--vs-text-primary)', textAlign: 'left'
+          borderLeft: `5px solid var(--accent-primary)`, boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+          lineHeight: 1.8, fontSize: '1rem', color: 'var(--vs-text-primary)', textAlign: 'left'
         }}>
           <div dangerouslySetInnerHTML={{
             __html: aiResponse
               .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
               .replace(/\n\n/g, '<br/><br/>')
-              .replace(/➤/g, '<span style="color:#3858f6;font-size:1.1em">➤</span>')
+              .replace(/➤/g, '<span style="color:var(--accent-primary);font-size:1.1em;font-weight:bold">➤</span>')
           }} />
         </div>
       )}
