@@ -95,7 +95,7 @@ function App() {
       />
       
       <main className="main-layout container">
-        <VersusHero />
+        <VersusHero products={products} />
 
         {activeTab === 'phones' && (
           <section className="animate-fade-in" style={{ marginBottom: '60px' }}>
