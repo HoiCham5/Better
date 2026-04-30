@@ -259,8 +259,10 @@ const CompareSection = ({ products, initialDeviceIds }) => {
           </div>
         </div>
 
-        {/* Reasons To Buy (Right) */}
-        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${selectedDevs.length}, 1fr)`, gap: '15px' }}>
+        {/* Right Column (Reasons to Buy & AI Verdict) */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {/* Reasons To Buy */}
+          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${selectedDevs.length}, 1fr)`, gap: '15px' }}>
           {selectedDevs.map((dev, i) => (
             <div key={dev.id} className="glass-panel" style={{ padding: '20px', borderRadius: '16px', borderTop: `4px solid ${COLORS[i]}` }}>
               <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '20px', color: 'var(--vs-text-primary)' }}>
@@ -280,11 +282,10 @@ const CompareSection = ({ products, initialDeviceIds }) => {
             </div>
           ))}
         </div>
-      </div>
+          </div>
 
-
-      {/* ── 3.5. AI VERDICT ─────────────────────────────────────────────── */}
-      <div style={{ marginBottom: '40px' }}>
+          {/* ── 3.5. AI VERDICT ─────────────────────────────────────────────── */}
+          <div>
         <div style={{ textAlign: 'center' }}>
           <button className="btn hover-lift" onClick={handleAI} disabled={isThinking}
             style={{ padding: '14px 32px', fontSize: '1.1rem', borderRadius: '50px', display: 'inline-flex', alignItems: 'center', gap: '10px', background: 'var(--gradient-accent)', color: 'white', border: 'none', fontWeight: 600 }}>
@@ -314,6 +315,8 @@ const CompareSection = ({ products, initialDeviceIds }) => {
             </div>
           </div>
         )}
+          </div>
+        </div>
       </div>
 
       {/* ── 4. THÔNG SỐ CHI TIẾT (Specs Table) ────────────────────────── */}
