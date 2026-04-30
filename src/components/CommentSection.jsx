@@ -21,6 +21,25 @@ const CommentSection = ({ productId }) => {
 
   useEffect(() => {
     fetchComments();
+
+    // Khởi tạo và Parse lại Facebook Comments
+    if (window.FB) {
+      window.FB.XFBML.parse();
+    } else {
+      window.fbAsyncInit = function() {
+        window.FB.init({
+          xfbml      : true,
+          version    : 'v19.0'
+        });
+      };
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = 'https://connect.facebook.net/vi_VN/sdk.js';
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    }
   }, [productId]);
 
   const handleSubmit = async (e) => {
@@ -131,79 +150,16 @@ const CommentSection = ({ productId }) => {
       </div>
       
       {/* Facebook Comments Section */}
-      <div style={{ marginTop: '40px', background: '#fff', padding: '20px', borderRadius: '15px' }}>
+      <div style={{ marginTop: '40px', background: '#fff', padding: '20px', borderRadius: '15px', minHeight: '300px' }}>
         <h4 style={{ color: '#1877f2', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.2rem', fontWeight: 'bold' }}>
           <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="FB" width="24" height="24" /> 
           Bình luận với Facebook
         </h4>
-        <div style={{ fontFamily: 'Helvetica, Arial, sans-serif', fontSize: '14px', color: '#1c1e21' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #dddfe2', paddingBottom: '10px', marginBottom: '15px' }}>
-            <span style={{ fontWeight: 'bold' }}>14 bình luận</span>
-            <span style={{ color: '#4b4f56', cursor: 'pointer' }}>Sắp xếp theo: <strong>Cũ nhất</strong> ▼</span>
-          </div>
-
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-             <img src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=50&h=50&fit=crop" style={{ width: '36px', height: '36px', borderRadius: '50%' }} alt="Your Avatar" />
-             <div style={{ flex: 1 }}>
-               <div style={{ border: '1px solid #ccd0d5', backgroundColor: '#f5f6f7', borderRadius: '18px', padding: '8px 12px', color: '#8d949e' }}>
-                 Thêm bình luận...
-               </div>
-             </div>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            {/* Fake Comment 1 */}
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=50&h=50&fit=crop" style={{ width: '36px', height: '36px', borderRadius: '50%' }} alt="User" />
-              <div>
-                <div style={{ backgroundColor: '#f0f2f5', borderRadius: '18px', padding: '8px 12px', display: 'inline-block' }}>
-                  <span style={{ fontWeight: '600', color: '#385898', display: 'block', fontSize: '13px', cursor: 'pointer' }}>Trần Anh Tuấn</span>
-                  <span style={{ fontSize: '14px' }}>Máy này so với bản cũ thì nóng hơn tí nhé ae, nhưng pin thì trâu vô đối luôn. Đáng đồng tiền bát gạo!</span>
-                </div>
-                <div style={{ fontSize: '12px', color: '#65676b', display: 'flex', gap: '15px', marginTop: '3px', marginLeft: '12px' }}>
-                  <span style={{ cursor: 'pointer', fontWeight: 'bold', color: '#65676b' }}>Thích</span>
-                  <span style={{ cursor: 'pointer', fontWeight: 'bold', color: '#65676b' }}>Phản hồi</span>
-                  <span>14 giờ trước</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Fake Comment 2 */}
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop" style={{ width: '36px', height: '36px', borderRadius: '50%' }} alt="User" />
-              <div>
-                <div style={{ backgroundColor: '#f0f2f5', borderRadius: '18px', padding: '8px 12px', display: 'inline-block' }}>
-                  <span style={{ fontWeight: '600', color: '#385898', display: 'block', fontSize: '13px', cursor: 'pointer' }}>Lê Ngọc Thảo</span>
-                  <span style={{ fontSize: '14px' }}>Bên TechCompare phân tích chuẩn thật, mình đang phân vân mà chốt luôn em này! Cho shop 5 sao.</span>
-                </div>
-                <div style={{ fontSize: '12px', color: '#65676b', display: 'flex', gap: '15px', marginTop: '3px', marginLeft: '12px' }}>
-                  <span style={{ cursor: 'pointer', fontWeight: 'bold', color: '#3578e5' }}>Thích (2)</span>
-                  <span style={{ cursor: 'pointer', fontWeight: 'bold', color: '#65676b' }}>Phản hồi</span>
-                  <span>2 ngày trước</span>
-                </div>
-              </div>
-            </div>
-            
-            {/* Fake Comment 3 */}
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=50&h=50&fit=crop" style={{ width: '36px', height: '36px', borderRadius: '50%' }} alt="User" />
-              <div>
-                <div style={{ backgroundColor: '#f0f2f5', borderRadius: '18px', padding: '8px 12px', display: 'inline-block' }}>
-                  <span style={{ fontWeight: '600', color: '#385898', display: 'block', fontSize: '13px', cursor: 'pointer' }}>Phạm Hoàng Hải</span>
-                  <span style={{ fontSize: '14px' }}>Cam kết là chụp đêm ăn đứt mấy dòng tầm trung nhé. Đã mua và test ở đường hoa nguyễn huệ =)))))</span>
-                </div>
-                <div style={{ fontSize: '12px', color: '#65676b', display: 'flex', gap: '15px', marginTop: '3px', marginLeft: '12px' }}>
-                  <span style={{ cursor: 'pointer', fontWeight: 'bold', color: '#65676b' }}>Thích</span>
-                  <span style={{ cursor: 'pointer', fontWeight: 'bold', color: '#65676b' }}>Phản hồi</span>
-                  <span>1 tuần trước</span>
-                </div>
-              </div>
-            </div>
-            
-            <div style={{ marginTop: '10px', textAlign: 'center' }}>
-              <button style={{ backgroundColor: 'transparent', border: 'none', color: '#385898', fontWeight: '600', cursor: 'pointer' }}>Tải thêm 11 bình luận</button>
-            </div>
-          </div>
+        <div 
+          className="fb-comments" 
+          data-href={`https://better-six-lemon.vercel.app/product/${productId}`} 
+          data-width="100%" 
+          data-numposts="5">
         </div>
       </div>
     </div>
