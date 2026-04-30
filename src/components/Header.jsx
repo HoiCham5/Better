@@ -203,8 +203,8 @@ const Header = ({
           box-shadow: 0 2px 8px rgba(130,36,227,0.5);
         }
         .vs-toggle-icon { display: flex; align-items: center; justify-content: center; color: white; z-index: 0; }
-        .vs-toggle-icon--sun  { order: 1; }
-        .vs-toggle-icon--moon { order: 2; }
+        .vs-toggle-icon--sun  { order: 2; }
+        .vs-toggle-icon--moon { order: 1; }
         .vs-toggle-thumb {
           position: absolute; left: 3px; width: 21px; height: 21px;
           border-radius: 50%; background: white;
@@ -230,17 +230,18 @@ const Header = ({
           display: flex;
           align-items: center;
           gap: 3px;
-          background: rgba(255,255,255,0.1);
-          border: 1px solid rgba(255,255,255,0.18);
+          background: var(--vs-surface);
+          border: 1px solid var(--vs-border);
           border-radius: 20px;
           padding: 6px 12px;
-          color: rgba(255,255,255,0.85);
+          color: var(--vs-text-primary);
           max-width: 68px;
           overflow: hidden;
           opacity: 1;
           transition: max-width 0.3s ease, opacity 0.25s ease, padding 0.3s ease;
           white-space: nowrap;
           flex-shrink: 0;
+          box-shadow: var(--vs-card-shadow);
         }
 
         /* Expanded container: 2 separate buttons side by side */
@@ -251,6 +252,8 @@ const Header = ({
           max-width: 0;
           overflow: hidden;
           opacity: 0;
+          padding: 6px;
+          margin: -6px;
           transition: max-width 0.35s cubic-bezier(0.34,1.4,0.64,1),
                       opacity 0.25s ease,
                       gap 0.3s ease;
@@ -264,7 +267,7 @@ const Header = ({
           pointer-events: none;
         }
         .vs-action-cluster--open .vs-action-expanded {
-          max-width: 86px;   /* enough for 2 × 34px + gap */
+          max-width: 98px;   /* 86px + 12px padding */
           opacity: 1;
         }
 
@@ -279,18 +282,20 @@ const Header = ({
           border-radius: 50%;
           border: none;
           cursor: pointer;
-          color: white;
+          color: var(--vs-text-primary);
           transition: transform 0.2s ease, filter 0.2s ease;
         }
-        .vs-action-btn:hover { transform: scale(1.15); filter: brightness(1.2); }
+        .vs-action-btn:hover { transform: scale(1.15); filter: brightness(1.1); }
 
         .vs-action-btn--user {
-          background: rgba(255,255,255,0.12);
-          border: 1px solid rgba(255,255,255,0.22);
+          background: var(--vs-surface);
+          border: 1px solid var(--vs-border);
+          box-shadow: var(--vs-card-shadow);
         }
         .vs-action-btn--admin {
-          background: linear-gradient(135deg, #3858f6, #8224e3);
-          box-shadow: 0 4px 12px rgba(130,36,227,0.45);
+          background: var(--vs-surface);
+          border: 1px solid var(--vs-border);
+          box-shadow: var(--vs-card-shadow);
         }
 
         .vs-action-avatar {
