@@ -182,13 +182,21 @@ const CompareSection = ({ products, initialDeviceIds }) => {
         {selectedDevs.length < 3 && (
           <React.Fragment>
             <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px' }}>
-              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--bg-tertiary)', color: 'var(--vs-text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.9rem', border: '1px solid var(--vs-border)' }}>VS</div>
+              <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'var(--bg-tertiary)', color: 'var(--vs-text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.7rem', border: '1px solid var(--vs-border)' }}>VS</div>
             </div>
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed var(--vs-border)', borderRadius: '16px', padding: '20px', minHeight: '300px' }}>
-              <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'var(--gradient-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', color: 'white', boxShadow: '0 4px 15px rgba(56, 88, 246, 0.4)' }}>
-                <Plus size={30} />
+            
+            <div title="Thêm sản phẩm để so sánh" className="hover-lift" style={{ width: '140px', flexShrink: 0, position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 10px', cursor: 'pointer', border: '1px dashed var(--vs-border)', borderRadius: '16px', background: 'var(--bg-secondary)', overflow: 'hidden' }}>
+              <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'var(--bg-tertiary)', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--vs-border)' }}>
+                <Plus size={20} color="var(--vs-text-secondary)" />
               </div>
-              <select className="select-input" value="" onChange={e => handleAdd(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid var(--vs-border)', fontWeight: 600, textAlign: 'center' }}>
+              
+              <div style={{ width: '90%', height: '38px', background: 'var(--bg-tertiary)', borderRadius: '8px', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--vs-border)' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--vs-text-secondary)' }}>+ Thêm...</span>
+              </div>
+              
+              <div style={{ width: '80%', flex: 1, background: 'var(--bg-tertiary)', borderRadius: '12px', minHeight: '150px', border: '1px solid var(--vs-border)' }}></div>
+              
+              <select value="" onChange={e => handleAdd(e.target.value)} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', width: '100%', height: '100%' }}>
                 <option value="" disabled>+ Thêm sản phẩm</option>
                 <optgroup label="📱 Điện thoại">{products.filter(p=>p.category==='phone').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
                 <optgroup label="💻 Laptop">{products.filter(p=>p.category==='laptop').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
