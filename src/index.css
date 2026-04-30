@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
 /* ===========================
    VERSUS.COM COLOR SYSTEM
@@ -44,7 +45,7 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
   background-color: var(--vs-bg);
   color: var(--vs-text-primary);
   line-height: 1.6;
@@ -224,7 +225,7 @@ a { text-decoration: none; color: inherit; }
    VS BADGE
    =========================== */
 .vs-badge {
-  background: var(--vs-accent);
+  background: linear-gradient(135deg, #3858f6, #8224e3);
   color: white;
   font-weight: 900;
   font-size: 0.85rem;
@@ -235,8 +236,13 @@ a { text-decoration: none; color: inherit; }
   align-items: center;
   justify-content: center;
   letter-spacing: 0.5px;
-  box-shadow: 0 4px 12px rgba(56,88,246,0.4);
+  box-shadow: 0 4px 16px rgba(130,36,227,0.45);
   flex-shrink: 0;
+  animation: vsGlow 3s ease-in-out infinite;
+}
+@keyframes vsGlow {
+  0%, 100% { box-shadow: 0 4px 16px rgba(56,88,246,0.45); }
+  50%       { box-shadow: 0 4px 28px rgba(130,36,227,0.7); }
 }
 
 /* ===========================
@@ -394,18 +400,31 @@ a { text-decoration: none; color: inherit; }
    =========================== */
 .product-card {
   background: var(--vs-surface);
-  border-radius: 12px;
-  box-shadow: var(--vs-card-shadow);
-  border: 1px solid var(--vs-border);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.07);
   overflow: hidden;
-  transition: all 0.25s ease;
+  transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
   display: flex;
   flex-direction: column;
+  position: relative;
 }
-
+.product-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
 .product-card:hover {
-  box-shadow: var(--vs-card-shadow-hover);
-  transform: translateY(-3px);
+  box-shadow: 0 8px 40px rgba(56,88,246,0.14), 0 2px 8px rgba(0,0,0,0.1);
+  transform: translateY(-5px);
+}
+.product-card:hover::after {
+  border-color: rgba(56,88,246,0.25);
 }
 
 .product-image-container {
@@ -428,14 +447,16 @@ a { text-decoration: none; color: inherit; }
   position: absolute;
   top: 10px;
   left: 10px;
-  background: var(--vs-accent);
+  background: linear-gradient(135deg, #3858f6, #8224e3);
   color: white;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 20px;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  box-shadow: 0 4px 12px rgba(56,88,246,0.4);
+  z-index: 2;
 }
 
 .product-info { padding: 16px; flex: 1; display: flex; flex-direction: column; }
@@ -533,11 +554,25 @@ a { text-decoration: none; color: inherit; }
 .btn:active { transform: translateY(0); }
 
 .btn-primary {
-  background: var(--vs-accent);
+  background: linear-gradient(135deg, #3858f6, #8224e3);
   color: white;
-  box-shadow: 0 4px 12px rgba(56,88,246,0.3);
+  box-shadow: 0 4px 16px rgba(56,88,246,0.35);
+  position: relative;
+  overflow: hidden;
 }
-.btn-primary:hover { box-shadow: 0 6px 18px rgba(56,88,246,0.45); }
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #fff2, transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.btn-primary:hover {
+  box-shadow: 0 8px 28px rgba(56,88,246,0.55);
+  transform: translateY(-2px);
+}
+.btn-primary:hover::before { opacity: 1; }
 
 .btn-shopee { background: var(--shopee-color); color: white; }
 .btn-shopee:hover { box-shadow: 0 5px 15px rgba(238,77,45,0.4); }
