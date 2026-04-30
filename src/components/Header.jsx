@@ -206,13 +206,13 @@ const Header = ({
         .vs-toggle-icon--sun  { order: 1; }
         .vs-toggle-icon--moon { order: 2; }
         .vs-toggle-thumb {
-          position: absolute; left: 3px; width: 21px; height: 21px;
+          position: absolute; left: 28px; width: 21px; height: 21px;
           border-radius: 50%; background: white;
           box-shadow: 0 2px 6px rgba(0,0,0,0.25);
           transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           z-index: 1;
         }
-        .vs-toggle-thumb--dark { left: 28px; }
+        .vs-toggle-thumb--dark { left: 3px; }
 
         /* ═══════════════════════════════
            MERGED ACTION CLUSTER (flex-based)
