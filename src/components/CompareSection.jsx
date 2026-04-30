@@ -145,7 +145,7 @@ const CompareSection = ({ products, initialDeviceIds }) => {
     return (
       <div style={{ position: 'relative', width: size, height: size }}>
         <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-          <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#f0f0f0" strokeWidth="8" />
+          <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--vs-border)" strokeWidth="8" />
           <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth="8"
             strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
             style={{ transition: 'stroke-dasharray 1s ease' }}
@@ -156,7 +156,7 @@ const CompareSection = ({ products, initialDeviceIds }) => {
           alignItems: 'center', justifyContent: 'center'
         }}>
           <span style={{ fontSize: '1.6rem', fontWeight: 900, color, lineHeight: 1 }}>{score}</span>
-          <span style={{ fontSize: '0.6rem', color: '#6b7280', textTransform: 'uppercase', fontWeight: 600 }}>điểm</span>
+          <span style={{ fontSize: '0.6rem', color: 'var(--vs-text-secondary)', textTransform: 'uppercase', fontWeight: 600 }}>điểm</span>
         </div>
       </div>
     );
@@ -175,8 +175,8 @@ const CompareSection = ({ products, initialDeviceIds }) => {
       <div style={{
         display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '16px',
         alignItems: 'center', marginBottom: '32px',
-        background: 'white', borderRadius: '16px', padding: '24px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.08)', border: '1px solid #e5e7eb'
+        background: 'var(--vs-surface)', borderRadius: '16px', padding: '24px',
+        boxShadow: 'var(--vs-card-shadow)', border: '1px solid var(--vs-border)'
       }}>
         {/* Device A */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
@@ -211,7 +211,7 @@ const CompareSection = ({ products, initialDeviceIds }) => {
       {/* ── 2. REASONS TO BUY ─────────────────────────────────────────── */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '32px' }}>
         <div className="reasons-card">
-          <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '16px', color: '#1a1a1a' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '16px', color: 'var(--vs-text-primary)' }}>
             Tại sao chọn <span style={{ color: colorA }}>{devA.name}</span>?
           </h3>
           {REASONS_A.map((r, i) => (
@@ -225,7 +225,7 @@ const CompareSection = ({ products, initialDeviceIds }) => {
           ))}
         </div>
         <div className="reasons-card">
-          <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '16px', color: '#1a1a1a' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '16px', color: 'var(--vs-text-primary)' }}>
             Tại sao chọn <span style={{ color: colorB }}>{devB.name}</span>?
           </h3>
           {REASONS_B.map((r, i) => (
@@ -267,16 +267,16 @@ const CompareSection = ({ products, initialDeviceIds }) => {
                 onClick={() => toggleCat(cat.id)}
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  padding: '16px 20px', cursor: 'pointer', borderBottom: expanded ? '1px solid #e5e7eb' : 'none',
-                  background: '#fafafa', userSelect: 'none'
+                  padding: '16px 20px', cursor: 'pointer', borderBottom: expanded ? '1px solid var(--vs-border)' : 'none',
+                  background: 'var(--bg-secondary)', userSelect: 'none'
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <div style={{ width: 30, height: 30, borderRadius: '8px', background: 'linear-gradient(135deg, #3858f6, #8224e3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Icon size={16} color="white" />
                   </div>
-                  <span style={{ fontSize: '1rem', fontWeight: 800, color: '#1a1a1a' }}>{cat.label}</span>
-                  <span style={{ fontSize: '0.75rem', color: '#6b7280', background: '#f3f4f6', padding: '2px 8px', borderRadius: '10px' }}>{rows.length} thông số</span>
+                  <span style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--vs-text-primary)' }}>{cat.label}</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--vs-text-secondary)', background: 'var(--bg-tertiary)', padding: '2px 8px', borderRadius: '10px' }}>{rows.length} thông số</span>
                 </div>
                 {expanded ? <ChevronUp size={18} color="#6b7280" /> : <ChevronDown size={18} color="#6b7280" />}
               </div>
@@ -301,7 +301,7 @@ const CompareSection = ({ products, initialDeviceIds }) => {
                       <div key={spec.k} className="spec-bar-row">
                         {/* Left (Device A) */}
                         <div className="spec-bar-value right" style={{ flex: 1 }}>
-                          <span style={{ fontSize: '0.88rem', fontWeight: 600, color: '#1a1a1a' }}>{valA}</span>
+                          <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--vs-text-primary)' }}>{valA}</span>
                           <div className="spec-bar-track">
                             <div className="spec-bar-fill" style={{ width: `${bwA}%`, background: colorA, marginLeft: 'auto' }}></div>
                           </div>
@@ -309,12 +309,12 @@ const CompareSection = ({ products, initialDeviceIds }) => {
 
                         {/* Center label */}
                         <div className="spec-bar-label">
-                          <span style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: 600 }}>{spec.l}</span>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--vs-text-secondary)', fontWeight: 600 }}>{spec.l}</span>
                         </div>
 
                         {/* Right (Device B) */}
                         <div className="spec-bar-value left" style={{ flex: 1 }}>
-                          <span style={{ fontSize: '0.88rem', fontWeight: 600, color: '#1a1a1a' }}>{valB}</span>
+                          <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--vs-text-primary)' }}>{valB}</span>
                           <div className="spec-bar-track">
                             <div className="spec-bar-fill" style={{ width: `${bwB}%`, background: colorB }}></div>
                           </div>
@@ -332,7 +332,7 @@ const CompareSection = ({ products, initialDeviceIds }) => {
       {/* ── 5. BUY BUTTONS ROW ────────────────────────────────────────── */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '24px' }}>
         {[devA, devB].map((dev, i) => (
-          <div key={i} style={{ background: 'white', borderRadius: '12px', padding: '16px', border: `2px solid ${i === 0 ? colorA : colorB}`, textAlign: 'center' }}>
+          <div key={i} style={{ background: 'var(--vs-surface)', borderRadius: '12px', padding: '16px', border: `2px solid ${i === 0 ? colorA : colorB}`, textAlign: 'center' }}>
             <div style={{ fontWeight: 700, marginBottom: '12px', color: i === 0 ? colorA : colorB }}>{dev.name}</div>
             {dev?.links?.shopee && (
               <a href={dev.links.shopee} target="_blank" rel="noopener noreferrer"
@@ -354,9 +354,9 @@ const CompareSection = ({ products, initialDeviceIds }) => {
 
       {aiResponse && (
         <div className="animate-fade-in" style={{
-          marginTop: '20px', padding: '24px', background: 'white', borderRadius: '12px',
+          marginTop: '20px', padding: '24px', background: 'var(--vs-surface)', borderRadius: '12px',
           borderLeft: `5px solid #3858f6`, boxShadow: '0 4px 16px rgba(56,88,246,0.1)',
-          lineHeight: 1.8, fontSize: '0.95rem', color: '#1a1a1a', textAlign: 'left'
+          lineHeight: 1.8, fontSize: '0.95rem', color: 'var(--vs-text-primary)', textAlign: 'left'
         }}>
           <div dangerouslySetInnerHTML={{
             __html: aiResponse

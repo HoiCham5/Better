@@ -35,7 +35,9 @@
   --tiktok-gradient: linear-gradient(45deg, #00f2fe, #fe0979);
 }
 
-/* ── DARK MODE ─────────────────────────────────── */
+/* ══════════════════════════════════════════
+   DARK MODE — COMPREHENSIVE
+   ══════════════════════════════════════════ */
 [data-theme="dark"] {
   --vs-bg: #0d0b1e;
   --vs-surface: #16142a;
@@ -54,27 +56,117 @@
   --glass-border: rgba(255,255,255,0.08);
 }
 
-[data-theme="dark"] body {
-  background-color: var(--vs-bg);
-}
+/* Base */
+[data-theme="dark"] body { background-color: var(--vs-bg); color: var(--vs-text-primary); }
 
-[data-theme="dark"] .glass-panel {
-  background: var(--glass-bg);
-  border-color: var(--vs-border);
-}
-
+/* All white surfaces */
+[data-theme="dark"] .glass-panel,
 [data-theme="dark"] .vs-card,
 [data-theme="dark"] .product-card,
-[data-theme="dark"] .reasons-card {
-  background: var(--vs-surface);
-  border-color: var(--vs-border);
+[data-theme="dark"] .reasons-card,
+[data-theme="dark"] .compare-view > div,
+[data-theme="dark"] [style*="background: white"],
+[data-theme="dark"] [style*="background: #fff"],
+[data-theme="dark"] [style*="background: #fafafa"],
+[data-theme="dark"] [style*="background: #f8f9"],
+[data-theme="dark"] [style*="background-color: white"],
+[data-theme="dark"] [style*="background-color: #fff"] {
+  background: var(--vs-surface) !important;
+  border-color: var(--vs-border) !important;
+  color: var(--vs-text-primary) !important;
 }
 
-[data-theme="dark"] .select-input {
-  background: var(--vs-surface);
-  color: var(--vs-text-primary);
-  border-color: var(--vs-border);
+/* Hero search bar inner */
+[data-theme="dark"] .hero-search-bar {
+  background: rgba(22,20,42,0.95) !important;
+  border: 1px solid rgba(130,36,227,0.3) !important;
 }
+[data-theme="dark"] .hero-input { color: #f1f0ff !important; }
+[data-theme="dark"] .hero-input::placeholder { color: rgba(255,255,255,0.3) !important; }
+
+/* Selects */
+[data-theme="dark"] .select-input,
+[data-theme="dark"] select {
+  background: #1e1c35 !important;
+  color: var(--vs-text-primary) !important;
+  border-color: var(--vs-border) !important;
+}
+[data-theme="dark"] select option { background: #1e1c35; color: #f1f0ff; }
+
+/* Score circle inner white background */
+[data-theme="dark"] .score-circle-inner,
+[data-theme="dark"] [style*="background: white"],
+[data-theme="dark"] [style*="background:white"] {
+  background: var(--vs-surface) !important;
+}
+
+/* Spec bar track */
+[data-theme="dark"] .spec-bar-track {
+  background: rgba(255,255,255,0.07) !important;
+}
+
+/* Spec rows */
+[data-theme="dark"] .spec-bar-row {
+  border-bottom-color: rgba(255,255,255,0.06) !important;
+}
+
+/* Compare category header (fafafa bg) */
+[data-theme="dark"] [style*="background: #fafafa"],
+[data-theme="dark"] [style*="background:#fafafa"] {
+  background: #1a1830 !important;
+}
+
+/* Reason items border */
+[data-theme="dark"] .reason-item {
+  border-bottom-color: rgba(255,255,255,0.06) !important;
+}
+
+/* Text colors */
+[data-theme="dark"] .reason-title,
+[data-theme="dark"] .score-circle-number,
+[data-theme="dark"] [style*="color: #1a1a1a"],
+[data-theme="dark"] [style*="color:#1a1a1a"] {
+  color: var(--vs-text-primary) !important;
+}
+[data-theme="dark"] .reason-sub,
+[data-theme="dark"] .spec-bar-label,
+[data-theme="dark"] [style*="color: #6b7280"],
+[data-theme="dark"] [style*="color:#6b7280"] {
+  color: var(--vs-text-secondary) !important;
+}
+
+/* Compare tab nav */
+[data-theme="dark"] .compare-tab-nav {
+  border-bottom-color: rgba(255,255,255,0.08) !important;
+}
+[data-theme="dark"] .compare-tab {
+  color: var(--vs-text-secondary);
+}
+[data-theme="dark"] .compare-tab.active { color: #a78bfa !important; border-bottom-color: #a78bfa !important; }
+[data-theme="dark"] .compare-tab:hover  { color: #c4b5fd !important; }
+
+/* AI response box */
+[data-theme="dark"] .animate-fade-in [style*="background: white"],
+[data-theme="dark"] [style*="border-left: 5px solid #3858f6"] {
+  background: #1a1830 !important;
+  color: var(--vs-text-primary) !important;
+}
+
+/* Footer */
+[data-theme="dark"] footer { background: #07051a !important; }
+
+/* Inline style overrides for CompareSection device selector card */
+[data-theme="dark"] .compare-view {
+  background: transparent !important;
+}
+
+/* Product image container */
+[data-theme="dark"] .product-image-container { background: #1e1c35 !important; }
+
+/* Product info */
+[data-theme="dark"] .product-info h2,
+[data-theme="dark"] .spec-content p { color: var(--vs-text-primary) !important; }
+[data-theme="dark"] .spec-content h4 { color: var(--vs-text-secondary) !important; }
 
 
 * {
