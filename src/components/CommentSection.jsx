@@ -22,24 +22,15 @@ const CommentSection = ({ productId }) => {
   useEffect(() => {
     fetchComments();
 
-    // Khởi tạo và Parse lại Facebook Comments
-    if (window.FB) {
-      window.FB.XFBML.parse();
-    } else {
-      window.fbAsyncInit = function() {
-        window.FB.init({
-          xfbml      : true,
-          version    : 'v19.0'
-        });
-      };
-      (function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = 'https://connect.facebook.net/vi_VN/sdk.js';
-        fjs.parentNode.insertBefore(js, fjs);
-      }(document, 'script', 'facebook-jssdk'));
-    }
+    // Retry loop để đảm bảo parse lại comment khi chuyển sản phẩm
+    const initFacebook = () => {
+      if (window.FB) {
+        window.FB.XFBML.parse();
+      } else {
+        setTimeout(initFacebook, 500);
+      }
+    };
+    initFacebook();
   }, [productId]);
 
   const handleSubmit = async (e) => {
