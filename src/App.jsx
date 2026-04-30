@@ -109,6 +109,8 @@ function App() {
         onProfileClick={() => setShowProfileModal(true)}
         darkMode={darkMode}
         toggleDark={toggleDark}
+        currentUser={currentUser}
+        onAdminClick={() => setShowAdmin(!showAdmin)}
       />
 
       {/* Hero: full-width, outside container */}
@@ -232,43 +234,7 @@ function App() {
         </div>
       </footer>
 
-      {/* Floating Actions Container */}
-      <div className="floating-actions-container" style={{ position: 'fixed', bottom: '30px', right: '30px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px', zIndex: 1000 }}>
-        
-        {/* User Login/Profile Floating Button */}
-        <button 
-          className="user-btn hover-focus-btn"
-          onClick={() => currentUser ? setShowProfileModal(true) : setShowAuthModal(true)}
-          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)', overflow: 'hidden' }}
-        >
-          {currentUser ? (
-            <img src={currentUser.photoURL || 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=100&h=100&fit=crop'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Avatar" />
-          ) : (
-            <User size={24} />
-          )}
-        </button>
-
-        {/* Admin Toggle Floating Button */}
-        <button 
-          className="admin-btn hover-focus-btn"
-          onClick={() => setShowAdmin(!showAdmin)}
-          style={{
-            width: '60px',
-            height: '60px',
-            borderRadius: '50%',
-            background: 'var(--gradient-accent)',
-            color: 'white',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 10px 25px rgba(59, 130, 246, 0.5)',
-            border: 'none',
-            cursor: 'pointer'
-          }}
-        >
-          <Settings size={28} />
-        </button>
-      </div>
+      {/* Floating action buttons moved to Header */}
 
       {/* Admin Panel Popup / Modal */}
       {showAdmin && (
