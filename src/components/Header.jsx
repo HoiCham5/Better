@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Smartphone, Laptop, BarChart2, Cpu, Newspaper, Zap } from 'lucide-react';
+import { Smartphone, Laptop, BarChart2, Cpu, Newspaper, Zap, Sun, Moon } from 'lucide-react';
 
 const NAV_ITEMS = [
   { id: 'phones',  label: 'Điện thoại', icon: Smartphone },
@@ -9,7 +9,7 @@ const NAV_ITEMS = [
   { id: 'ai',      label: 'AI Tư Vấn', icon: Cpu },
 ];
 
-const Header = ({ activeTab, setActiveTab }) => {
+const Header = ({ activeTab, setActiveTab, darkMode, toggleDark }) => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -50,9 +50,20 @@ const Header = ({ activeTab, setActiveTab }) => {
             })}
           </nav>
 
-          {/* Right side decoration */}
+          {/* Right: Dark Mode Toggle */}
           <div className="vs-header-right">
-            <div className="vs-header-divider" />
+            <button
+              className="vs-theme-toggle"
+              onClick={toggleDark}
+              title={darkMode ? 'Chuyển sang sáng' : 'Chuyển sang tối'}
+              aria-label="Toggle theme"
+            >
+              <div className={`vs-toggle-track ${darkMode ? 'vs-toggle-track--dark' : ''}`}>
+                <span className="vs-toggle-icon vs-toggle-icon--sun"><Sun size={11} /></span>
+                <span className="vs-toggle-icon vs-toggle-icon--moon"><Moon size={11} /></span>
+                <div className={`vs-toggle-thumb ${darkMode ? 'vs-toggle-thumb--dark' : ''}`} />
+              </div>
+            </button>
           </div>
         </div>
       </header>
@@ -191,6 +202,61 @@ const Header = ({ activeTab, setActiveTab }) => {
           border-radius: 1px;
         }
 
+        /* Theme Toggle Switch */
+        .vs-theme-toggle {
+          background: none;
+          border: none;
+          cursor: pointer;
+          padding: 4px;
+          display: flex;
+          align-items: center;
+        }
+
+        .vs-toggle-track {
+          position: relative;
+          width: 52px;
+          height: 27px;
+          background: linear-gradient(135deg, #f59e0b, #fbbf24);
+          border-radius: 30px;
+          display: flex;
+          align-items: center;
+          padding: 0 5px;
+          justify-content: space-between;
+          transition: background 0.35s ease;
+          box-shadow: 0 2px 8px rgba(245,158,11,0.4);
+        }
+        .vs-toggle-track--dark {
+          background: linear-gradient(135deg, #3858f6, #8224e3);
+          box-shadow: 0 2px 8px rgba(130,36,227,0.5);
+        }
+
+        .vs-toggle-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          z-index: 0;
+        }
+        .vs-toggle-icon--sun  { order: 1; }
+        .vs-toggle-icon--moon { order: 2; }
+
+        .vs-toggle-thumb {
+          position: absolute;
+          left: 3px;
+          width: 21px;
+          height: 21px;
+          border-radius: 50%;
+          background: white;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+          transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease;
+          z-index: 1;
+        }
+        .vs-toggle-thumb--dark {
+          left: 28px;
+          transform: rotate(360deg);
+        }
+
+        /* Responsive */
         @media (max-width: 600px) {
           .vs-header-inner { padding: 0 12px; gap: 8px; }
           .vs-logo-tag { display: none; }

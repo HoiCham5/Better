@@ -35,9 +35,48 @@
   --tiktok-gradient: linear-gradient(45deg, #00f2fe, #fe0979);
 }
 
-/* ===========================
-   RESET & BASE
-   =========================== */
+/* ── DARK MODE ─────────────────────────────────── */
+[data-theme="dark"] {
+  --vs-bg: #0d0b1e;
+  --vs-surface: #16142a;
+  --vs-text-primary: #f1f0ff;
+  --vs-text-secondary: #9ca3af;
+  --vs-border: rgba(255,255,255,0.08);
+  --vs-card-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  --vs-card-shadow-hover: 0 8px 32px rgba(130,36,227,0.3);
+
+  --bg-primary: #0d0b1e;
+  --bg-secondary: #16142a;
+  --bg-tertiary: #2d2b4e;
+  --text-primary: #f1f0ff;
+  --text-secondary: #9ca3af;
+  --glass-bg: rgba(22,20,42,0.92);
+  --glass-border: rgba(255,255,255,0.08);
+}
+
+[data-theme="dark"] body {
+  background-color: var(--vs-bg);
+}
+
+[data-theme="dark"] .glass-panel {
+  background: var(--glass-bg);
+  border-color: var(--vs-border);
+}
+
+[data-theme="dark"] .vs-card,
+[data-theme="dark"] .product-card,
+[data-theme="dark"] .reasons-card {
+  background: var(--vs-surface);
+  border-color: var(--vs-border);
+}
+
+[data-theme="dark"] .select-input {
+  background: var(--vs-surface);
+  color: var(--vs-text-primary);
+  border-color: var(--vs-border);
+}
+
+
 * {
   margin: 0;
   padding: 0;
@@ -95,7 +134,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 .main-layout {
-  padding: 24px 0 80px;
+  padding: 0 0 80px;
 }
 
 /* ===========================

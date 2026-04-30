@@ -29,6 +29,14 @@ function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [userPreference, setUserPreference] = useState('Không thiết lập');
   const [compareIds, setCompareIds] = useState([]);
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
+
+  const toggleDark = () => setDarkMode(d => !d);
 
   useEffect(() => {
     // Tải Sản phẩm từ Node Backend
@@ -99,10 +107,14 @@ function App() {
         setActiveTab={setActiveTab} 
         onLoginClick={() => setShowAuthModal(true)}
         onProfileClick={() => setShowProfileModal(true)}
+        darkMode={darkMode}
+        toggleDark={toggleDark}
       />
+
+      {/* Hero: full-width, outside container */}
+      <VersusHero products={products} onCompare={handleHeroCompare} />
       
       <main className="main-layout container">
-        <VersusHero products={products} onCompare={handleHeroCompare} />
 
         {activeTab === 'phones' && (
           <section className="animate-fade-in" style={{ marginBottom: '60px' }}>
