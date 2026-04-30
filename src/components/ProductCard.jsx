@@ -12,18 +12,26 @@ const ProductCard = ({ product, userPreference = '', onViewDetails }) => {
   return (
     <div className="product-card glass-panel animate-fade-in">
       <div className="product-image-container">
-        <div style={{ position: 'absolute', top: '10px', left: '10px', display: 'flex', gap: '5px', alignItems: 'center', zIndex: 10 }}>
+        <div style={{ position: 'absolute', top: '10px', left: '10px', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start', zIndex: 10 }}>
           <div style={{
-            width: '45px', height: '45px', borderRadius: '50%', background: 'var(--bg-primary)',
-            border: '3px solid var(--accent-primary)', display: 'flex', alignItems: 'center',
-            justifyContent: 'center', fontWeight: '900', fontSize: '1.2rem', color: 'var(--text-primary)',
-            boxShadow: '0 4px 10px rgba(0,0,0,0.3)'
+            width: '45px', height: '45px', borderRadius: '50%', background: 'var(--vs-surface)',
+            border: '3px solid #3858f6', display: 'flex', alignItems: 'center',
+            justifyContent: 'center', fontWeight: '900', fontSize: '1.1rem', color: 'var(--vs-text-primary)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
           }}>
             {Math.floor(Math.random() * 15 + 85)}
           </div>
-          <span className="badge">{product.brand}</span>
+          
           {product.isFeatured && (
-            <span className="badge" style={{ background: 'var(--gradient-accent)', color: 'white', border: 'none' }}>Nổi Bật ✨</span>
+            <div style={{
+              background: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
+              color: 'white', fontSize: '0.65rem', fontWeight: 800, padding: '4px 10px',
+              borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '4px',
+              boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)', textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              Nổi Bật ✨
+            </div>
           )}
         </div>
 
