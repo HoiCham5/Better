@@ -193,7 +193,7 @@
 [data-theme="dark"] p { color: var(--vs-text-primary); }
 
 /* Input fields everywhere */
-[data-theme="dark"] input,
+[data-theme="dark"] input:not(.hero-input),
 [data-theme="dark"] textarea {
   background: #1e1c35 !important;
   color: var(--vs-text-primary) !important;
@@ -201,6 +201,8 @@
 }
 [data-theme="dark"] input::placeholder,
 [data-theme="dark"] textarea::placeholder { color: rgba(255,255,255,0.3) !important; }
+
+[data-theme="dark"] .hero-input { background: transparent !important; color: #f1f0ff !important; }
 
 /* Buttons with white bg */
 [data-theme="dark"] button:not(.vs-nav-btn):not(.hero-compare-btn):not(.hero-popular-tag):not(.vs-theme-toggle):not(.compare-tab):not(.btn-primary) {
@@ -235,7 +237,7 @@
 
 /* Store section */
 [data-theme="dark"] [class*="store"],
-[data-theme="dark"] [class*="shop"] {
+[data-theme="dark"] [class*="shop"]:not(.btn-shopee) {
   background: var(--vs-surface) !important;
   color: var(--vs-text-primary) !important;
 }
