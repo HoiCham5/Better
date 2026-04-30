@@ -14,21 +14,21 @@ async function scrapeProductData(keyword) {
     // Giả lập người dùng thật
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
     
-    // Truy cập FPT Shop (hoặc web bất kỳ, ở đây dùng tgdd làm ví dụ, nếu bị lỗi sẽ fallback)
-    const url = `https://www.thegioididong.com/tim-kiem?key=${encodeURIComponent(keyword)}`;
+    // Truy cập CellphoneS
+    const url = `https://cellphones.com.vn/catalogsearch/result?q=${encodeURIComponent(keyword)}`;
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
     
     // Chờ kết quả render
-    await page.waitForSelector('ul.listsearch li.item-ajax, ul.listproduct li.item-ajax', { timeout: 15000 }).catch(() => {});
+    await page.waitForSelector('.product-info, .product-item-info', { timeout: 15000 }).catch(() => {});
     
     // Trích xuất dữ liệu
     const product = await page.evaluate(() => {
       // Tìm phần tử sản phẩm đầu tiên
-      const el = document.querySelector('li.item-ajax');
+      const el = document.querySelector('.product-info, .product-item-info');
       if (!el) return null;
       
-      const name = el.querySelector('h3')?.innerText?.trim() || '';
-      const price = el.querySelector('strong.price')?.innerText?.trim() || el.querySelector('.price')?.innerText?.trim() || '';
+      const name = el.querySelector('.product-name, .product__name')?.innerText?.trim() || '';
+      const price = el.querySelector('.price, .product__price--show')?.innerText?.trim() || '';
       const image = el.querySelector('img')?.getAttribute('data-src') || el.querySelector('img')?.getAttribute('src') || '';
       
       return { name, price, image };
