@@ -49,6 +49,8 @@ const CompareSection = ({ products, initialDeviceIds }) => {
   );
   const [isThinking, setIsThinking] = useState(false);
   const [aiResponse, setAiResponse] = useState('');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [addSearch, setAddSearch] = useState('');
 
   useEffect(() => {
     if (initialDeviceIds?.length >= 2) {
@@ -163,8 +165,8 @@ const CompareSection = ({ products, initialDeviceIds }) => {
                 <div style={{ position: 'relative', flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-end', minHeight: '220px' }}>
                   <img src={dev.image} alt={dev.name} style={{ width: '100%', maxWidth: '200px', height: '220px', objectFit: 'contain' }} />
                   {isWinner && (
-                    <div className="animate-fade-in" style={{ position: 'absolute', bottom: '15px', left: '50%', transform: 'translateX(-50%)', background: '#a3e635', color: '#166534', fontWeight: 800, padding: '6px 16px', borderRadius: '20px', whiteSpace: 'nowrap', fontSize: '0.85rem', boxShadow: '0 4px 10px rgba(163, 230, 53, 0.4)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                      Cấp Cao Nhất
+                    <div className="animate-fade-in" style={{ position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)', background: '#9eff00', color: '#1a1a1a', fontWeight: 900, padding: '6px 18px', borderRadius: '30px', whiteSpace: 'nowrap', fontSize: '0.8rem', boxShadow: '0 4px 15px rgba(158, 255, 0, 0.4)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                      BETTER
                     </div>
                   )}
                 </div>
@@ -185,22 +187,24 @@ const CompareSection = ({ products, initialDeviceIds }) => {
               <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'var(--bg-tertiary)', color: 'var(--vs-text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.7rem', border: '1px solid var(--vs-border)' }}>VS</div>
             </div>
             
-            <div title="Thêm sản phẩm để so sánh" className="hover-lift" style={{ width: '140px', flexShrink: 0, position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 10px', cursor: 'pointer', border: '1px dashed var(--vs-border)', borderRadius: '16px', background: 'var(--bg-secondary)', overflow: 'hidden' }}>
-              <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'var(--bg-tertiary)', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--vs-border)' }}>
-                <Plus size={20} color="var(--vs-text-secondary)" />
+            <div 
+              title="Thêm sản phẩm để so sánh" 
+              className="hover-lift" 
+              onClick={() => setShowAddModal(true)}
+              style={{ 
+                width: '140px', flexShrink: 0, position: 'relative', display: 'flex', flexDirection: 'column', 
+                alignItems: 'center', padding: '20px 10px', cursor: 'pointer', 
+                border: '1px dashed rgba(130, 36, 227, 0.3)', borderRadius: '16px', background: 'transparent', overflow: 'hidden' 
+              }}>
+              <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'rgba(130, 36, 227, 0.1)', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(130, 36, 227, 0.2)' }}>
+                <Plus size={20} color="rgba(130, 36, 227, 0.7)" />
               </div>
               
-              <div style={{ width: '90%', height: '38px', background: 'var(--bg-tertiary)', borderRadius: '8px', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--vs-border)' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--vs-text-secondary)' }}>+ Thêm...</span>
+              <div style={{ width: '90%', height: '38px', background: 'rgba(130, 36, 227, 0.1)', borderRadius: '8px', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(130, 36, 227, 0.2)' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'rgba(130, 36, 227, 0.7)' }}>+ Thêm...</span>
               </div>
               
-              <div style={{ width: '80%', flex: 1, background: 'var(--bg-tertiary)', borderRadius: '12px', minHeight: '150px', border: '1px solid var(--vs-border)' }}></div>
-              
-              <select value="" onChange={e => handleAdd(e.target.value)} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', width: '100%', height: '100%' }}>
-                <option value="" disabled>+ Thêm sản phẩm</option>
-                <optgroup label="📱 Điện thoại">{products.filter(p=>p.category==='phone').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
-                <optgroup label="💻 Laptop">{products.filter(p=>p.category==='laptop').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
-              </select>
+              <div style={{ width: '80%', flex: 1, background: 'rgba(130, 36, 227, 0.1)', borderRadius: '12px', minHeight: '150px', border: '1px solid rgba(130, 36, 227, 0.2)' }}></div>
             </div>
           </React.Fragment>
         )}
@@ -330,6 +334,52 @@ const CompareSection = ({ products, initialDeviceIds }) => {
               .replace(/\n\n/g, '<br/><br/>')
               .replace(/➤/g, '<span style="color:var(--accent-primary);font-size:1.1em;font-weight:bold">➤</span>')
           }} />
+        </div>
+      )}
+
+      {/* ── 6. THÊM SẢN PHẨM MODAL ────────────────────────────────────── */}
+      {showAddModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div className="animate-fade-in" style={{ width: '100%', maxWidth: '600px', background: 'var(--bg-primary)', borderRadius: '16px', border: '1px solid var(--vs-border)', overflow: 'hidden', display: 'flex', flexDirection: 'column', maxHeight: '80vh', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
+            <div style={{ padding: '20px', borderBottom: '1px solid var(--vs-border)', display: 'flex', alignItems: 'center', gap: '15px' }}>
+              <input 
+                type="text" 
+                placeholder="Tìm kiếm điện thoại hoặc laptop..." 
+                value={addSearch}
+                onChange={e => setAddSearch(e.target.value)}
+                style={{ flex: 1, background: 'var(--bg-secondary)', border: '1px solid var(--vs-border)', padding: '12px 20px', borderRadius: '30px', color: 'var(--vs-text-primary)', outline: 'none', fontSize: '1rem' }}
+                autoFocus
+              />
+              <button onClick={() => setShowAddModal(false)} className="btn hover-lift" style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--vs-border)', padding: '10px', borderRadius: '50%', color: 'var(--vs-text-secondary)', cursor: 'pointer' }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ padding: '20px', overflowY: 'auto', flex: 1 }}>
+              <h4 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--vs-text-secondary)', fontWeight: 800, marginBottom: '15px', letterSpacing: '1px' }}>Top sản phẩm</h4>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '12px' }}>
+                {products
+                  .filter(p => !selectedIds.includes(p.id))
+                  .filter(p => p.name.toLowerCase().includes(addSearch.toLowerCase()) || p.brand.toLowerCase().includes(addSearch.toLowerCase()))
+                  .slice(0, 12)
+                  .map(p => (
+                    <div 
+                      key={p.id} 
+                      className="hover-lift" 
+                      onClick={() => { handleAdd(p.id); setShowAddModal(false); }} 
+                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 15px', background: 'var(--bg-secondary)', borderRadius: '12px', cursor: 'pointer', border: '1px solid var(--glass-border)' }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <img src={p.image} style={{ width: '35px', height: '35px', objectFit: 'contain' }} />
+                        <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--vs-text-primary)' }}>{p.name}</span>
+                      </div>
+                      <div style={{ background: 'var(--bg-tertiary)', padding: '6px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800, color: 'var(--vs-text-primary)', border: '1px solid var(--vs-border)' }}>
+                        + VS
+                      </div>
+                    </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
