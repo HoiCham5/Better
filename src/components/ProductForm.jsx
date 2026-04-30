@@ -50,18 +50,23 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     }
   };
 
-  const handleAiFill = () => {
+  const handleAiFill = async () => {
     if (!formData.name) {
-      alert("Vui lòng nhập Tên sản phẩm trước khi gọi AI!");
+      alert("Vui lòng nhập Tên sản phẩm trước khi cào dữ liệu!");
       return;
     }
     setIsThinking(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/scrape?query=${encodeURIComponent(formData.name)}`);
+      if (!res.ok) throw new Error("Không thể tìm thấy thông tin sản phẩm");
+      const data = await res.json();
+      
       setFormData(prev => ({
         ...prev,
+        name: data.name || prev.name,
         brand: prev.brand || (prev.name.toLowerCase().includes('iphone') || prev.name.toLowerCase().includes('macbook') ? 'Apple' : 'Samsung'),
-        price: prev.price || '29,990,000 ₫',
-        image: prev.image || 'https://images.unsplash.com/photo-1541560052-5e137f229371?q=80&w=800&auto=format&fit=crop',
+        price: data.price || prev.price,
+        image: data.image || prev.image,
         specs: {
           screen: prev.specs.screen || '6.7 inch / 14 inch, 120Hz',
           brightness: prev.specs.brightness || '2000 nits đỉnh',
@@ -80,8 +85,11 @@ const ProductForm = ({ product, onSave, onCancel }) => {
           aiFeatures: prev.specs.aiFeatures || 'Hỗ trợ tính năng AI thông minh'
         }
       }));
+    } catch (err) {
+      alert("Lỗi Cào dữ liệu: " + err.message);
+    } finally {
       setIsThinking(false);
-    }, 1500);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -106,7 +114,7 @@ const ProductForm = ({ product, onSave, onCancel }) => {
             </label>
             <button type="button" onClick={handleAiFill} disabled={isThinking} className="btn" style={{ padding: '8px 15px', background: 'var(--gradient-accent)', color: 'white', border: 'none', borderRadius: '5px', display: 'flex', gap: '5px', alignItems: 'center', height: '35px' }}>
               {isThinking ? <Sparkles size={16} className="animate-spin" /> : <Sparkles size={16} />} 
-              {isThinking ? 'Đang Fill...' : 'AI Điền'}
+              {isThinking ? 'Đang cào dữ liệu...' : 'Cào Dữ Liệu (Bot)'}
             </button>
           </div>
           <label>Thương hiệu: <input required name="brand" value={formData.brand} onChange={(e) => handleChange(e)} style={{ width: '100%', padding: '8px', marginTop: '5px' }} /></label>

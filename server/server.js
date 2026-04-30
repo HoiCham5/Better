@@ -76,6 +76,19 @@ app.put('/api/users/me', authMiddleware, async (req, res) => {
 // =======================
 // SẢN PHẨM (PRODUCTS)
 // =======================
+app.get('/api/scrape', async (req, res) => {
+  const { query } = req.query;
+  if (!query) return res.status(400).json({ error: 'Missing query parameter' });
+  
+  try {
+    const { scrapeProductData } = require('./scraper');
+    const data = await scrapeProductData(query);
+    if (!data) return res.status(404).json({ error: 'Không tìm thấy dữ liệu' });
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 app.get('/api/products', async (req, res) => {
   const products = await Product.find();
   res.json(products);
