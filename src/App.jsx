@@ -28,6 +28,7 @@ function App() {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [userPreference, setUserPreference] = useState('Không thiết lập');
+  const [compareIds, setCompareIds] = useState([]);
 
   useEffect(() => {
     // Tải Sản phẩm từ Node Backend
@@ -85,6 +86,12 @@ function App() {
   const featuredPhones = phonesList.filter(p => p.isFeatured);
   const featuredLaptops = laptopsList.filter(p => p.isFeatured);
 
+  const handleHeroCompare = (id1, id2) => {
+    setCompareIds([id1, id2]);
+    setActiveTab('compare');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <>
       <Header 
@@ -95,7 +102,7 @@ function App() {
       />
       
       <main className="main-layout container">
-        <VersusHero products={products} />
+        <VersusHero products={products} onCompare={handleHeroCompare} />
 
         {activeTab === 'phones' && (
           <section className="animate-fade-in" style={{ marginBottom: '60px' }}>
@@ -133,7 +140,7 @@ function App() {
             </div>
             {phonesList.length > 1 && (
               <div style={{ marginTop: '40px' }}>
-                <CompareSection products={phonesList} />
+                <CompareSection products={phonesList} initialDeviceIds={compareIds} />
               </div>
             )}
           </section>
@@ -183,7 +190,7 @@ function App() {
 
         {activeTab === 'compare' && (
           <div className="animate-fade-in">
-             <CompareSection products={products} />
+             <CompareSection products={products} initialDeviceIds={compareIds} />
           </div>
         )}
 

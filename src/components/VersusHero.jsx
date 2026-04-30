@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Zap } from 'lucide-react';
 
-const VersusHero = ({ products = [] }) => {
+const VersusHero = ({ products = [], onCompare }) => {
   const [item1, setItem1] = useState('');
   const [item2, setItem2] = useState('');
   
@@ -28,9 +28,16 @@ const VersusHero = ({ products = [] }) => {
   const handleCompare = (e) => {
     e.preventDefault();
     if(item1 && item2) {
-      alert(`Tính năng đang phát triển: So sánh ${item1} vs ${item2}`);
+      const p1 = products.find(p => p.name.toLowerCase() === item1.toLowerCase());
+      const p2 = products.find(p => p.name.toLowerCase() === item2.toLowerCase());
+      
+      if (p1 && p2) {
+        if (onCompare) onCompare(p1.id, p2.id);
+      } else {
+        alert('Vui lòng chọn tên sản phẩm chính xác từ danh sách gợi ý!');
+      }
     } else {
-      alert('Vui lòng nhập đủ 2 sản phẩm để so sánh!');
+      alert('Vui lòng chọn đủ 2 sản phẩm để so sánh!');
     }
   };
 

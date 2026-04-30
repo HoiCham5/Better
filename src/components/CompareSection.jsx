@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bot, Sparkles, Check, Info } from 'lucide-react';
 import Tooltip from './Tooltip';
 
-const CompareSection = ({ products }) => {
-  const [selectedDeviceIds, setSelectedDeviceIds] = useState([
-    products[0]?.id || '',
-    products[1]?.id || ''
-  ]);
+const CompareSection = ({ products, initialDeviceIds }) => {
+  const [selectedDeviceIds, setSelectedDeviceIds] = useState(
+    initialDeviceIds && initialDeviceIds.length === 2 ? initialDeviceIds : [
+      products[0]?.id || '',
+      products[1]?.id || ''
+    ]
+  );
   const [isThinking, setIsThinking] = useState(false);
   const [aiResponse, setAiResponse] = useState('');
+
+  useEffect(() => {
+    if (initialDeviceIds && initialDeviceIds.length === 2) {
+      setSelectedDeviceIds(initialDeviceIds);
+    }
+  }, [initialDeviceIds]);
 
   const hasPhones = products.some(p => p.category === 'phone');
   const hasLaptops = products.some(p => p.category === 'laptop');
