@@ -1,7 +1,8 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// Cấu hình Gemini API
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// Cấu hình Gemini API (Fallback key phòng trường hợp quên cài trên Render)
+const apiKey = process.env.GEMINI_API_KEY || 'AIzaSyA3LW1ZHZivoofe0QMU3HYO8k90eSldk3g';
+const genAI = new GoogleGenerativeAI(apiKey);
 
 async function generateProductData(keyword) {
   try {
@@ -56,7 +57,7 @@ Chú ý: Thuộc tính image hãy giữ nguyên link Unsplash hoặc tìm một 
     return productData;
   } catch (error) {
     console.error('Lỗi khi gọi AI Gemini:', error.message);
-    throw new Error('AI không thể sinh dữ liệu. Vui lòng kiểm tra lại cấu hình hoặc thử tên khác.');
+    throw new Error('Lỗi AI: ' + error.message);
   }
 }
 
