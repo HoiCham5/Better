@@ -99,51 +99,71 @@ Dựa trên thông số kỹ thuật, các thiết bị: **${names}** đều có
     <section className="compare-view glass-panel animate-fade-in" style={{ marginTop: '20px' }}>
       <h2 className="compare-title">Bảng So Sánh Kỹ Thuật Số</h2>
       
-      <div className="compare-selectors" style={{ display: 'flex', gap: '15px', marginBottom: '30px', flexWrap: 'wrap', alignItems: 'center' }}>
+      <div className="compare-selectors" style={{ display: 'flex', gap: '20px', marginBottom: '40px', flexWrap: 'nowrap', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-secondary)', padding: '20px', borderRadius: '15px' }}>
         {selectedDeviceIds.map((id, index) => (
-          <div key={`selector-${index}`} style={{ flex: '1 1 200px', display: 'flex', gap: '5px' }}>
-            <select 
-              className="select-input" 
-              value={id} 
-              onChange={(e) => handleDeviceChange(index, e.target.value)}
-              style={{ borderLeft: `4px solid ${colors[index]}` }}
-            >
-              {hasPhones && (
-                <optgroup label="📱 Điện thoại">
-                  {products.filter(p => p.category === 'phone').map(p => (
-                    <option key={`p-${p.id}`} value={p.id}>{p.brand} {p.name}</option>
-                  ))}
-                </optgroup>
+          <React.Fragment key={`selector-${index}`}>
+            <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <select 
+                className="select-input" 
+                value={id} 
+                onChange={(e) => handleDeviceChange(index, e.target.value)}
+                style={{ borderLeft: `5px solid ${colors[index]}`, fontSize: '1.2rem', padding: '15px', fontWeight: 'bold' }}
+              >
+                {hasPhones && (
+                  <optgroup label="📱 Điện thoại">
+                    {products.filter(p => p.category === 'phone').map(p => (
+                      <option key={`p-${p.id}`} value={p.id}>{p.brand} {p.name}</option>
+                    ))}
+                  </optgroup>
+                )}
+                {hasLaptops && (
+                  <optgroup label="💻 Laptop">
+                    {products.filter(p => p.category === 'laptop').map(p => (
+                      <option key={`l-${p.id}`} value={p.id}>{p.brand} {p.name}</option>
+                    ))}
+                  </optgroup>
+                )}
+              </select>
+              {selectedDeviceIds.length > 2 && (
+                 <button 
+                   onClick={() => removeDevice(index)}
+                   style={{ background: 'transparent', border: 'none', color: 'var(--shopee-color)', cursor: 'pointer', alignSelf: 'center', fontWeight: 'bold' }}
+                 >
+                   ✕ Gỡ bỏ
+                 </button>
               )}
-              {hasLaptops && (
-                <optgroup label="💻 Laptop">
-                  {products.filter(p => p.category === 'laptop').map(p => (
-                    <option key={`l-${p.id}`} value={p.id}>{p.brand} {p.name}</option>
-                  ))}
-                </optgroup>
-              )}
-            </select>
-            {selectedDeviceIds.length > 2 && (
-               <button 
-                 onClick={() => removeDevice(index)}
-                 style={{ background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-secondary)', padding: '0 10px', borderRadius: '8px', cursor: 'pointer' }}
-                 title="Xóa thiết bị này"
-               >
-                 ✕
-               </button>
+            </div>
+            
+            {/* Thêm chữ VS ở giữa */}
+            {index < selectedDeviceIds.length - 1 && (
+               <div className="vs-badge" style={{
+                 width: '50px',
+                 height: '50px',
+                 borderRadius: '50%',
+                 background: 'var(--bg-primary)',
+                 color: 'var(--text-primary)',
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 fontWeight: '900',
+                 fontSize: '1.5rem',
+                 flexShrink: 0,
+                 border: '2px solid var(--glass-border)'
+               }}>VS</div>
             )}
-          </div>
+          </React.Fragment>
         ))}
+        
         {selectedDeviceIds.length < MAX_DEVICES && (
           <button 
             onClick={addDevice}
             style={{ 
-              background: 'transparent', border: '1px dashed var(--accent-primary)', 
-              color: 'var(--accent-primary)', padding: '10px 15px', borderRadius: '12px',
-              cursor: 'pointer', flex: '0 0 auto', height: '44px', fontWeight: 'bold'
+              background: 'transparent', border: '2px dashed var(--accent-primary)', 
+              color: 'var(--accent-primary)', padding: '15px 25px', borderRadius: '15px',
+              cursor: 'pointer', flex: '0 0 auto', fontWeight: 'bold', fontSize: '1.1rem'
             }}
           >
-            + Thêm Thiết Bị
+            + Thêm Máy
           </button>
         )}
       </div>

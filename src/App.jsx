@@ -10,6 +10,7 @@ import FilterSidebar from './components/FilterSidebar';
 import AuthModal from './components/AuthModal';
 import ProductDetailsModal from './components/ProductDetailsModal';
 import UserProfileModal from './components/UserProfileModal';
+import VersusHero from './components/VersusHero';
 import { Settings, X, User } from 'lucide-react';
 import { allProducts } from './data/products';
 import { useEffect } from 'react';
@@ -94,14 +95,7 @@ function App() {
       />
       
       <main className="main-layout container">
-        <section className="title-section animate-fade-in">
-          <h1 className="main-title">
-            Tìm Thiết Bị <span className="text-accent-primary">Hoàn Hảo</span> Cho Bạn
-          </h1>
-          <p className="sub-title">
-            So sánh chi tiết thông số và giá bán của các dòng điện thoại thông minh và laptop thịnh hành nhất. Đặt mua nhanh chóng qua Shopee và TikTok.
-          </p>
-        </section>
+        <VersusHero />
 
         {activeTab === 'phones' && (
           <section className="animate-fade-in" style={{ marginBottom: '60px' }}>

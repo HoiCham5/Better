@@ -12,7 +12,15 @@ const ProductCard = ({ product, userPreference = '', onViewDetails }) => {
   return (
     <div className="product-card glass-panel animate-fade-in">
       <div className="product-image-container">
-        <div style={{ position: 'absolute', top: '10px', left: '10px', display: 'flex', gap: '5px', zIndex: 10 }}>
+        <div style={{ position: 'absolute', top: '10px', left: '10px', display: 'flex', gap: '5px', alignItems: 'center', zIndex: 10 }}>
+          <div style={{
+            width: '45px', height: '45px', borderRadius: '50%', background: 'var(--bg-primary)',
+            border: '3px solid var(--accent-primary)', display: 'flex', alignItems: 'center',
+            justifyContent: 'center', fontWeight: '900', fontSize: '1.2rem', color: 'var(--text-primary)',
+            boxShadow: '0 4px 10px rgba(0,0,0,0.3)'
+          }}>
+            {Math.floor(Math.random() * 15 + 85)}
+          </div>
           <span className="badge">{product.brand}</span>
           {product.isFeatured && (
             <span className="badge" style={{ background: 'var(--gradient-accent)', color: 'white', border: 'none' }}>Nổi Bật ✨</span>
