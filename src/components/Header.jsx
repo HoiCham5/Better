@@ -10,59 +10,38 @@ const Header = ({ activeTab, setActiveTab }) => {
           <Laptop className="text-accent-secondary" size={32} />
           <span style={{ fontSize: '1.8rem' }}>Better</span>
         </div>
-        <nav style={{ display: 'flex', gap: '10px', background: 'var(--bg-secondary)', padding: '5px', borderRadius: '30px', border: '1px solid var(--glass-border)' }}>
+        <nav style={{ display: 'flex', gap: '10px', background: 'var(--bg-secondary)', padding: '5px', borderRadius: '30px', border: '1px solid var(--glass-border)', overflowX: 'auto' }}>
           <button 
             onClick={() => setActiveTab('phones')}
-            className={`btn ${activeTab === 'phones' ? 'bg-accent-primary' : ''}`}
-            style={{ 
-              background: activeTab === 'phones' ? 'var(--gradient-accent)' : 'transparent', 
-              color: activeTab === 'phones' ? 'white' : 'var(--text-secondary)',
-              border: 'none', borderRadius: '25px', padding: '10px 20px', display: 'flex', gap: '8px'
-            }}
+            className={`nav-btn ${activeTab === 'phones' ? 'active' : ''}`}
           >
             <Smartphone size={18} /> Điện thoại
           </button>
           
           <button 
             onClick={() => setActiveTab('laptops')}
-            style={{ 
-              background: activeTab === 'laptops' ? 'var(--gradient-accent)' : 'transparent', 
-              color: activeTab === 'laptops' ? 'white' : 'var(--text-secondary)',
-              border: 'none', borderRadius: '25px', padding: '10px 20px', display: 'flex', gap: '8px', cursor: 'pointer', fontWeight: 'bold'
-            }}
+            className={`nav-btn ${activeTab === 'laptops' ? 'active' : ''}`}
           >
             <Laptop size={18} /> Laptop
           </button>
           
           <button 
             onClick={() => setActiveTab('compare')}
-            style={{ 
-              background: activeTab === 'compare' ? 'var(--gradient-accent)' : 'transparent', 
-              color: activeTab === 'compare' ? 'white' : 'var(--text-secondary)',
-              border: 'none', borderRadius: '25px', padding: '10px 20px', display: 'flex', gap: '8px', cursor: 'pointer', fontWeight: 'bold'
-            }}
+            className={`nav-btn ${activeTab === 'compare' ? 'active' : ''}`}
           >
             <BarChart2 size={18} /> So Sánh
           </button>
 
           <button 
             onClick={() => setActiveTab('news')}
-            style={{ 
-              background: activeTab === 'news' ? 'var(--gradient-accent)' : 'transparent', 
-              color: activeTab === 'news' ? 'white' : 'var(--text-secondary)',
-              border: 'none', borderRadius: '25px', padding: '10px 20px', display: 'flex', gap: '8px', cursor: 'pointer', fontWeight: 'bold'
-            }}
+            className={`nav-btn ${activeTab === 'news' ? 'active' : ''}`}
           >
             <Newspaper size={18} /> Tin Tức
           </button>
 
           <button 
             onClick={() => setActiveTab('ai')}
-            style={{ 
-              background: activeTab === 'ai' ? 'var(--gradient-accent)' : 'transparent', 
-              color: activeTab === 'ai' ? 'white' : 'var(--text-secondary)',
-              border: 'none', borderRadius: '25px', padding: '10px 20px', display: 'flex', gap: '8px', cursor: 'pointer', fontWeight: 'bold'
-            }}
+            className={`nav-btn ${activeTab === 'ai' ? 'active' : ''}`}
           >
             <Cpu size={18} /> AI Tư Vấn
           </button>
@@ -71,6 +50,34 @@ const Header = ({ activeTab, setActiveTab }) => {
       <style>{`
         @media (min-width: 768px) {
           .header-content { flex-direction: row !important; }
+        }
+        
+        .nav-btn {
+          background: transparent;
+          color: var(--text-secondary);
+          border: none;
+          border-radius: 25px;
+          padding: 10px 20px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+          font-weight: 600;
+          font-size: 0.95rem;
+          transition: all 0.3s ease;
+          white-space: nowrap;
+        }
+
+        .nav-btn.active {
+          background: var(--gradient-accent);
+          color: white;
+          box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .nav-btn:not(.active):hover {
+          background: rgba(255, 255, 255, 0.05);
+          color: var(--accent-primary);
+          transform: translateY(-2px);
         }
       `}</style>
     </header>
