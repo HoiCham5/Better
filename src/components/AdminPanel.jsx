@@ -7,6 +7,7 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [password, setPassword] = useState('');
   const [adminTab, setAdminTab] = useState('products');
+  const [productTypeFilter, setProductTypeFilter] = useState('phone');
   
   // Product state
   const [editingProduct, setEditingProduct] = useState(null);
@@ -121,7 +122,7 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
                 autoFocus
               />
             </div>
-            <button type="submit" className="btn btn-primary" style={{ padding: '15px', fontSize: '1.1rem', borderRadius: '12px' }}>
+            <button type="submit" className="btn btn-primary hover-lift" style={{ padding: '15px', fontSize: '1.1rem', borderRadius: '12px' }}>
               Đăng Nhập Quản Trị
             </button>
           </form>
@@ -188,10 +189,34 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
       {/* CONTENT */}
       {adminTab === 'products' && (
         <>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h3 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', gap: '15px' }}>
+            <h3 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
               Quản Lý Thiết Bị
             </h3>
+            {!isAddingProduct && !editingProduct && (
+              <div style={{ display: 'flex', background: 'var(--vs-surface)', borderRadius: '12px', padding: '4px', border: '1px solid var(--vs-border)' }}>
+                <button 
+                  onClick={() => setProductTypeFilter('phone')}
+                  style={{ 
+                    padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold',
+                    background: productTypeFilter === 'phone' ? 'var(--vs-accent)' : 'transparent',
+                    color: productTypeFilter === 'phone' ? 'white' : 'var(--vs-text-secondary)'
+                  }}
+                >
+                  <Smartphone size={16} /> Điện Thoại
+                </button>
+                <button 
+                  onClick={() => setProductTypeFilter('laptop')}
+                  style={{ 
+                    padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold',
+                    background: productTypeFilter === 'laptop' ? 'var(--vs-accent)' : 'transparent',
+                    color: productTypeFilter === 'laptop' ? 'white' : 'var(--vs-text-secondary)'
+                  }}
+                >
+                  <Laptop size={16} /> Laptop
+                </button>
+              </div>
+            )}
             <button onClick={() => { setIsAddingProduct(true); setEditingProduct(null); }} className="btn btn-primary hover-focus-btn" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '8px', border: 'none' }}>
               <Plus size={18} /> Thêm Thiết Bị
             </button>
@@ -205,8 +230,9 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
             />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-              {/* Phone Table */}
-              <div className="glass-panel" style={{ overflowX: 'auto', padding: '20px', borderRadius: '16px' }}>
+              
+              {productTypeFilter === 'phone' && (
+              <div className="glass-panel animate-fade-in" style={{ overflowX: 'auto', padding: '20px', borderRadius: '16px' }}>
                 <h4 style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem' }}>
                   <Smartphone className="text-accent-primary" /> Điện Thoại
                 </h4>
@@ -243,9 +269,11 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
                   </tbody>
                 </table>
               </div>
+              )}
 
               {/* Laptop Table */}
-              <div className="glass-panel" style={{ overflowX: 'auto', padding: '20px', borderRadius: '16px' }}>
+              {productTypeFilter === 'laptop' && (
+              <div className="glass-panel animate-fade-in" style={{ overflowX: 'auto', padding: '20px', borderRadius: '16px' }}>
                 <h4 style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem' }}>
                   <Laptop className="text-accent-secondary" /> Laptop
                 </h4>
@@ -282,6 +310,7 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
                   </tbody>
                 </table>
               </div>
+              )}
             </div>
           )}
         </>
