@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Bot, Sparkles } from 'lucide-react';
-import { ResponsiveContainer, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Legend, Tooltip as RechartsTooltip } from 'recharts';
+import { Bot, Sparkles, Check, Info } from 'lucide-react';
 import Tooltip from './Tooltip';
 
 const CompareSection = ({ products }) => {
   const [selectedDeviceIds, setSelectedDeviceIds] = useState([
     products[0]?.id || '',
-    products[1]?.id || products[0]?.id || ''
+    products[1]?.id || ''
   ]);
   const [isThinking, setIsThinking] = useState(false);
   const [aiResponse, setAiResponse] = useState('');
@@ -14,7 +13,7 @@ const CompareSection = ({ products }) => {
   const hasPhones = products.some(p => p.category === 'phone');
   const hasLaptops = products.some(p => p.category === 'laptop');
 
-  const MAX_DEVICES = 4;
+  const MAX_DEVICES = 2; // Versus.com mainly compares 2 at a time side-by-side
   const currentDevices = selectedDeviceIds.map(id => products.find(p => p.id === id)).filter(Boolean);
 
   const handleDeviceChange = (index, newId) => {
@@ -23,250 +22,164 @@ const CompareSection = ({ products }) => {
     setSelectedDeviceIds(newArr);
   };
 
-  const addDevice = () => {
-    if (selectedDeviceIds.length < MAX_DEVICES) {
-      setSelectedDeviceIds([...selectedDeviceIds, products[0]?.id || '']);
-    }
-  };
-
-  const removeDevice = (index) => {
-    if (selectedDeviceIds.length > 2) {
-      const newArr = [...selectedDeviceIds];
-      newArr.splice(index, 1);
-      setSelectedDeviceIds(newArr);
-    }
-  };
-
   const handleAiConsult = () => {
     setIsThinking(true);
     setAiResponse('');
-    
     setTimeout(() => {
       setIsThinking(false);
-      const names = currentDevices.map(d => d.name).join(', ');
-      setAiResponse(`
-### Ý kiến từ AI Better:
-Dựa trên thông số kỹ thuật, các thiết bị: **${names}** đều có những ưu điểm riêng:
-
-- Rất khó để chọn ra thiết bị tốt nhất vì chúng chia đều ưu nhược điểm. Bạn đang thiết lập so sánh đa thiết bị.
-- Vui lòng xem kỹ bảng thông số để đưa ra quyết định!
-      `);
+      setAiResponse(`### Nhận xét từ AI Better:\nDựa trên số liệu tổng hợp, ${currentDevices[0]?.name} vượt trội hơn về tính ổn định, trong khi ${currentDevices[1]?.name} có lợi thế về giá thành.`);
     }, 2000);
   };
 
-  const getScore = (device, factor) => device ? Math.floor(Math.abs(Math.sin((device?.name?.length || 10) * factor)) * 30 + 70) : 0;
+  // Fake logic to generate points out of 100
+  const getScore = (device) => {
+    if (!device) return 0;
+    return Math.floor(Math.abs(Math.sin((device?.name?.length || 10) * 1.5)) * 20 + 75); // 75-95
+  };
+
+  const colors = ['#8b5cf6', '#ef4444']; // Purple and Red for Product A and B
   
-  // Build chartData dynamically
-  const subjects = [
-    { name: 'Hiệu Năng', factor: 1 },
-    { name: 'Pin & Sạc', factor: 2 },
-    { name: 'Màn Hình', factor: 3 },
-    { name: 'Camera', factor: 4 },
-    { name: 'Thiết Kế', factor: 5 }
+  // Specs definition
+  const specCategories = [
+    { label: 'Thiết Kế', keys: [{ k: 'weight', l: 'Trọng lượng' }, { k: 'materials', l: 'Chất liệu' }] },
+    { label: 'Màn Hình', keys: [{ k: 'screen', l: 'Kích thước & Độ phân giải' }, { k: 'brightness', l: 'Độ sáng' }] },
+    { label: 'Hiệu Năng', keys: [{ k: 'chip', l: 'Vi xử lý' }, { k: 'ram', l: 'RAM' }, { k: 'storage', l: 'Lưu trữ' }] },
+    { label: 'Camera', keys: [{ k: 'camera', l: 'Camera chính' }, { k: 'cameraSelfie', l: 'Camera trước' }] },
+    { label: 'Pin & Sạc', keys: [{ k: 'battery', l: 'Dung lượng pin' }] },
   ];
 
-  const chartData = subjects.map(sub => {
-    const dataPoint = { subject: sub.name, fullMark: 100 };
-    currentDevices.forEach((dev, idx) => {
-      dataPoint[`Device_${idx}`] = getScore(dev, sub.factor);
-    });
-    return dataPoint;
-  });
+  if (currentDevices.length < 2) {
+    return (
+      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
+        Vui lòng chọn đủ 2 sản phẩm để bắt đầu so sánh chuẩn Versus.
+      </div>
+    );
+  }
 
-  const colors = ['var(--accent-primary)', '#f43f5e', '#10b981', '#f59e0b'];
-
-  const specRows = [
-    { label: 'Loại Thiết Bị', key: 'category', isRaw: true, format: (v) => v === 'phone' ? 'Điện thoại' : 'Laptop' },
-    { label: 'Ngày Ra Mắt', key: 'releaseDate' },
-    { label: 'Cân Nặng', key: 'weight' },
-    { label: 'Chất Liệu', key: 'materials' },
-    { label: 'Màn hình', key: 'screen' },
-    { label: 'Độ Nhạy / Sáng', key: 'brightness' },
-    { label: 'Chip / Vi xử lý', key: 'chip' },
-    { label: 'Đồ Hoạ / GPU', key: 'gpu' },
-    { label: 'RAM', key: 'ram' },
-    { label: 'Lưu Trữ', key: 'storage' },
-    { label: 'Camera / Webcam', key: 'camera' },
-    { label: 'Máy ảnh Trước', key: 'cameraSelfie' },
-    { label: 'Pin & Sạc', key: 'battery' },
-    { label: 'Cổng Mở Rộng', key: 'ports' },
-    { label: 'Kết Nối Mạng', key: 'network' },
-    { label: 'Tính năng AI', key: 'aiFeatures' },
-    { label: 'Hệ điều hành', key: 'os' },
-  ];
+  const devA = currentDevices[0];
+  const devB = currentDevices[1];
 
   return (
-    <section className="compare-view glass-panel animate-fade-in" style={{ marginTop: '20px' }}>
-      <h2 className="compare-title">Bảng So Sánh Kỹ Thuật Số</h2>
+    <section className="compare-view animate-fade-in" style={{ marginTop: '20px', maxWidth: '1200px', margin: '0 auto' }}>
       
-      <div className="compare-selectors" style={{ display: 'flex', gap: '20px', marginBottom: '40px', flexWrap: 'nowrap', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-secondary)', padding: '20px', borderRadius: '15px' }}>
-        {selectedDeviceIds.map((id, index) => (
-          <React.Fragment key={`selector-${index}`}>
-            <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <select 
-                className="select-input" 
-                value={id} 
-                onChange={(e) => handleDeviceChange(index, e.target.value)}
-                style={{ borderLeft: `5px solid ${colors[index]}`, fontSize: '1.2rem', padding: '15px', fontWeight: 'bold' }}
-              >
-                {hasPhones && (
-                  <optgroup label="📱 Điện thoại">
-                    {products.filter(p => p.category === 'phone').map(p => (
-                      <option key={`p-${p.id}`} value={p.id}>{p.brand} {p.name}</option>
-                    ))}
-                  </optgroup>
-                )}
-                {hasLaptops && (
-                  <optgroup label="💻 Laptop">
-                    {products.filter(p => p.category === 'laptop').map(p => (
-                      <option key={`l-${p.id}`} value={p.id}>{p.brand} {p.name}</option>
-                    ))}
-                  </optgroup>
-                )}
-              </select>
-              {selectedDeviceIds.length > 2 && (
-                 <button 
-                   onClick={() => removeDevice(index)}
-                   style={{ background: 'transparent', border: 'none', color: 'var(--shopee-color)', cursor: 'pointer', alignSelf: 'center', fontWeight: 'bold' }}
-                 >
-                   ✕ Gỡ bỏ
-                 </button>
-              )}
+      {/* 1. Header & Selectors (Versus Style) */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px', marginBottom: '40px', background: 'var(--bg-secondary)', padding: '20px', borderRadius: '20px' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
+          <select className="select-input" value={devA.id} onChange={(e) => handleDeviceChange(0, e.target.value)} style={{ borderLeft: `5px solid ${colors[0]}`, fontSize: '1.2rem', padding: '15px', fontWeight: 'bold', width: '100%', textAlign: 'center' }}>
+            <optgroup label="📱 Điện thoại">{products.filter(p => p.category === 'phone').map(p => <option key={`a-${p.id}`} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
+            <optgroup label="💻 Laptop">{products.filter(p => p.category === 'laptop').map(p => <option key={`al-${p.id}`} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
+          </select>
+          <img src={devA.image} alt={devA.name} style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
+          <div style={{ position: 'relative', width: '100px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: `conic-gradient(${colors[0]} ${getScore(devA)}%, var(--bg-primary) 0)`, border: '4px solid var(--bg-primary)' }}>
+            <div style={{ position: 'absolute', width: '80px', height: '80px', background: 'var(--bg-secondary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+              <span style={{ fontSize: '1.8rem', fontWeight: 900, color: colors[0] }}>{getScore(devA)}</span>
+              <span style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Điểm</span>
             </div>
-            
-            {/* Thêm chữ VS ở giữa */}
-            {index < selectedDeviceIds.length - 1 && (
-               <div className="vs-badge" style={{
-                 width: '50px',
-                 height: '50px',
-                 borderRadius: '50%',
-                 background: 'var(--bg-primary)',
-                 color: 'var(--text-primary)',
-                 display: 'flex',
-                 alignItems: 'center',
-                 justifyContent: 'center',
-                 fontWeight: '900',
-                 fontSize: '1.5rem',
-                 flexShrink: 0,
-                 border: '2px solid var(--glass-border)'
-               }}>VS</div>
-            )}
-          </React.Fragment>
-        ))}
-        
-        {selectedDeviceIds.length < MAX_DEVICES && (
-          <button 
-            onClick={addDevice}
-            style={{ 
-              background: 'transparent', border: '2px dashed var(--accent-primary)', 
-              color: 'var(--accent-primary)', padding: '15px 25px', borderRadius: '15px',
-              cursor: 'pointer', flex: '0 0 auto', fontWeight: 'bold', fontSize: '1.1rem'
-            }}
-          >
-            + Thêm Máy
-          </button>
-        )}
-      </div>
-
-      {currentDevices.length > 0 && (
-        <div style={{ height: '350px', marginBottom: '30px', background: 'var(--bg-secondary)', borderRadius: '15px', padding: '20px' }}>
-          <h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Biểu Đồ So Sánh Trực Quan</h3>
-          <ResponsiveContainer width="100%" height="100%">
-            <RadarChart cx="50%" cy="50%" outerRadius="70%" data={chartData}>
-              <PolarGrid stroke="var(--glass-border)" />
-              <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--text-secondary)' }} />
-              <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: 'var(--text-secondary)', fontSize: 10 }} tickCount={5} axisLine={false} tickFormatter={(value) => value === 100 ? '' : value} />
-              
-              {currentDevices.map((dev, idx) => (
-                 <Radar key={`radar-${idx}`} name={dev.name} dataKey={`Device_${idx}`} stroke={colors[idx]} fill={colors[idx]} fillOpacity={0.4} />
-              ))}
-              
-              <Legend 
-                wrapperStyle={{ color: 'var(--text-primary)' }} 
-                payload={currentDevices.map((dev, idx) => ({
-                  id: `Device_${idx}`,
-                  type: 'square',
-                  value: dev.name,
-                  color: colors[idx]
-                }))}
-              />
-              <RechartsTooltip contentStyle={{ background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', borderRadius: '8px' }} />
-            </RadarChart>
-          </ResponsiveContainer>
+          </div>
         </div>
-      )}
 
-      <div style={{ overflowX: 'auto' }}>
-        <table className="compare-table">
-          <thead>
-            <tr>
-              <th>Thông số Chi tiết</th>
-              {currentDevices.map((dev, idx) => (
-                <th key={`th-${idx}`} style={{ color: colors[idx] }}>
-                  {dev.name}
-                  <br />
-                  <span style={{fontSize: '0.9rem'}}>{dev.price}</span>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {specRows.map(row => {
-               // Bỏ qua dòng nếu tất cả các máy đều không có cấu hình này
-               const hasAnyVal = currentDevices.some(dev => row.isRaw ? dev?.[row.key] : dev?.specs?.[row.key]);
-               if (!hasAnyVal) return null;
+        <div className="vs-badge" style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#1a73e8', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '1.5rem', flexShrink: 0, boxShadow: '0 5px 15px rgba(26, 115, 232, 0.4)', zIndex: 10 }}>VS</div>
 
-               const renderCell = (val) => {
-                 if (!val) return '-';
-                 if (row.format) return row.format(val);
-                 if (typeof val === 'string' && val.length > 5 && !row.isRaw) {
-                   return <Tooltip term={val} />;
-                 }
-                 return val;
-               };
-
-               return (
-                 <tr key={row.key}>
-                   <td>{row.label}</td>
-                   {currentDevices.map((dev, idx) => {
-                      const val = row.isRaw ? dev?.[row.key] : dev?.specs?.[row.key];
-                      return <td key={`td-${idx}`}>{renderCell(val)}</td>;
-                   })}
-                 </tr>
-               );
-            })}
-            
-            <tr>
-              <td>Hành động</td>
-              {currentDevices.map((dev, idx) => (
-                <td key={`action-${idx}`}>
-                  {dev?.links?.shopee && (
-                    <a href={dev.links.shopee} target="_blank" rel="noopener noreferrer" style={{color: 'var(--shopee-color)', fontWeight: 'bold'}}>MUA NGAY →</a>
-                  )}
-                </td>
-              ))}
-            </tr>
-          </tbody>
-        </table>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
+          <select className="select-input" value={devB.id} onChange={(e) => handleDeviceChange(1, e.target.value)} style={{ borderLeft: `5px solid ${colors[1]}`, fontSize: '1.2rem', padding: '15px', fontWeight: 'bold', width: '100%', textAlign: 'center' }}>
+            <optgroup label="📱 Điện thoại">{products.filter(p => p.category === 'phone').map(p => <option key={`b-${p.id}`} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
+            <optgroup label="💻 Laptop">{products.filter(p => p.category === 'laptop').map(p => <option key={`bl-${p.id}`} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
+          </select>
+          <img src={devB.image} alt={devB.name} style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
+          <div style={{ position: 'relative', width: '100px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: `conic-gradient(${colors[1]} ${getScore(devB)}%, var(--bg-primary) 0)`, border: '4px solid var(--bg-primary)' }}>
+            <div style={{ position: 'absolute', width: '80px', height: '80px', background: 'var(--bg-secondary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+              <span style={{ fontSize: '1.8rem', fontWeight: 900, color: colors[1] }}>{getScore(devB)}</span>
+              <span style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Điểm</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div style={{ marginTop: '30px', textAlign: 'center' }}>
+      {/* 2. Reasons to Buy (Pros / Cons) */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '40px' }}>
+        <div className="glass-panel" style={{ padding: '25px', borderTop: `4px solid ${colors[0]}` }}>
+          <h3 style={{ marginBottom: '20px', fontSize: '1.2rem' }}>Tại sao chọn <strong>{devA.name}</strong> thay vì {devB.name}?</h3>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}><Check size={20} color="#1a73e8" style={{ marginTop: '2px', flexShrink: 0 }} /> <span>Hiệu năng tổng thể cao hơn ~{(Math.random() * 15 + 5).toFixed(1)}%</span></li>
+            <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}><Check size={20} color="#1a73e8" style={{ marginTop: '2px', flexShrink: 0 }} /> <span>Pin trâu hơn, đáp ứng tốt nhu cầu giải trí</span></li>
+            <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}><Check size={20} color="#1a73e8" style={{ marginTop: '2px', flexShrink: 0 }} /> <span>Trọng lượng nhẹ hơn, cầm nắm thoải mái</span></li>
+          </ul>
+        </div>
+        
+        <div className="glass-panel" style={{ padding: '25px', borderTop: `4px solid ${colors[1]}` }}>
+          <h3 style={{ marginBottom: '20px', fontSize: '1.2rem' }}>Tại sao chọn <strong>{devB.name}</strong> thay vì {devA.name}?</h3>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}><Check size={20} color="#1a73e8" style={{ marginTop: '2px', flexShrink: 0 }} /> <span>Thiết kế hiện đại, viền màn hình mỏng hơn</span></li>
+            <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}><Check size={20} color="#1a73e8" style={{ marginTop: '2px', flexShrink: 0 }} /> <span>Chất lượng camera trong điều kiện thiếu sáng tốt hơn</span></li>
+            <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}><Check size={20} color="#1a73e8" style={{ marginTop: '2px', flexShrink: 0 }} /> <span>Mức giá ({devB.price}) dễ tiếp cận hơn so với {devA.price}</span></li>
+          </ul>
+        </div>
+      </div>
+
+      {/* 3. Specs Grid */}
+      <h2 style={{ fontSize: '2rem', textAlign: 'center', marginBottom: '30px' }}>So Sánh Chi Tiết</h2>
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+        {specCategories.map((cat, idx) => (
+          <div key={idx} className="glass-panel" style={{ padding: '20px' }}>
+            <h3 style={{ fontSize: '1.3rem', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', borderBottom: '1px solid var(--glass-border)', paddingBottom: '10px' }}>
+               {cat.label}
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+              {cat.keys.map(spec => {
+                const valA = devA.specs?.[spec.k] || devA?.[spec.k] || '-';
+                const valB = devB.specs?.[spec.k] || devB?.[spec.k] || '-';
+                
+                // Random bar widths to simulate comparative data visual exactly like Versus
+                const barWidthA = Math.floor(Math.random() * 40 + 60);
+                const barWidthB = Math.floor(Math.random() * 40 + 60);
+
+                return (
+                  <div key={spec.k} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><Info size={14}/> {spec.l}</div>
+                    </div>
+                    
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'flex-end' }}>
+                         <span style={{ fontSize: '0.95rem', fontWeight: 600, textAlign: 'right' }}>{valA}</span>
+                         <div style={{ width: '100%', background: 'var(--bg-primary)', height: '6px', borderRadius: '3px', display: 'flex', justifyContent: 'flex-end' }}>
+                           <div style={{ width: `${barWidthA}%`, height: '100%', background: colors[0], borderRadius: '3px' }}></div>
+                         </div>
+                      </div>
+                      <div style={{ width: '1px', height: '30px', background: 'var(--glass-border)' }}></div>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'flex-start' }}>
+                         <span style={{ fontSize: '0.95rem', fontWeight: 600, textAlign: 'left' }}>{valB}</span>
+                         <div style={{ width: '100%', background: 'var(--bg-primary)', height: '6px', borderRadius: '3px', display: 'flex', justifyContent: 'flex-start' }}>
+                           <div style={{ width: `${barWidthB}%`, height: '100%', background: colors[1], borderRadius: '3px' }}></div>
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ marginTop: '50px', textAlign: 'center' }}>
         <button 
-          className="btn" 
+          className="btn hover-lift" 
           onClick={handleAiConsult}
-          disabled={isThinking || currentDevices.length < 2}
-          style={{ background: 'var(--gradient-accent)', color: 'white', padding: '10px 25px', borderRadius: '30px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+          disabled={isThinking}
+          style={{ background: '#1a73e8', color: 'white', padding: '15px 35px', borderRadius: '30px', fontSize: '1.2rem', display: 'inline-flex', alignItems: 'center', gap: '10px', boxShadow: '0 10px 25px rgba(26, 115, 232, 0.4)' }}
         >
           {isThinking ? (
-            <><Sparkles size={18} className="animate-spin" /> Đang Phân Tích...</>
+            <><Sparkles size={24} className="animate-spin" /> Đang Phân Tích...</>
           ) : (
-            <><Bot size={18} /> Hỏi Nhận Xét Từ AI</>
+            <><Bot size={24} /> Xin Ý Kiến AI Better</>
           )}
         </button>
       </div>
 
       {aiResponse && (
-        <div className="glass-panel animate-fade-in" style={{ padding: '20px', marginTop: '20px', borderLeft: '4px solid var(--accent-primary)', background: 'rgba(59, 130, 246, 0.05)', lineHeight: '1.6', textAlign: 'left' }}>
+        <div className="glass-panel animate-fade-in" style={{ padding: '25px', marginTop: '30px', borderLeft: '5px solid #1a73e8', background: 'rgba(26, 115, 232, 0.1)', lineHeight: '1.8', textAlign: 'left', fontSize: '1.1rem' }}>
           <div dangerouslySetInnerHTML={{ 
             __html: aiResponse
               .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -275,67 +188,6 @@ Dựa trên thông số kỹ thuật, các thiết bị: **${names}** đều có
           }} />
         </div>
       )}
-
-      {/* Fake Facebook Comments Section inside Compare */}
-      <div style={{ marginTop: '50px', background: '#fff', padding: '20px', borderRadius: '15px', color: '#1c1e21' }}>
-        <h4 style={{ color: '#1877f2', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.2rem', fontWeight: 'bold' }}>
-          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="FB" width="24" height="24" /> 
-          Bình luận diễn đàn
-        </h4>
-        <div style={{ fontFamily: 'Helvetica, Arial, sans-serif', fontSize: '14px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #dddfe2', paddingBottom: '10px', marginBottom: '15px' }}>
-            <span style={{ fontWeight: 'bold' }}>28 bình luận</span>
-            <span style={{ color: '#4b4f56', cursor: 'pointer' }}>Sắp xếp theo: <strong>Cũ nhất</strong> ▼</span>
-          </div>
-
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-             <img src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=50&h=50&fit=crop" style={{ width: '36px', height: '36px', borderRadius: '50%' }} alt="Your Avatar" />
-             <div style={{ flex: 1 }}>
-               <div style={{ border: '1px solid #ccd0d5', backgroundColor: '#f5f6f7', borderRadius: '18px', padding: '8px 12px', color: '#8d949e' }}>
-                 Thêm bình luận...
-               </div>
-             </div>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            {/* Fake Comment 1 */}
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=50&h=50&fit=crop" style={{ width: '36px', height: '36px', borderRadius: '50%' }} alt="User" />
-              <div>
-                <div style={{ backgroundColor: '#f0f2f5', borderRadius: '18px', padding: '8px 12px', display: 'inline-block' }}>
-                  <span style={{ fontWeight: '600', color: '#385898', display: 'block', fontSize: '13px', cursor: 'pointer' }}>Trần Anh Tuấn</span>
-                  <span style={{ fontSize: '14px' }}>Bảng so sánh này nhìn cuốn đấy, dễ dàng thấy máy nào thua khoản nào rõ rệt. Đỉnh!</span>
-                </div>
-                <div style={{ fontSize: '12px', color: '#65676b', display: 'flex', gap: '15px', marginTop: '3px', marginLeft: '12px' }}>
-                  <span style={{ cursor: 'pointer', fontWeight: 'bold' }}>Thích</span>
-                  <span style={{ cursor: 'pointer', fontWeight: 'bold' }}>Phản hồi</span>
-                  <span>14 giờ trước</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Fake Comment 2 */}
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop" style={{ width: '36px', height: '36px', borderRadius: '50%' }} alt="User" />
-              <div>
-                <div style={{ backgroundColor: '#f0f2f5', borderRadius: '18px', padding: '8px 12px', display: 'inline-block' }}>
-                  <span style={{ fontWeight: '600', color: '#385898', display: 'block', fontSize: '13px', cursor: 'pointer' }}>Lê Ngọc Thảo</span>
-                  <span style={{ fontSize: '14px' }}>So sánh cùng lúc 3 máy đúng là chân ái, đỡ phải bật nhiều tab như hồi coi mấy web khác.</span>
-                </div>
-                <div style={{ fontSize: '12px', color: '#65676b', display: 'flex', gap: '15px', marginTop: '3px', marginLeft: '12px' }}>
-                  <span style={{ cursor: 'pointer', fontWeight: 'bold', color: '#3578e5' }}>Thích (5)</span>
-                  <span style={{ cursor: 'pointer', fontWeight: 'bold' }}>Phản hồi</span>
-                  <span>2 ngày trước</span>
-                </div>
-              </div>
-            </div>
-            
-            <div style={{ marginTop: '10px', textAlign: 'center' }}>
-              <button style={{ backgroundColor: 'transparent', border: 'none', color: '#385898', fontWeight: '600', cursor: 'pointer' }}>Tải thêm 26 bình luận</button>
-            </div>
-          </div>
-        </div>
-      </div>
     </section>
   );
 };
