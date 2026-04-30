@@ -311,9 +311,6 @@ const CompareSection = ({ products, initialDeviceIds }) => {
                 <Sparkles size={16} color="var(--accent-primary)" />
                 <span>Mô hình đánh giá: <strong>Gemini 1.5 Pro</strong> (Google AI)</span>
               </div>
-              <button style={{ background: 'transparent', border: '1px solid var(--accent-primary)', color: 'var(--accent-primary)', padding: '6px 14px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }} className="hover-lift">
-                ⭐ Nâng cấp lên Gemini Advanced
-              </button>
             </div>
           </div>
         )}
