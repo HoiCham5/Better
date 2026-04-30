@@ -55,8 +55,8 @@ const ProductDetailsModal = ({ product, onClose }) => {
             {product.brand} {product.name}
             {product.isFeatured && <span className="badge" style={{ background: 'var(--gradient-accent)', color: 'white', border: 'none', fontSize: '1rem', padding: '5px 10px' }}>Nổi Bật ✨</span>}
           </h2>
-          <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', cursor: 'pointer', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <X size={24} />
+          <button className="close-btn hover-focus-btn" onClick={onClose} style={{ background: 'var(--vs-border)', border: 'none', color: 'var(--vs-text-primary)', cursor: 'pointer', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <X size={20} />
           </button>
         </div>
 

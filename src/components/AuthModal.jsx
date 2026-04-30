@@ -41,8 +41,8 @@ const AuthModal = ({ onClose }) => {
       display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999
     }}>
       <div className="glass-panel animate-fade-in" style={{ width: '400px', padding: '30px', position: 'relative' }}>
-        <button onClick={onClose} style={{ position: 'absolute', top: '15px', right: '15px', background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
-          <X size={24} />
+        <button className="close-btn hover-focus-btn" onClick={onClose} style={{ position: 'absolute', top: '15px', right: '15px', background: 'var(--vs-border)', border: 'none', color: 'var(--vs-text-primary)', cursor: 'pointer', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+          <X size={20} />
         </button>
 
         <h2 style={{ textAlign: 'center', marginBottom: '20px', fontSize: '1.5rem' }}>

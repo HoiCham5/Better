@@ -252,25 +252,26 @@ function App() {
         }}>
           <div style={{ position: 'relative', width: '100%', maxWidth: '1200px', background: 'var(--bg-primary)', borderRadius: '20px', padding: '30px', border: '1px solid var(--glass-border)' }}>
             <button 
+              className="close-btn hover-focus-btn"
               onClick={() => setShowAdmin(false)}
               style={{
                 position: 'absolute',
                 top: '20px',
                 right: '20px',
-                background: 'rgba(255,255,255,0.1)',
+                background: 'var(--vs-border)',
                 border: 'none',
                 borderRadius: '50%',
-                width: '40px',
-                height: '40px',
+                width: '36px',
+                height: '36px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'white',
+                color: 'var(--vs-text-primary)',
                 cursor: 'pointer',
                 zIndex: 10
               }}
             >
-              <X size={24} />
+              <X size={20} />
             </button>
             <AdminPanel products={products} setProducts={setProducts} posts={posts} setPosts={setPosts} />
           </div>
