@@ -76,32 +76,32 @@ const Header = ({
               onMouseEnter={() => setMenuHover(true)}
               onMouseLeave={() => setMenuHover(false)}
             >
-              {/* Merged single icon (shown when collapsed) */}
-              <div className="vs-action-merged">
-                <User size={15} />
-                <Settings size={15} />
+              {/* Merged pill — ẩn khi hover */}
+              <div className="vs-action-merged" aria-hidden={menuHover}>
+                <User size={14} />
+                <Settings size={14} />
               </div>
 
-              {/* Tách ra: User */}
-              <button
-                className="vs-action-btn vs-action-btn--user"
-                onClick={() => currentUser ? onProfileClick?.() : onLoginClick?.()}
-                title={currentUser ? 'Tài khoản' : 'Đăng nhập'}
-              >
-                {currentUser
-                  ? <img src={currentUser.photoURL || 'https://i.pravatar.cc/40'} alt="avatar" className="vs-action-avatar" />
-                  : <User size={16} />
-                }
-              </button>
-
-              {/* Tách ra: Admin/Settings */}
-              <button
-                className="vs-action-btn vs-action-btn--admin"
-                onClick={() => onAdminClick?.()}
-                title="Quản trị"
-              >
-                <Settings size={16} />
-              </button>
+              {/* Expanded: 2 nút — hiện khi hover */}
+              <div className="vs-action-expanded">
+                <button
+                  className="vs-action-btn vs-action-btn--user"
+                  onClick={() => currentUser ? onProfileClick?.() : onLoginClick?.()}
+                  title={currentUser ? 'Tài khoản' : 'Đăng nhập'}
+                >
+                  {currentUser
+                    ? <img src={currentUser.photoURL || 'https://i.pravatar.cc/40'} alt="avatar" className="vs-action-avatar" />
+                    : <User size={15} />
+                  }
+                </button>
+                <button
+                  className="vs-action-btn vs-action-btn--admin"
+                  onClick={() => onAdminClick?.()}
+                  title="Quản trị"
+                >
+                  <Settings size={15} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -215,78 +215,83 @@ const Header = ({
         .vs-toggle-thumb--dark { left: 28px; }
 
         /* ═══════════════════════════════
-           MERGED ACTION CLUSTER
+           MERGED ACTION CLUSTER (flex-based)
         ═══════════════════════════════ */
         .vs-action-cluster {
-          position: relative;
           display: flex;
           align-items: center;
-          height: 36px;
+          gap: 0;
           cursor: pointer;
+          height: 36px;
         }
 
-        /* The merged pill — shown when collapsed */
+        /* Merged pill */
         .vs-action-merged {
           display: flex;
           align-items: center;
-          gap: 2px;
+          gap: 3px;
           background: rgba(255,255,255,0.1);
-          border: 1px solid rgba(255,255,255,0.15);
+          border: 1px solid rgba(255,255,255,0.18);
           border-radius: 20px;
           padding: 6px 12px;
-          color: rgba(255,255,255,0.8);
-          transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
-          white-space: nowrap;
+          color: rgba(255,255,255,0.85);
+          max-width: 68px;
           overflow: hidden;
-          max-width: 64px;
           opacity: 1;
-        }
-        .vs-action-cluster--open .vs-action-merged {
-          max-width: 0;
-          padding: 6px 0;
-          opacity: 0;
-          pointer-events: none;
+          transition: max-width 0.3s ease, opacity 0.25s ease, padding 0.3s ease;
+          white-space: nowrap;
+          flex-shrink: 0;
         }
 
-        /* Individual action buttons — hidden when collapsed */
-        .vs-action-btn {
-          display: flex; align-items: center; justify-content: center;
-          width: 34px; height: 34px; border-radius: 50%;
-          border: none; cursor: pointer;
-          color: white; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-          position: absolute;
+        /* Expanded container: 2 separate buttons side by side */
+        .vs-action-expanded {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          max-width: 0;
+          overflow: hidden;
           opacity: 0;
-          pointer-events: none;
-          transform: scale(0.5);
+          transition: max-width 0.35s cubic-bezier(0.34,1.4,0.64,1),
+                      opacity 0.25s ease,
+                      gap 0.3s ease;
         }
+
+        /* Hover: swap merged → expanded */
+        .vs-action-cluster--open .vs-action-merged {
+          max-width: 0;
+          opacity: 0;
+          padding: 6px 0;
+          pointer-events: none;
+        }
+        .vs-action-cluster--open .vs-action-expanded {
+          max-width: 86px;   /* enough for 2 × 34px + gap */
+          opacity: 1;
+        }
+
+        /* Individual buttons */
+        .vs-action-btn {
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 34px;
+          height: 34px;
+          border-radius: 50%;
+          border: none;
+          cursor: pointer;
+          color: white;
+          transition: transform 0.2s ease, filter 0.2s ease;
+        }
+        .vs-action-btn:hover { transform: scale(1.15); filter: brightness(1.2); }
 
         .vs-action-btn--user {
           background: rgba(255,255,255,0.12);
-          border: 1px solid rgba(255,255,255,0.2);
-          right: 42px; /* will slide from center */
+          border: 1px solid rgba(255,255,255,0.22);
         }
         .vs-action-btn--admin {
           background: linear-gradient(135deg, #3858f6, #8224e3);
-          box-shadow: 0 4px 12px rgba(130,36,227,0.4);
-          right: 0;
+          box-shadow: 0 4px 12px rgba(130,36,227,0.45);
         }
-
-        /* Open state — buttons appear */
-        .vs-action-cluster--open .vs-action-btn {
-          opacity: 1;
-          pointer-events: auto;
-          transform: scale(1);
-        }
-        .vs-action-cluster--open .vs-action-btn--user {
-          right: 44px;
-          transition-delay: 0.05s;
-        }
-        .vs-action-cluster--open .vs-action-btn--admin {
-          right: 0;
-          transition-delay: 0s;
-        }
-
-        .vs-action-btn:hover { transform: scale(1.15) !important; filter: brightness(1.2); }
 
         .vs-action-avatar {
           width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
