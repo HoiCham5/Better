@@ -203,8 +203,8 @@ const Header = ({
           box-shadow: 0 2px 8px rgba(130,36,227,0.5);
         }
         .vs-toggle-icon { display: flex; align-items: center; justify-content: center; color: white; z-index: 0; }
-        .vs-toggle-icon--sun  { order: 2; }
-        .vs-toggle-icon--moon { order: 1; }
+        .vs-toggle-icon--sun  { order: 1; }
+        .vs-toggle-icon--moon { order: 2; }
         .vs-toggle-thumb {
           position: absolute; left: 3px; width: 21px; height: 21px;
           border-radius: 50%; background: white;
