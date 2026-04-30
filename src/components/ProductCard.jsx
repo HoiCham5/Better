@@ -19,7 +19,7 @@ const ProductCard = ({ product, userPreference = '', onViewDetails }) => {
             justifyContent: 'center', fontWeight: '900', fontSize: '1.1rem', color: 'var(--vs-text-primary)',
             boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
           }}>
-            {Math.floor(Math.random() * 15 + 85)}
+            {85 + (product.name.length % 12)}
           </div>
           
           {product.isFeatured && (
