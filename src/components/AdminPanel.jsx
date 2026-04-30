@@ -43,7 +43,7 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
       const pid = productData.id || Date.now().toString();
       const updatedData = { ...productData, id: pid };
       
-      const res = await fetch('http://localhost:5000/api/products', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/products`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData)
@@ -62,7 +62,7 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
   const handleDeleteProduct = async (id) => {
     if (window.confirm('Bạn có chắc chắn muốn xoá sản phẩm này?')) {
       try {
-        await fetch(`http://localhost:5000/api/products/${id}`, { method: 'DELETE' });
+        await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/products/${id}`, { method: 'DELETE' });
         alert("Xóa thành công! Khách hàng sẽ thấy khi tải lại trang.");
       } catch (error) {
         alert("Lỗi: " + error.message);
@@ -75,7 +75,7 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
     try {
       const pid = postData.id || Date.now().toString();
       const updatedData = { ...postData, id: pid };
-      const res = await fetch('http://localhost:5000/api/posts', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/posts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData)
@@ -93,7 +93,7 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
   const handleDeletePost = async (id) => {
     if (window.confirm('Bạn có chắc chắn muốn xoá bài viết này?')) {
        try {
-         await fetch(`http://localhost:5000/api/posts/${id}`, { method: 'DELETE' });
+         await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/posts/${id}`, { method: 'DELETE' });
          alert("Đã Xoá Bài Viết");
        } catch (error) {
          alert("Lỗi: " + error.message);

@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      fetch('http://localhost:5000/api/users/me', {
+      fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users/me`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(res => res.json())
@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loginEmail = async (email, password) => {
-    const res = await fetch('http://localhost:5000/api/auth/login', {
+    const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const registerEmail = async (email, password) => {
-    const res = await fetch('http://localhost:5000/api/auth/register', {
+    const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, displayName: email.split('@')[0] })
@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
     setUserProfile({ ...userProfile, wishlist: newList });
     
     const token = localStorage.getItem('token');
-    await fetch('http://localhost:5000/api/users/me', {
+    await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users/me`, {
        method: 'PUT',
        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
        body: JSON.stringify({ wishlist: newList })
@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }) => {
     setUserProfile({ ...userProfile, points: newPoints });
 
     const token = localStorage.getItem('token');
-    await fetch('http://localhost:5000/api/users/me', {
+    await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users/me`, {
        method: 'PUT',
        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
        body: JSON.stringify({ points: newPoints })

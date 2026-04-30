@@ -32,18 +32,18 @@ function App() {
     // Tải Sản phẩm từ Node Backend
     const fetchProducts = async () => {
       try {
-        let res = await fetch('http://localhost:5000/api/products');
+        let res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/products`);
         let data = await res.json();
         
         // Seeding nếu rỗng
         if (data.length === 0) {
           console.log("Seeding products to MongoDB...");
-          await fetch('http://localhost:5000/api/products/seed', {
+          await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/products/seed`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(allProducts)
           });
-          res = await fetch('http://localhost:5000/api/products');
+          res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/products`);
           data = await res.json();
         }
         setProducts(data);
@@ -55,11 +55,11 @@ function App() {
     // Tải Bài viết tải Backend
     const fetchPosts = async () => {
       try {
-        let res = await fetch('http://localhost:5000/api/posts');
+        let res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/posts`);
         let data = await res.json();
         if (data.length === 0) {
            const sample = { id: '1', title: 'Chào mừng đến Better', summary: 'Nơi so sánh uy tín nhất', content: 'Đây là bài viết mẫu.', image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=800&auto=format&fit=crop', date: new Date().toLocaleDateString() };
-           await fetch('http://localhost:5000/api/posts', {
+           await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/posts`, {
              method: 'POST',
              headers: { 'Content-Type': 'application/json' },
              body: JSON.stringify(sample)
