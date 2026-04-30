@@ -79,7 +79,8 @@ const VersusHero = ({ products = [] }) => {
       borderRadius: '20px',
       marginBottom: '40px',
       position: 'relative',
-      overflow: 'visible'
+      overflow: 'visible',
+      zIndex: 50
     }}>
       <div style={{ position: 'absolute', top: '-50%', left: '-10%', width: '300px', height: '300px', background: 'var(--accent-primary)', filter: 'blur(150px)', opacity: 0.2, zIndex: 0 }}></div>
       <div style={{ position: 'absolute', bottom: '-50%', right: '-10%', width: '300px', height: '300px', background: 'var(--accent-secondary)', filter: 'blur(150px)', opacity: 0.2, zIndex: 0 }}></div>
