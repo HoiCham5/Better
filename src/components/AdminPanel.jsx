@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ShieldCheck, Lock, Package, FileText, Plus, LogOut, Edit3, Trash2, Smartphone, Laptop } from 'lucide-react';
 import ProductForm from './ProductForm';
 import NewsForm from './NewsForm';
 
@@ -37,7 +38,6 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
     localStorage.removeItem('isAdmin');
   };
 
-  // CRUD cho Sản phẩm
   const handleSaveProduct = async (productData) => {
     try {
       const pid = productData.id || Date.now().toString();
@@ -51,8 +51,7 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
       if (res.ok) {
         setIsAddingProduct(false);
         setEditingProduct(null);
-        // Thay vì chờ onSnapshot, ta có thể chủ động báo user refresh hoặc tự cập nhật state:
-        alert("Thành công! Hãy tải lại trang để thấy kết quả (Vì chúng ta đã tháo Firebase OnSnapshot).");
+        alert("Thành công! Hãy tải lại trang để thấy kết quả.");
       }
     } catch (error) {
       alert("Lỗi khi lưu Sản phẩm: " + error.message);
@@ -70,7 +69,6 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
     }
   };
 
-  // CRUD cho Bài viết
   const handleSavePost = async (postData) => {
     try {
       const pid = postData.id || Date.now().toString();
@@ -103,148 +101,241 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
 
   if (!isAdmin) {
     return (
-      <div className="admin-login glass-panel container animate-fade-in" style={{ padding: '40px', maxWidth: '400px', margin: '40px auto', textAlign: 'center' }}>
-        <h2>Đăng Nhập Quản Trị</h2>
-        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px' }}>
-          <input 
-            type="password" 
-            placeholder="Nhập mật khẩu (admin123)" 
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ padding: '10px', borderRadius: '5px', border: '1px solid var(--glass-border)' }}
-          />
-          <button type="submit" className="btn bg-accent-primary" style={{ padding: '10px', borderRadius: '25px', color: 'white', fontWeight: 'bold' }}>
-            Đăng Nhập
-          </button>
-        </form>
+      <div className="admin-login animate-fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
+        <div className="glass-panel" style={{ padding: '50px 40px', maxWidth: '450px', width: '100%', textAlign: 'center', borderRadius: '24px' }}>
+          <div style={{ background: 'rgba(56, 88, 246, 0.1)', width: '80px', height: '80px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px auto' }}>
+            <ShieldCheck size={40} className="text-accent-primary" />
+          </div>
+          <h2 style={{ fontSize: '1.8rem', marginBottom: '10px' }}>Hệ Thống Quản Trị</h2>
+          <p className="text-secondary" style={{ marginBottom: '30px' }}>Vui lòng xác thực quyền truy cập</p>
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div style={{ position: 'relative' }}>
+              <Lock size={20} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--vs-text-secondary)' }} />
+              <input 
+                type="password" 
+                className="select-input"
+                placeholder="Nhập mã truy cập..." 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={{ width: '100%', padding: '15px 15px 15px 45px', fontSize: '1rem' }}
+                autoFocus
+              />
+            </div>
+            <button type="submit" className="btn btn-primary" style={{ padding: '15px', fontSize: '1.1rem', borderRadius: '12px' }}>
+              Đăng Nhập Quản Trị
+            </button>
+          </form>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="admin-dashboard container animate-fade-in" style={{ marginTop: '20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '20px' }}>
-        <button onClick={() => setAdminTab('products')} className={`btn ${adminTab === 'products' ? 'bg-accent-primary' : ''}`} style={{ padding: '8px 20px', borderRadius: '25px', color: adminTab === 'products' ? 'white' : 'var(--text-secondary)', background: adminTab === 'products' ? 'var(--gradient-accent)' : 'transparent', border: '1px solid var(--glass-border)' }}>Thống Kê Sản Phẩm</button>
-        <button onClick={() => setAdminTab('news')} className={`btn ${adminTab === 'news' ? 'bg-accent-primary' : ''}`} style={{ padding: '8px 20px', borderRadius: '25px', color: adminTab === 'news' ? 'white' : 'var(--text-secondary)', background: adminTab === 'news' ? 'var(--gradient-accent)' : 'transparent', border: '1px solid var(--glass-border)' }}>Quản Lý Bài Viết</button>
-      </div>
-
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2>{adminTab === 'products' ? 'Danh Sách Thiết Bị' : 'Danh Sách Thu Tức'}</h2>
-        <div>
-          {adminTab === 'products' ? (
-            <button onClick={() => { setIsAddingProduct(true); setEditingProduct(null); }} className="btn bg-accent-primary" style={{ marginRight: '10px', padding: '8px 15px', borderRadius: '5px' }}>+ Thêm Sản Phẩm Mới</button>
-          ) : (
-            <button onClick={() => { setIsAddingPost(true); setEditingPost(null); }} className="btn bg-accent-primary" style={{ marginRight: '10px', padding: '8px 15px', borderRadius: '5px' }}>+ Thêm Bài Viết Mới</button>
-          )}
-          <button onClick={handleLogout} className="btn" style={{ padding: '8px 15px', background: 'var(--bg-secondary)', borderRadius: '5px', color: 'var(--text-primary)' }}>Đăng Xuất</button>
+    <div className="admin-dashboard animate-fade-in" style={{ padding: '20px 0' }}>
+      
+      {/* HEADER */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', paddingBottom: '20px', borderBottom: '1px solid var(--vs-border)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <div style={{ background: 'var(--gradient-accent)', padding: '10px', borderRadius: '12px', display: 'flex' }}>
+            <ShieldCheck size={28} color="white" />
+          </div>
+          <div>
+            <h2 style={{ fontSize: '1.8rem', margin: 0 }}>Trung Tâm Quản Trị</h2>
+            <p className="text-secondary" style={{ margin: 0, fontSize: '0.9rem' }}>Quản lý dữ liệu hệ thống</p>
+          </div>
         </div>
+        <button onClick={handleLogout} className="btn hover-focus-btn" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px' }}>
+          <LogOut size={18} /> Đăng Xuất
+        </button>
       </div>
 
+      {/* TABS */}
+      <div style={{ display: 'flex', gap: '15px', marginBottom: '30px', overflowX: 'auto', paddingBottom: '10px' }}>
+        <button 
+          onClick={() => setAdminTab('products')} 
+          className="btn hover-focus-btn"
+          style={{ 
+            padding: '12px 25px', 
+            borderRadius: '12px', 
+            display: 'flex', alignItems: 'center', gap: '10px',
+            color: adminTab === 'products' ? 'white' : 'var(--vs-text-primary)', 
+            background: adminTab === 'products' ? 'var(--gradient-accent)' : 'var(--vs-surface)', 
+            border: '1px solid',
+            borderColor: adminTab === 'products' ? 'transparent' : 'var(--vs-border)',
+            fontWeight: 'bold'
+          }}
+        >
+          <Package size={20} /> Sản Phẩm & Thiết Bị
+        </button>
+        <button 
+          onClick={() => setAdminTab('news')} 
+          className="btn hover-focus-btn"
+          style={{ 
+            padding: '12px 25px', 
+            borderRadius: '12px', 
+            display: 'flex', alignItems: 'center', gap: '10px',
+            color: adminTab === 'news' ? 'white' : 'var(--vs-text-primary)', 
+            background: adminTab === 'news' ? 'var(--gradient-accent)' : 'var(--vs-surface)', 
+            border: '1px solid',
+            borderColor: adminTab === 'news' ? 'transparent' : 'var(--vs-border)',
+            fontWeight: 'bold'
+          }}
+        >
+          <FileText size={20} /> Tin Tức & Bài Viết
+        </button>
+      </div>
+
+      {/* CONTENT */}
       {adminTab === 'products' && (
         <>
-          {(isAddingProduct || editingProduct) && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <h3 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              Quản Lý Thiết Bị
+            </h3>
+            <button onClick={() => { setIsAddingProduct(true); setEditingProduct(null); }} className="btn btn-primary hover-focus-btn" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '8px', border: 'none' }}>
+              <Plus size={18} /> Thêm Thiết Bị
+            </button>
+          </div>
+
+          {(isAddingProduct || editingProduct) ? (
             <ProductForm 
               product={editingProduct} 
               onSave={handleSaveProduct} 
               onCancel={() => { setIsAddingProduct(false); setEditingProduct(null); }} 
             />
-          )}
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+              {/* Phone Table */}
+              <div className="glass-panel" style={{ overflowX: 'auto', padding: '20px', borderRadius: '16px' }}>
+                <h4 style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem' }}>
+                  <Smartphone className="text-accent-primary" /> Điện Thoại
+                </h4>
+                <table className="compare-table" style={{ width: '100%', textAlign: 'left' }}>
+                  <thead>
+                    <tr>
+                      <th>Thiết Bị</th>
+                      <th>Hãng</th>
+                      <th>Giá Bán</th>
+                      <th style={{ textAlign: 'right' }}>Thao Tác</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.filter(p => p.category === 'phone').map(p => (
+                      <tr key={p.id}>
+                        <td>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                            <img src={p.image} alt={p.name} style={{ width: '50px', height: '50px', objectFit: 'contain', background: 'white', padding: '5px', borderRadius: '8px', border: '1px solid var(--vs-border)' }} />
+                            <strong style={{ fontSize: '1rem' }}>{p.name}</strong>
+                          </div>
+                        </td>
+                        <td>{p.brand}</td>
+                        <td style={{ color: 'var(--vs-accent)', fontWeight: 'bold' }}>{p.price}</td>
+                        <td style={{ textAlign: 'right' }}>
+                          <button onClick={() => setEditingProduct(p)} className="btn hover-focus-btn" title="Chỉnh sửa" style={{ padding: '8px', marginRight: '10px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', border: 'none', borderRadius: '8px' }}>
+                            <Edit3 size={18} />
+                          </button>
+                          <button onClick={() => handleDeleteProduct(p.id)} className="btn hover-focus-btn" title="Xoá" style={{ padding: '8px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', borderRadius: '8px' }}>
+                            <Trash2 size={18} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-          {!isAddingProduct && !editingProduct && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', marginTop: '20px' }}>
-          <div className="glass-panel" style={{ overflowX: 'auto' }}>
-            <h3 style={{ padding: '15px' }}>📱 Điện Thoại</h3>
-            <table className="compare-table" style={{ width: '100%', textAlign: 'left' }}>
-              <thead>
-                <tr>
-                  <th>Ảnh</th>
-                  <th>Tên Sản Phẩm</th>
-                  <th>Giá Bán</th>
-                  <th>Hành Động</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.filter(p => p.category === 'phone').map(p => (
-                  <tr key={p.id}>
-                    <td><img src={p.image} alt={p.name} style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '5px' }} /></td>
-                    <td>{p.brand} {p.name}</td>
-                    <td>{p.price}</td>
-                    <td>
-                      <button onClick={() => setEditingProduct(p)} style={{ padding: '5px 10px', marginRight: '5px', background: 'rgba(59, 130, 246, 0.2)', color: 'var(--text-primary)', border: 'none', borderRadius: '3px', cursor: 'pointer' }}>Sửa</button>
-                      <button onClick={() => handleDeleteProduct(p.id)} style={{ padding: '5px 10px', background: 'rgba(239, 68, 68, 0.2)', color: 'var(--text-primary)', border: 'none', borderRadius: '3px', cursor: 'pointer' }}>Xoá</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="glass-panel" style={{ overflowX: 'auto' }}>
-            <h3 style={{ padding: '15px' }}>💻 Laptop</h3>
-            <table className="compare-table" style={{ width: '100%', textAlign: 'left' }}>
-              <thead>
-                <tr>
-                  <th>Ảnh</th>
-                  <th>Tên Sản Phẩm</th>
-                  <th>Giá Bán</th>
-                  <th>Hành Động</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.filter(p => p.category === 'laptop').map(p => (
-                  <tr key={p.id}>
-                    <td><img src={p.image} alt={p.name} style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '5px' }} /></td>
-                    <td>{p.brand} {p.name}</td>
-                    <td>{p.price}</td>
-                    <td>
-                      <button onClick={() => setEditingProduct(p)} style={{ padding: '5px 10px', marginRight: '5px', background: 'rgba(59, 130, 246, 0.2)', color: 'var(--text-primary)', border: 'none', borderRadius: '3px', cursor: 'pointer' }}>Sửa</button>
-                      <button onClick={() => handleDeleteProduct(p.id)} style={{ padding: '5px 10px', background: 'rgba(239, 68, 68, 0.2)', color: 'var(--text-primary)', border: 'none', borderRadius: '3px', cursor: 'pointer' }}>Xoá</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              {/* Laptop Table */}
+              <div className="glass-panel" style={{ overflowX: 'auto', padding: '20px', borderRadius: '16px' }}>
+                <h4 style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem' }}>
+                  <Laptop className="text-accent-secondary" /> Laptop
+                </h4>
+                <table className="compare-table" style={{ width: '100%', textAlign: 'left' }}>
+                  <thead>
+                    <tr>
+                      <th>Thiết Bị</th>
+                      <th>Hãng</th>
+                      <th>Giá Bán</th>
+                      <th style={{ textAlign: 'right' }}>Thao Tác</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.filter(p => p.category === 'laptop').map(p => (
+                      <tr key={p.id}>
+                        <td>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                            <img src={p.image} alt={p.name} style={{ width: '50px', height: '50px', objectFit: 'contain', background: 'white', padding: '5px', borderRadius: '8px', border: '1px solid var(--vs-border)' }} />
+                            <strong style={{ fontSize: '1rem' }}>{p.name}</strong>
+                          </div>
+                        </td>
+                        <td>{p.brand}</td>
+                        <td style={{ color: 'var(--vs-accent)', fontWeight: 'bold' }}>{p.price}</td>
+                        <td style={{ textAlign: 'right' }}>
+                          <button onClick={() => setEditingProduct(p)} className="btn hover-focus-btn" title="Chỉnh sửa" style={{ padding: '8px', marginRight: '10px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', border: 'none', borderRadius: '8px' }}>
+                            <Edit3 size={18} />
+                          </button>
+                          <button onClick={() => handleDeleteProduct(p.id)} className="btn hover-focus-btn" title="Xoá" style={{ padding: '8px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', borderRadius: '8px' }}>
+                            <Trash2 size={18} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           )}
         </>
       )}
 
       {adminTab === 'news' && (
         <>
-          {(isAddingPost || editingPost) && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <h3 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              Quản Lý Bài Viết
+            </h3>
+            <button onClick={() => { setIsAddingPost(true); setEditingPost(null); }} className="btn btn-primary hover-focus-btn" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '8px', border: 'none' }}>
+              <Plus size={18} /> Thêm Bài Viết
+            </button>
+          </div>
+
+          {(isAddingPost || editingPost) ? (
             <NewsForm 
               post={editingPost} 
               onSave={handleSavePost} 
               onCancel={() => { setIsAddingPost(false); setEditingPost(null); }} 
             />
-          )}
-
-          {!isAddingPost && !editingPost && (
-            <div className="glass-panel" style={{ overflowX: 'auto', marginTop: '20px' }}>
+          ) : (
+            <div className="glass-panel" style={{ overflowX: 'auto', padding: '20px', borderRadius: '16px' }}>
               <table className="compare-table" style={{ width: '100%', textAlign: 'left' }}>
                 <thead>
                   <tr>
-                    <th>Ảnh</th>
-                    <th>Tiêu đề bài viết</th>
-                    <th>Ngày cập nhật</th>
-                    <th>Hành Động</th>
+                    <th>Bài Viết</th>
+                    <th>Ngày Cập Nhật</th>
+                    <th style={{ textAlign: 'right' }}>Thao Tác</th>
                   </tr>
                 </thead>
                 <tbody>
                   {posts.map(p => (
                     <tr key={p.id}>
-                      <td><img src={p.image} alt={p.title} style={{ width: '60px', height: '40px', objectFit: 'cover', borderRadius: '3px' }} /></td>
-                      <td style={{ maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.title}</td>
-                      <td>{p.date}</td>
                       <td>
-                        <button onClick={() => setEditingPost(p)} style={{ padding: '5px 10px', marginRight: '5px', background: 'rgba(59, 130, 246, 0.2)', color: 'var(--text-primary)', border: 'none', borderRadius: '3px', cursor: 'pointer' }}>Sửa</button>
-                        <button onClick={() => handleDeletePost(p.id)} style={{ padding: '5px 10px', background: 'rgba(239, 68, 68, 0.2)', color: 'var(--text-primary)', border: 'none', borderRadius: '3px', cursor: 'pointer' }}>Xoá</button>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                          <img src={p.image} alt={p.title} style={{ width: '80px', height: '50px', objectFit: 'cover', borderRadius: '6px' }} />
+                          <strong style={{ fontSize: '1rem', maxWidth: '400px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.title}</strong>
+                        </div>
+                      </td>
+                      <td className="text-secondary">{p.date}</td>
+                      <td style={{ textAlign: 'right' }}>
+                        <button onClick={() => setEditingPost(p)} className="btn hover-focus-btn" title="Chỉnh sửa" style={{ padding: '8px', marginRight: '10px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', border: 'none', borderRadius: '8px' }}>
+                          <Edit3 size={18} />
+                        </button>
+                        <button onClick={() => handleDeletePost(p.id)} className="btn hover-focus-btn" title="Xoá" style={{ padding: '8px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', borderRadius: '8px' }}>
+                          <Trash2 size={18} />
+                        </button>
                       </td>
                     </tr>
                   ))}
                   {posts.length === 0 && (
-                     <tr><td colSpan="4" style={{ textAlign: 'center' }}>Chưa có bài viết nào</td></tr>
+                     <tr><td colSpan="3" style={{ textAlign: 'center', padding: '40px' }} className="text-secondary">Chưa có bài viết nào trong hệ thống.</td></tr>
                   )}
                 </tbody>
               </table>
