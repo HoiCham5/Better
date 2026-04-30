@@ -4,9 +4,9 @@ import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Responsi
 
 const getScore = (device) => {
   if (!device) return 0;
-  let h = 0;
-  for (let i = 0; i < (device.name?.length || 0); i++) h = (Math.imul(31, h) + device.name.charCodeAt(i)) | 0;
-  return Math.abs(h % 21) + 75; // 75–95
+  const cats = ['design', 'display', 'performance', 'camera', 'battery', 'connectivity'];
+  const sum = cats.reduce((acc, catId) => acc + getCatScore(device, catId), 0);
+  return Math.round(sum / cats.length);
 };
 
 const getCatScore = (dev, catId) => {
