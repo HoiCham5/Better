@@ -50,9 +50,24 @@ const ProductDetailsModal = ({ product, onClose }) => {
       }}>
         {/* Sticky Header */}
         <div style={{ position: 'sticky', top: 0, background: 'var(--bg-primary)', padding: '20px 30px', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
-          <h2 style={{ fontSize: '1.8rem', display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <h2 style={{ fontSize: '1.8rem', display: 'flex', alignItems: 'center', gap: '15px', flexWrap: 'wrap' }}>
             {product.brand} {product.name}
-            {product.isFeatured && <span className="badge" style={{ background: 'var(--gradient-accent)', color: 'white', border: 'none', fontSize: '1rem', padding: '5px 10px' }}>Nổi Bật ✨</span>}
+            {product.isFeatured && (
+               <span style={{ 
+                 background: 'linear-gradient(135deg, #f59e0b, #fbbf24)', 
+                 color: 'white', 
+                 fontSize: '0.8rem', 
+                 fontWeight: 800, 
+                 padding: '6px 14px', 
+                 borderRadius: '20px', 
+                 textTransform: 'uppercase', 
+                 letterSpacing: '1px',
+                 boxShadow: '0 4px 10px rgba(245, 158, 11, 0.4)',
+                 whiteSpace: 'nowrap'
+               }}>
+                 Nổi Bật ✨
+               </span>
+            )}
           </h2>
           <button className="close-btn hover-focus-btn" onClick={onClose} style={{ background: 'var(--vs-border)', border: 'none', color: 'var(--vs-text-primary)', cursor: 'pointer', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <X size={20} />
