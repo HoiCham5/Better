@@ -282,6 +282,43 @@ const CompareSection = ({ products, initialDeviceIds }) => {
         </div>
       </div>
 
+
+      {/* ── 3.5. AI VERDICT ─────────────────────────────────────────────── */}
+      <div style={{ marginBottom: '40px' }}>
+        <div style={{ textAlign: 'center' }}>
+          <button className="btn hover-lift" onClick={handleAI} disabled={isThinking}
+            style={{ padding: '14px 32px', fontSize: '1.1rem', borderRadius: '50px', display: 'inline-flex', alignItems: 'center', gap: '10px', background: 'var(--gradient-accent)', color: 'white', border: 'none', fontWeight: 600 }}>
+            {isThinking ? <><Sparkles size={20} className="animate-spin" /> Đang tổng hợp dữ liệu...</> : <><Bot size={20} /> Phân Tích Chuyên Sâu Bằng AI</>}
+          </button>
+        </div>
+
+        {aiResponse && (
+          <div className="animate-fade-in" style={{
+            marginTop: '20px', padding: '24px', background: 'var(--vs-surface)', borderRadius: '16px',
+            border: `1px solid var(--glass-border)`, boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+            lineHeight: 1.8, fontSize: '1rem', color: 'var(--vs-text-primary)', textAlign: 'left',
+            position: 'relative'
+          }}>
+            <div dangerouslySetInnerHTML={{
+              __html: aiResponse
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n\n/g, '<br/><br/>')
+                .replace(/➤/g, '<span style="color:var(--accent-primary);font-size:1.1em;font-weight:bold">➤</span>')
+            }} />
+            
+            <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '1px solid var(--glass-border)', display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--vs-text-secondary)' }}>
+                <Sparkles size={16} color="var(--accent-primary)" />
+                <span>Mô hình đánh giá: <strong>Gemini 1.5 Pro</strong> (Google AI)</span>
+              </div>
+              <button style={{ background: 'transparent', border: '1px solid var(--accent-primary)', color: 'var(--accent-primary)', padding: '6px 14px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }} className="hover-lift">
+                ⭐ Nâng cấp lên Gemini Advanced
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* ── 4. THÔNG SỐ CHI TIẾT (Specs Table) ────────────────────────── */}
       <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '20px', color: 'var(--vs-text-primary)', borderBottom: '2px solid var(--vs-border)', paddingBottom: '10px' }}>So Sánh Thông Số Chi Tiết</h3>
       
@@ -313,29 +350,6 @@ const CompareSection = ({ products, initialDeviceIds }) => {
           );
         })}
       </div>
-
-      {/* ── 5. AI VERDICT ─────────────────────────────────────────────── */}
-      <div style={{ marginTop: '40px', textAlign: 'center' }}>
-        <button className="btn btn-primary hover-lift" onClick={handleAI} disabled={isThinking}
-          style={{ padding: '14px 32px', fontSize: '1.1rem', borderRadius: '50px', display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
-          {isThinking ? <><Sparkles size={20} className="animate-spin" /> Đang tổng hợp...</> : <><Bot size={20} /> Phân Tích Chuyên Sâu Bằng AI</>}
-        </button>
-      </div>
-
-      {aiResponse && (
-        <div className="animate-fade-in" style={{
-          marginTop: '20px', padding: '24px', background: 'var(--vs-surface)', borderRadius: '12px',
-          borderLeft: `5px solid var(--accent-primary)`, boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-          lineHeight: 1.8, fontSize: '1rem', color: 'var(--vs-text-primary)', textAlign: 'left'
-        }}>
-          <div dangerouslySetInnerHTML={{
-            __html: aiResponse
-              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-              .replace(/\n\n/g, '<br/><br/>')
-              .replace(/➤/g, '<span style="color:var(--accent-primary);font-size:1.1em;font-weight:bold">➤</span>')
-          }} />
-        </div>
-      )}
 
       {/* ── 6. THÊM SẢN PHẨM MODAL ────────────────────────────────────── */}
       {showAddModal && (
