@@ -176,7 +176,7 @@ const VersusHero = ({ products = [], onCompare }) => {
         </div>
       </div>
 
-      {/* Wave SVG at bottom */}
+      {/* Wave SVG at bottom - uses CSS custom property for dark mode support */}
       <div className="hero-wave-wrapper">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
           <path className="hero-wave-path-back" d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z" />
@@ -441,7 +441,7 @@ const VersusHero = ({ products = [], onCompare }) => {
           animation: waveAnim 6s ease-in-out infinite;
         }
         .hero-wave-path-front {
-          fill: #f2f5f7;
+          fill: var(--vs-bg);
           animation: waveAnim 4s ease-in-out infinite reverse;
         }
 

@@ -168,6 +168,101 @@
 [data-theme="dark"] .spec-content p { color: var(--vs-text-primary) !important; }
 [data-theme="dark"] .spec-content h4 { color: var(--vs-text-secondary) !important; }
 
+/* Wave: dark back layer */
+[data-theme="dark"] .hero-wave-path-back {
+  fill: rgba(13,11,30,0.4) !important;
+}
+
+/* FilterSidebar, NewsFeed, StoreSection panels */
+[data-theme="dark"] aside,
+[data-theme="dark"] .sidebar,
+[data-theme="dark"] .filter-sidebar,
+[data-theme="dark"] [class*="sidebar"],
+[data-theme="dark"] [class*="filter"] {
+  background: var(--vs-surface) !important;
+  border-color: var(--vs-border) !important;
+  color: var(--vs-text-primary) !important;
+}
+
+/* All section h1/h2/h3 */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] label,
+[data-theme="dark"] p { color: var(--vs-text-primary); }
+
+/* Input fields everywhere */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea {
+  background: #1e1c35 !important;
+  color: var(--vs-text-primary) !important;
+  border-color: var(--vs-border) !important;
+}
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder { color: rgba(255,255,255,0.3) !important; }
+
+/* Buttons with white bg */
+[data-theme="dark"] button:not(.vs-nav-btn):not(.hero-compare-btn):not(.hero-popular-tag):not(.vs-theme-toggle):not(.compare-tab):not(.btn-primary) {
+  color: var(--vs-text-primary);
+}
+
+/* Tables */
+[data-theme="dark"] table,
+[data-theme="dark"] th,
+[data-theme="dark"] td {
+  background: var(--vs-surface) !important;
+  color: var(--vs-text-primary) !important;
+  border-color: var(--vs-border) !important;
+}
+
+/* Modals and overlays content */
+[data-theme="dark"] [role="dialog"],
+[data-theme="dark"] .modal-content {
+  background: var(--vs-surface) !important;
+  color: var(--vs-text-primary) !important;
+}
+
+/* News cards */
+[data-theme="dark"] article,
+[data-theme="dark"] .news-card,
+[data-theme="dark"] [class*="news"],
+[data-theme="dark"] [class*="post"] {
+  background: var(--vs-surface) !important;
+  border-color: var(--vs-border) !important;
+  color: var(--vs-text-primary) !important;
+}
+
+/* Store section */
+[data-theme="dark"] [class*="store"],
+[data-theme="dark"] [class*="shop"] {
+  background: var(--vs-surface) !important;
+  color: var(--vs-text-primary) !important;
+}
+
+/* AI Analyzer section */
+[data-theme="dark"] [class*="ai"],
+[data-theme="dark"] [class*="analyzer"] {
+  background: var(--vs-surface) !important;
+  color: var(--vs-text-primary) !important;
+}
+
+/* Hero search bar always dark when theme is dark */
+[data-theme="dark"] .hero-search-bar {
+  background: rgba(22,20,42,0.97) !important;
+  border: 1px solid rgba(130,36,227,0.4) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6) !important;
+}
+
+/* body background reinforcement */
+[data-theme="dark"] body,
+[data-theme="dark"] #root,
+[data-theme="dark"] main {
+  background-color: var(--vs-bg) !important;
+}
+
+
+
 
 * {
   margin: 0;
