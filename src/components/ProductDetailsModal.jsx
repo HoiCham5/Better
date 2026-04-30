@@ -25,9 +25,8 @@ const ProductDetailsModal = ({ product, onClose }) => {
 
   // Sinh giá Đa Shop
   const shops = [
-    { name: 'Shopee Mall', price: basePrice - 500000, tag: 'Flash Sale', color: '#ee4d2d' },
-    { name: 'Lazada LazMall', price: basePrice - 200000, tag: 'Freeship Max', color: '#0f146d' },
-    { name: 'Thế Giới Di Động', price: basePrice + 1000000, tag: 'Bảo Hành 2 Năm', color: '#ffd400' }
+    { name: 'Shopee Mall', price: basePrice - 500000, tag: 'Flash Sale', color: '#ee4d2d', link: product.links?.shopee || '#' },
+    { name: 'TikTok Shop', price: basePrice - 200000, tag: 'Freeship Max', color: '#25F4EE', link: product.links?.tiktok || '#' }
   ];
 
   // Video Demo tuỳ theo Phân loại
@@ -76,7 +75,7 @@ const ProductDetailsModal = ({ product, onClose }) => {
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{formatCurrency(shop.price)}</div>
-                    <button style={{ marginTop: '5px', background: 'transparent', color: shop.color, border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>Tới cửa hàng ↗</button>
+                    <a href={shop.link} target="_blank" rel="noopener noreferrer" style={{ marginTop: '5px', display: 'inline-block', background: 'transparent', color: shop.color, border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold', textDecoration: 'none' }}>Tới cửa hàng ↗</a>
                   </div>
                 </div>
               ))}
@@ -118,7 +117,7 @@ const ProductDetailsModal = ({ product, onClose }) => {
                  <LineChart data={priceHistory}>
                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                    <XAxis dataKey="month" stroke="var(--text-secondary)" />
-                   <YAxis tickFormatter={(val) => `${val / 1000000}Tr`} stroke="var(--text-secondary)" domain={['dataMin - 1000000', 'dataMax + 1000000']} />
+                   <YAxis tickFormatter={(val) => `${(val / 1000000).toFixed(1).replace(/\\.0$/, '')}Tr`} stroke="var(--text-secondary)" domain={[(dataMin) => Math.floor(dataMin - 1000000), (dataMax) => Math.ceil(dataMax + 1000000)]} />
                    <RechartsTooltip 
                       formatter={(val) => formatCurrency(val)}
                       contentStyle={{ background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', borderRadius: '8px' }}
@@ -133,7 +132,7 @@ const ProductDetailsModal = ({ product, onClose }) => {
                 <AlertCircle size={20} /> Dự báo Của Chuyên Gia Mua Sắm
               </h4>
               <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-                Biểu đồ cho thấy giá của <strong>{product.name}</strong> đang nằm ở vùng <strong>Tốt Nhất</strong> trong chu kì nửa năm. Nếu bạn cần ngay bây giờ, Lazada LazMall đang đưa ra cơ hội rẻ nhất. Nếu vẫn chưa gấp, khả năng sẽ có thêm đợt Flash Sale giảm sâu 3% vào đợt lễ sắp tới!
+                Biểu đồ cho thấy giá của <strong>{product.name}</strong> đang nằm ở vùng <strong>Tốt Nhất</strong> trong chu kì nửa năm. Nếu bạn cần ngay bây giờ, Shopee Mall đang đưa ra cơ hội rẻ nhất. Nếu vẫn chưa gấp, khả năng sẽ có thêm đợt Flash Sale giảm sâu vào đợt siêu sale sắp tới!
               </p>
             </div>
           </div>
