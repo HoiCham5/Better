@@ -1,201 +1,372 @@
-import React, { useState, useEffect } from 'react';
-import { Bot, Sparkles, Check, Info } from 'lucide-react';
-import Tooltip from './Tooltip';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Bot, Sparkles, Check, ChevronDown, ChevronUp, Monitor, Cpu, Camera, Battery, Weight, Wifi } from 'lucide-react';
 
-const CompareSection = ({ products, initialDeviceIds }) => {
-  const [selectedDeviceIds, setSelectedDeviceIds] = useState(
-    initialDeviceIds && initialDeviceIds.length === 2 ? initialDeviceIds : [
-      products[0]?.id || '',
-      products[1]?.id || ''
+// ─── Helper: generate score (deterministic from name) ────────────────────────
+const getScore = (device) => {
+  if (!device) return 0;
+  let h = 0;
+  for (let i = 0; i < (device.name?.length || 0); i++) h = (Math.imul(31, h) + device.name.charCodeAt(i)) | 0;
+  return Math.abs(h % 21) + 75; // 75–95
+};
+
+// ─── Generate bar widths (deterministic) ─────────────────────────────────────
+const getBarWidth = (text, seed) => {
+  if (!text || text === '-') return 40;
+  let h = seed;
+  for (let i = 0; i < text.length; i++) h = (Math.imul(17, h) + text.charCodeAt(i)) | 0;
+  return Math.abs(h % 45) + 50; // 50–95
+};
+
+// ─── Spec categories mirroring Versus.com ─────────────────────────────────────
+const SPEC_CATEGORIES = [
+  {
+    id: 'design', label: 'Thiết Kế', icon: Weight,
+    keys: [
+      { k: 'weight',    l: 'Trọng lượng' },
+      { k: 'materials', l: 'Chất liệu vỏ máy' },
+      { k: 'thickness', l: 'Độ mỏng' },
     ]
+  },
+  {
+    id: 'display', label: 'Màn Hình', icon: Monitor,
+    keys: [
+      { k: 'screen',     l: 'Kích thước màn hình' },
+      { k: 'resolution', l: 'Độ phân giải' },
+      { k: 'brightness', l: 'Độ sáng tối đa' },
+      { k: 'refreshRate',l: 'Tốc độ làm mới' },
+    ]
+  },
+  {
+    id: 'performance', label: 'Hiệu Năng', icon: Cpu,
+    keys: [
+      { k: 'chip',    l: 'Vi xử lý (CPU)' },
+      { k: 'gpu',     l: 'Chip đồ hoạ (GPU)' },
+      { k: 'ram',     l: 'Bộ nhớ RAM' },
+      { k: 'storage', l: 'Bộ nhớ trong' },
+      { k: 'os',      l: 'Hệ điều hành' },
+    ]
+  },
+  {
+    id: 'camera', label: 'Camera', icon: Camera,
+    keys: [
+      { k: 'camera',       l: 'Camera chính' },
+      { k: 'cameraSelfie', l: 'Camera selfie' },
+      { k: 'videoRecord',  l: 'Quay video' },
+    ]
+  },
+  {
+    id: 'battery', label: 'Pin & Sạc', icon: Battery,
+    keys: [
+      { k: 'battery',      l: 'Dung lượng pin' },
+      { k: 'chargingSpeed',l: 'Sạc nhanh' },
+      { k: 'wirelessCharge',l:'Sạc không dây' },
+    ]
+  },
+  {
+    id: 'connectivity', label: 'Kết Nối', icon: Wifi,
+    keys: [
+      { k: 'network',  l: 'Mạng di động' },
+      { k: 'wifi',     l: 'Wi-Fi' },
+      { k: 'bluetooth',l: 'Bluetooth' },
+      { k: 'ports',    l: 'Cổng giao tiếp' },
+      { k: 'nfc',      l: 'NFC' },
+    ]
+  },
+];
+
+// ─── Reasons to buy (static, contextual) ────────────────────────────────────
+const REASONS_A = [
+  { title: 'Hiệu năng tổng thể vượt trội', sub: 'Chip xử lý mạnh hơn, tốc độ cao hơn' },
+  { title: 'Pin bền hơn', sub: 'Dung lượng pin lớn hơn, sạc nhanh hơn' },
+  { title: 'Camera chụp ảnh rõ nét', sub: 'Độ phân giải cao, xử lý ảnh tốt hơn' },
+];
+const REASONS_B = [
+  { title: 'Thiết kế mỏng nhẹ hơn', sub: 'Cầm nắm thoải mái, dễ di chuyển' },
+  { title: 'Màn hình sắc nét hơn', sub: 'Độ phân giải cao, màu sắc chuẩn xác' },
+  { title: 'Giá thành hợp lý hơn', sub: 'Tỷ lệ giá trị / hiệu năng tốt hơn' },
+];
+
+// ─── Component ────────────────────────────────────────────────────────────────
+const CompareSection = ({ products, initialDeviceIds }) => {
+  const [selectedIds, setSelectedIds] = useState(
+    initialDeviceIds?.length === 2 ? initialDeviceIds : [products[0]?.id || '', products[1]?.id || '']
   );
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [expandedCats, setExpandedCats] = useState({});
   const [isThinking, setIsThinking] = useState(false);
   const [aiResponse, setAiResponse] = useState('');
 
   useEffect(() => {
-    if (initialDeviceIds && initialDeviceIds.length === 2) {
-      setSelectedDeviceIds(initialDeviceIds);
-    }
+    if (initialDeviceIds?.length === 2) setSelectedIds(initialDeviceIds);
   }, [initialDeviceIds]);
 
-  const hasPhones = products.some(p => p.category === 'phone');
-  const hasLaptops = products.some(p => p.category === 'laptop');
+  const devA = products.find(p => p.id === selectedIds[0]);
+  const devB = products.find(p => p.id === selectedIds[1]);
+  const scoreA = useMemo(() => getScore(devA), [devA]);
+  const scoreB = useMemo(() => getScore(devB), [devB]);
 
-  const MAX_DEVICES = 2; // Versus.com mainly compares 2 at a time side-by-side
-  const currentDevices = selectedDeviceIds.map(id => products.find(p => p.id === id)).filter(Boolean);
+  const colorA = '#8224e3'; // Versus purple
+  const colorB = '#ff2e51'; // Versus red
 
-  const handleDeviceChange = (index, newId) => {
-    const newArr = [...selectedDeviceIds];
-    newArr[index] = newId;
-    setSelectedDeviceIds(newArr);
+  const handleChange = (idx, id) => {
+    const next = [...selectedIds];
+    next[idx] = id;
+    setSelectedIds(next);
+    setAiResponse('');
   };
 
-  const handleAiConsult = () => {
+  const toggleCat = (id) => setExpandedCats(p => ({ ...p, [id]: !p[id] }));
+
+  const handleAI = () => {
     setIsThinking(true);
     setAiResponse('');
     setTimeout(() => {
       setIsThinking(false);
-      setAiResponse(`### Nhận xét từ AI Better:\nDựa trên số liệu tổng hợp, ${currentDevices[0]?.name} vượt trội hơn về tính ổn định, trong khi ${currentDevices[1]?.name} có lợi thế về giá thành.`);
-    }, 2000);
+      setAiResponse(
+        `Dựa trên điểm số tổng hợp, **${devA?.name}** đạt **${scoreA}/100** và **${devB?.name}** đạt **${scoreB}/100**.\n\n` +
+        (scoreA >= scoreB
+          ? `➤ **${devA?.name}** nổi trội hơn về hiệu năng và camera. Nếu bạn cần máy mạnh, đây là lựa chọn tốt hơn.\n\n➤ **${devB?.name}** phù hợp hơn nếu bạn ưu tiên thiết kế mỏng nhẹ và giá thành hợp lý.`
+          : `➤ **${devB?.name}** nổi trội hơn về hiệu năng và camera. Nếu bạn cần máy mạnh, đây là lựa chọn tốt hơn.\n\n➤ **${devA?.name}** phù hợp hơn nếu bạn ưu tiên thiết kế mỏng nhẹ và giá thành hợp lý.`)
+      );
+    }, 1800);
   };
 
-  // Fake logic to generate points out of 100
-  const getScore = (device) => {
-    if (!device) return 0;
-    return Math.floor(Math.abs(Math.sin((device?.name?.length || 10) * 1.5)) * 20 + 75); // 75-95
-  };
+  if (!devA || !devB) return (
+    <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6b7280' }}>
+      <p style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Chọn 2 sản phẩm để bắt đầu so sánh</p>
+    </div>
+  );
 
-  const colors = ['#8b5cf6', '#ef4444']; // Purple and Red for Product A and B
-  
-  // Specs definition
-  const specCategories = [
-    { label: 'Thiết Kế', keys: [{ k: 'weight', l: 'Trọng lượng' }, { k: 'materials', l: 'Chất liệu' }] },
-    { label: 'Màn Hình', keys: [{ k: 'screen', l: 'Kích thước & Độ phân giải' }, { k: 'brightness', l: 'Độ sáng' }] },
-    { label: 'Hiệu Năng', keys: [{ k: 'chip', l: 'Vi xử lý' }, { k: 'ram', l: 'RAM' }, { k: 'storage', l: 'Lưu trữ' }] },
-    { label: 'Camera', keys: [{ k: 'camera', l: 'Camera chính' }, { k: 'cameraSelfie', l: 'Camera trước' }] },
-    { label: 'Pin & Sạc', keys: [{ k: 'battery', l: 'Dung lượng pin' }] },
-  ];
-
-  if (currentDevices.length < 2) {
+  // Score circle component
+  const ScoreCircle = ({ score, color, size = 110 }) => {
+    const r = (size / 2) - 8;
+    const circ = 2 * Math.PI * r;
+    const dash = (score / 100) * circ;
     return (
-      <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
-        Vui lòng chọn đủ 2 sản phẩm để bắt đầu so sánh chuẩn Versus.
+      <div style={{ position: 'relative', width: size, height: size }}>
+        <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+          <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#f0f0f0" strokeWidth="8" />
+          <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth="8"
+            strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
+            style={{ transition: 'stroke-dasharray 1s ease' }}
+          />
+        </svg>
+        <div style={{
+          position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center'
+        }}>
+          <span style={{ fontSize: '1.6rem', fontWeight: 900, color, lineHeight: 1 }}>{score}</span>
+          <span style={{ fontSize: '0.6rem', color: '#6b7280', textTransform: 'uppercase', fontWeight: 600 }}>điểm</span>
+        </div>
       </div>
     );
-  }
+  };
 
-  const devA = currentDevices[0];
-  const devB = currentDevices[1];
+  const getVal = (dev, key) => dev?.specs?.[key] || dev?.[key] || null;
+
+  const shownCats = activeCategory === 'all'
+    ? SPEC_CATEGORIES
+    : SPEC_CATEGORIES.filter(c => c.id === activeCategory);
 
   return (
-    <section className="compare-view animate-fade-in" style={{ marginTop: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      
-      {/* 1. Header & Selectors (Versus Style) */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px', marginBottom: '40px', background: 'var(--bg-secondary)', padding: '20px', borderRadius: '20px' }}>
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
-          <select className="select-input" value={devA.id} onChange={(e) => handleDeviceChange(0, e.target.value)} style={{ borderLeft: `5px solid ${colors[0]}`, fontSize: '1.2rem', padding: '15px', fontWeight: 'bold', width: '100%', textAlign: 'center' }}>
-            <optgroup label="📱 Điện thoại">{products.filter(p => p.category === 'phone').map(p => <option key={`a-${p.id}`} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
-            <optgroup label="💻 Laptop">{products.filter(p => p.category === 'laptop').map(p => <option key={`al-${p.id}`} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
+    <section className="compare-view animate-fade-in" style={{ paddingBottom: '40px' }}>
+
+      {/* ── 1. DEVICE SELECTOR HEADER ─────────────────────────────────── */}
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '16px',
+        alignItems: 'center', marginBottom: '32px',
+        background: 'white', borderRadius: '16px', padding: '24px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.08)', border: '1px solid #e5e7eb'
+      }}>
+        {/* Device A */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+          <select className="select-input" value={devA.id} onChange={e => handleChange(0, e.target.value)}
+            style={{ borderLeft: `4px solid ${colorA}`, fontWeight: 700, fontSize: '0.9rem', textAlign: 'center' }}>
+            <optgroup label="📱 Điện thoại">{products.filter(p=>p.category==='phone').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
+            <optgroup label="💻 Laptop">{products.filter(p=>p.category==='laptop').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
           </select>
-          <img src={devA.image} alt={devA.name} style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
-          <div style={{ position: 'relative', width: '100px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: `conic-gradient(${colors[0]} ${getScore(devA)}%, var(--bg-primary) 0)`, border: '4px solid var(--bg-primary)' }}>
-            <div style={{ position: 'absolute', width: '80px', height: '80px', background: 'var(--bg-secondary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
-              <span style={{ fontSize: '1.8rem', fontWeight: 900, color: colors[0] }}>{getScore(devA)}</span>
-              <span style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Điểm</span>
-            </div>
-          </div>
+          <img src={devA.image} alt={devA.name} style={{ width: '90px', height: '90px', objectFit: 'contain' }} />
+          <ScoreCircle score={scoreA} color={colorA} />
+          <div style={{ fontWeight: 700, fontSize: '0.85rem', color: colorA }}>{devA.name}</div>
+          <div style={{ fontSize: '0.85rem', color: '#6b7280' }}>{devA.price}</div>
         </div>
 
-        <div className="vs-badge" style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#1a73e8', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '1.5rem', flexShrink: 0, boxShadow: '0 5px 15px rgba(26, 115, 232, 0.4)', zIndex: 10 }}>VS</div>
+        {/* VS */}
+        <div className="vs-badge" style={{ width: '56px', height: '56px', fontSize: '1.1rem' }}>VS</div>
 
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
-          <select className="select-input" value={devB.id} onChange={(e) => handleDeviceChange(1, e.target.value)} style={{ borderLeft: `5px solid ${colors[1]}`, fontSize: '1.2rem', padding: '15px', fontWeight: 'bold', width: '100%', textAlign: 'center' }}>
-            <optgroup label="📱 Điện thoại">{products.filter(p => p.category === 'phone').map(p => <option key={`b-${p.id}`} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
-            <optgroup label="💻 Laptop">{products.filter(p => p.category === 'laptop').map(p => <option key={`bl-${p.id}`} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
+        {/* Device B */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+          <select className="select-input" value={devB.id} onChange={e => handleChange(1, e.target.value)}
+            style={{ borderLeft: `4px solid ${colorB}`, fontWeight: 700, fontSize: '0.9rem', textAlign: 'center' }}>
+            <optgroup label="📱 Điện thoại">{products.filter(p=>p.category==='phone').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
+            <optgroup label="💻 Laptop">{products.filter(p=>p.category==='laptop').map(p=><option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}</optgroup>
           </select>
-          <img src={devB.image} alt={devB.name} style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
-          <div style={{ position: 'relative', width: '100px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: `conic-gradient(${colors[1]} ${getScore(devB)}%, var(--bg-primary) 0)`, border: '4px solid var(--bg-primary)' }}>
-            <div style={{ position: 'absolute', width: '80px', height: '80px', background: 'var(--bg-secondary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
-              <span style={{ fontSize: '1.8rem', fontWeight: 900, color: colors[1] }}>{getScore(devB)}</span>
-              <span style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Điểm</span>
-            </div>
-          </div>
+          <img src={devB.image} alt={devB.name} style={{ width: '90px', height: '90px', objectFit: 'contain' }} />
+          <ScoreCircle score={scoreB} color={colorB} />
+          <div style={{ fontWeight: 700, fontSize: '0.85rem', color: colorB }}>{devB.name}</div>
+          <div style={{ fontSize: '0.85rem', color: '#6b7280' }}>{devB.price}</div>
         </div>
       </div>
 
-      {/* 2. Reasons to Buy (Pros / Cons) */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '40px' }}>
-        <div className="glass-panel" style={{ padding: '25px', borderTop: `4px solid ${colors[0]}` }}>
-          <h3 style={{ marginBottom: '20px', fontSize: '1.2rem' }}>Tại sao chọn <strong>{devA.name}</strong> thay vì {devB.name}?</h3>
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}><Check size={20} color="#1a73e8" style={{ marginTop: '2px', flexShrink: 0 }} /> <span>Hiệu năng tổng thể cao hơn ~{(Math.random() * 15 + 5).toFixed(1)}%</span></li>
-            <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}><Check size={20} color="#1a73e8" style={{ marginTop: '2px', flexShrink: 0 }} /> <span>Pin trâu hơn, đáp ứng tốt nhu cầu giải trí</span></li>
-            <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}><Check size={20} color="#1a73e8" style={{ marginTop: '2px', flexShrink: 0 }} /> <span>Trọng lượng nhẹ hơn, cầm nắm thoải mái</span></li>
-          </ul>
+      {/* ── 2. REASONS TO BUY ─────────────────────────────────────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '32px' }}>
+        <div className="reasons-card">
+          <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '16px', color: '#1a1a1a' }}>
+            Tại sao chọn <span style={{ color: colorA }}>{devA.name}</span>?
+          </h3>
+          {REASONS_A.map((r, i) => (
+            <div key={i} className="reason-item">
+              <div className="reason-check" style={{ background: colorA }}>✓</div>
+              <div>
+                <div className="reason-title">{r.title}</div>
+                <div className="reason-sub">{r.sub}</div>
+              </div>
+            </div>
+          ))}
         </div>
-        
-        <div className="glass-panel" style={{ padding: '25px', borderTop: `4px solid ${colors[1]}` }}>
-          <h3 style={{ marginBottom: '20px', fontSize: '1.2rem' }}>Tại sao chọn <strong>{devB.name}</strong> thay vì {devA.name}?</h3>
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}><Check size={20} color="#1a73e8" style={{ marginTop: '2px', flexShrink: 0 }} /> <span>Thiết kế hiện đại, viền màn hình mỏng hơn</span></li>
-            <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}><Check size={20} color="#1a73e8" style={{ marginTop: '2px', flexShrink: 0 }} /> <span>Chất lượng camera trong điều kiện thiếu sáng tốt hơn</span></li>
-            <li style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}><Check size={20} color="#1a73e8" style={{ marginTop: '2px', flexShrink: 0 }} /> <span>Mức giá ({devB.price}) dễ tiếp cận hơn so với {devA.price}</span></li>
-          </ul>
+        <div className="reasons-card">
+          <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '16px', color: '#1a1a1a' }}>
+            Tại sao chọn <span style={{ color: colorB }}>{devB.name}</span>?
+          </h3>
+          {REASONS_B.map((r, i) => (
+            <div key={i} className="reason-item">
+              <div className="reason-check" style={{ background: colorB }}>✓</div>
+              <div>
+                <div className="reason-title">{r.title}</div>
+                <div className="reason-sub">{r.sub}</div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* 3. Specs Grid */}
-      <h2 style={{ fontSize: '2rem', textAlign: 'center', marginBottom: '30px' }}>So Sánh Chi Tiết</h2>
-      
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-        {specCategories.map((cat, idx) => (
-          <div key={idx} className="glass-panel" style={{ padding: '20px' }}>
-            <h3 style={{ fontSize: '1.3rem', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', borderBottom: '1px solid var(--glass-border)', paddingBottom: '10px' }}>
-               {cat.label}
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
-              {cat.keys.map(spec => {
-                const valA = devA.specs?.[spec.k] || devA?.[spec.k] || '-';
-                const valB = devB.specs?.[spec.k] || devB?.[spec.k] || '-';
-                
-                // Random bar widths to simulate comparative data visual exactly like Versus
-                const barWidthA = Math.floor(Math.random() * 40 + 60);
-                const barWidthB = Math.floor(Math.random() * 40 + 60);
+      {/* ── 3. CATEGORY FILTER TABS ───────────────────────────────────── */}
+      <div className="compare-tab-nav" style={{ overflowX: 'auto' }}>
+        <button className={`compare-tab ${activeCategory === 'all' ? 'active' : ''}`} onClick={() => setActiveCategory('all')}>
+          📊 Tất cả
+        </button>
+        {SPEC_CATEGORIES.map(c => (
+          <button key={c.id} className={`compare-tab ${activeCategory === c.id ? 'active' : ''}`} onClick={() => setActiveCategory(c.id)}>
+            {c.label}
+          </button>
+        ))}
+      </div>
 
-                return (
-                  <div key={spec.k} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><Info size={14}/> {spec.l}</div>
-                    </div>
-                    
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'flex-end' }}>
-                         <span style={{ fontSize: '0.95rem', fontWeight: 600, textAlign: 'right' }}>{valA}</span>
-                         <div style={{ width: '100%', background: 'var(--bg-primary)', height: '6px', borderRadius: '3px', display: 'flex', justifyContent: 'flex-end' }}>
-                           <div style={{ width: `${barWidthA}%`, height: '100%', background: colors[0], borderRadius: '3px' }}></div>
-                         </div>
-                      </div>
-                      <div style={{ width: '1px', height: '30px', background: 'var(--glass-border)' }}></div>
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'flex-start' }}>
-                         <span style={{ fontSize: '0.95rem', fontWeight: 600, textAlign: 'left' }}>{valB}</span>
-                         <div style={{ width: '100%', background: 'var(--bg-primary)', height: '6px', borderRadius: '3px', display: 'flex', justifyContent: 'flex-start' }}>
-                           <div style={{ width: `${barWidthB}%`, height: '100%', background: colors[1], borderRadius: '3px' }}></div>
-                         </div>
-                      </div>
-                    </div>
+      {/* ── 4. SPEC SECTIONS ──────────────────────────────────────────── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {shownCats.map(cat => {
+          const Icon = cat.icon;
+          const rows = cat.keys.filter(s => getVal(devA, s.k) || getVal(devB, s.k));
+          if (!rows.length) return null;
+          const expanded = expandedCats[cat.id] !== false; // default open
+
+          return (
+            <div key={cat.id} className="glass-panel" style={{ padding: '0', overflow: 'hidden' }}>
+              {/* Category Header */}
+              <div
+                onClick={() => toggleCat(cat.id)}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '16px 20px', cursor: 'pointer', borderBottom: expanded ? '1px solid #e5e7eb' : 'none',
+                  background: '#fafafa', userSelect: 'none'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ width: 30, height: 30, borderRadius: '8px', background: 'linear-gradient(135deg, #3858f6, #8224e3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Icon size={16} color="white" />
                   </div>
-                );
-              })}
+                  <span style={{ fontSize: '1rem', fontWeight: 800, color: '#1a1a1a' }}>{cat.label}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#6b7280', background: '#f3f4f6', padding: '2px 8px', borderRadius: '10px' }}>{rows.length} thông số</span>
+                </div>
+                {expanded ? <ChevronUp size={18} color="#6b7280" /> : <ChevronDown size={18} color="#6b7280" />}
+              </div>
+
+              {/* Spec Rows */}
+              {expanded && (
+                <div style={{ padding: '8px 20px' }}>
+                  {/* Mini header */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px 1fr', gap: '12px', padding: '8px 0', marginBottom: '4px' }}>
+                    <div style={{ textAlign: 'right', fontWeight: 700, fontSize: '0.8rem', color: colorA }}>{devA.name}</div>
+                    <div></div>
+                    <div style={{ textAlign: 'left', fontWeight: 700, fontSize: '0.8rem', color: colorB }}>{devB.name}</div>
+                  </div>
+
+                  {rows.map(spec => {
+                    const valA = getVal(devA, spec.k) || '-';
+                    const valB = getVal(devB, spec.k) || '-';
+                    const bwA = getBarWidth(String(valA), spec.k.charCodeAt(0) * 13);
+                    const bwB = getBarWidth(String(valB), spec.k.charCodeAt(0) * 17);
+
+                    return (
+                      <div key={spec.k} className="spec-bar-row">
+                        {/* Left (Device A) */}
+                        <div className="spec-bar-value right" style={{ flex: 1 }}>
+                          <span style={{ fontSize: '0.88rem', fontWeight: 600, color: '#1a1a1a' }}>{valA}</span>
+                          <div className="spec-bar-track">
+                            <div className="spec-bar-fill" style={{ width: `${bwA}%`, background: colorA, marginLeft: 'auto' }}></div>
+                          </div>
+                        </div>
+
+                        {/* Center label */}
+                        <div className="spec-bar-label">
+                          <span style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: 600 }}>{spec.l}</span>
+                        </div>
+
+                        {/* Right (Device B) */}
+                        <div className="spec-bar-value left" style={{ flex: 1 }}>
+                          <span style={{ fontSize: '0.88rem', fontWeight: 600, color: '#1a1a1a' }}>{valB}</span>
+                          <div className="spec-bar-track">
+                            <div className="spec-bar-fill" style={{ width: `${bwB}%`, background: colorB }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
+          );
+        })}
+      </div>
+
+      {/* ── 5. BUY BUTTONS ROW ────────────────────────────────────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '24px' }}>
+        {[devA, devB].map((dev, i) => (
+          <div key={i} style={{ background: 'white', borderRadius: '12px', padding: '16px', border: `2px solid ${i === 0 ? colorA : colorB}`, textAlign: 'center' }}>
+            <div style={{ fontWeight: 700, marginBottom: '12px', color: i === 0 ? colorA : colorB }}>{dev.name}</div>
+            {dev?.links?.shopee && (
+              <a href={dev.links.shopee} target="_blank" rel="noopener noreferrer"
+                className="btn btn-shopee" style={{ width: '100%', borderRadius: '8px', justifyContent: 'center', fontSize: '0.85rem' }}>
+                🛒 Mua trên Shopee
+              </a>
+            )}
           </div>
         ))}
       </div>
 
-      <div style={{ marginTop: '50px', textAlign: 'center' }}>
-        <button 
-          className="btn hover-lift" 
-          onClick={handleAiConsult}
-          disabled={isThinking}
-          style={{ background: '#1a73e8', color: 'white', padding: '15px 35px', borderRadius: '30px', fontSize: '1.2rem', display: 'inline-flex', alignItems: 'center', gap: '10px', boxShadow: '0 10px 25px rgba(26, 115, 232, 0.4)' }}
-        >
-          {isThinking ? (
-            <><Sparkles size={24} className="animate-spin" /> Đang Phân Tích...</>
-          ) : (
-            <><Bot size={24} /> Xin Ý Kiến AI Better</>
-          )}
+      {/* ── 6. AI VERDICT ─────────────────────────────────────────────── */}
+      <div style={{ marginTop: '32px', textAlign: 'center' }}>
+        <button className="btn btn-primary hover-lift" onClick={handleAI} disabled={isThinking}
+          style={{ padding: '14px 32px', fontSize: '1rem', borderRadius: '50px' }}>
+          {isThinking ? <><Sparkles size={18} style={{ animation: 'spin 1s linear infinite' }} /> Đang phân tích...</> : <><Bot size={18} /> Xin nhận xét từ AI</>}
         </button>
       </div>
 
       {aiResponse && (
-        <div className="glass-panel animate-fade-in" style={{ padding: '25px', marginTop: '30px', borderLeft: '5px solid #1a73e8', background: 'rgba(26, 115, 232, 0.1)', lineHeight: '1.8', textAlign: 'left', fontSize: '1.1rem' }}>
-          <div dangerouslySetInnerHTML={{ 
+        <div className="animate-fade-in" style={{
+          marginTop: '20px', padding: '24px', background: 'white', borderRadius: '12px',
+          borderLeft: `5px solid #3858f6`, boxShadow: '0 4px 16px rgba(56,88,246,0.1)',
+          lineHeight: 1.8, fontSize: '0.95rem', color: '#1a1a1a', textAlign: 'left'
+        }}>
+          <div dangerouslySetInnerHTML={{
             __html: aiResponse
               .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
               .replace(/\n\n/g, '<br/><br/>')
-              .replace(/\n-/g, '<br/>•')
+              .replace(/➤/g, '<span style="color:#3858f6;font-size:1.1em">➤</span>')
           }} />
         </div>
       )}
+
     </section>
   );
 };
