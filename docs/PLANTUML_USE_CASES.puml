@@ -1,0 +1,564 @@
+' ============================================================
+' FILE 1: BIỂU ĐỒ USE CASE TỔNG QUÁT - HỆ THỐNG BETTER
+' ============================================================
+@startuml UC_TONG_QUAT
+skinparam actorStyle awesome
+skinparam backgroundColor #0f1117
+skinparam usecase {
+  BackgroundColor #1a1d27
+  BorderColor #3b82f6
+  FontColor #e2e8f0
+}
+skinparam actor {
+  BackgroundColor #1a1d27
+  BorderColor #a855f7
+  FontColor #e2e8f0
+}
+skinparam ArrowColor #3b82f6
+skinparam noteFontColor #e2e8f0
+skinparam noteBackgroundColor #1a1d27
+
+title Biểu Đồ Use Case Tổng Quát - Hệ Thống BETTER
+
+' ---- ACTORS ----
+actor "Khách Vãng Lai\n(Guest)" as Guest
+actor "Thành Viên\n(Member)" as Member
+actor "Quản Trị Viên\n(Admin)" as Admin
+
+Member --|> Guest : extends
+
+' ---- SYSTEM BOUNDARY ----
+rectangle "Hệ Thống BETTER" {
+
+  ' -- Nhóm: Xem thông tin --
+  usecase "Xem danh sách\nSản phẩm" as UC_VIEW
+  usecase "Xem Chi Tiết\nSản Phẩm" as UC_DETAIL
+  usecase "Tìm Kiếm\nSản Phẩm" as UC_SEARCH
+  usecase "Đọc Tin Tức\n& Bài Đánh Giá" as UC_NEWS
+
+  ' -- Nhóm: So sánh --
+  usecase "So Sánh Đa\nThiết Bị (2-4)" as UC_COMPARE
+  usecase "Xem Biểu Đồ\nRadar" as UC_RADAR
+  usecase "Nhận Tư Vấn AI\nSo Sánh" as UC_AI_COMPARE
+
+  ' -- Nhóm: AI --
+  usecase "Nhập Câu Hỏi\nTư Vấn AI" as UC_AI
+  usecase "Xem Gợi Ý\nThiết Bị" as UC_AI_RESULT
+
+  ' -- Nhóm: Tài khoản --
+  usecase "Đăng Ký\nTài Khoản" as UC_REGISTER
+  usecase "Đăng Nhập\n(JWT)" as UC_LOGIN
+  usecase "Bình Luận\nSản Phẩm" as UC_COMMENT
+  usecase "Quản Lý\nWishlist" as UC_WISHLIST
+  usecase "Xem Hồ Sơ\n& Điểm XP" as UC_PROFILE
+
+  ' -- Nhóm: Admin --
+  usecase "Quản Lý Sản Phẩm\n(CRUD)" as UC_ADMIN_PRODUCT
+  usecase "Quản Lý Bài Viết\n(CRUD)" as UC_ADMIN_POST
+}
+
+' ---- GUEST ASSOCIATIONS ----
+Guest --> UC_VIEW
+Guest --> UC_DETAIL
+Guest --> UC_SEARCH
+Guest --> UC_NEWS
+Guest --> UC_COMPARE
+Guest --> UC_AI
+Guest --> UC_REGISTER
+Guest --> UC_LOGIN
+
+' ---- MEMBER ASSOCIATIONS ----
+Member --> UC_COMMENT
+Member --> UC_WISHLIST
+Member --> UC_PROFILE
+
+' ---- ADMIN ASSOCIATIONS ----
+Admin --> UC_ADMIN_PRODUCT
+Admin --> UC_ADMIN_POST
+
+' ---- INCLUDE / EXTEND ----
+UC_COMPARE ..> UC_RADAR    : <<include>>
+UC_COMPARE ..> UC_AI_COMPARE : <<extend>>
+UC_AI      ..> UC_AI_RESULT  : <<include>>
+UC_DETAIL  ..> UC_COMMENT    : <<extend>>
+
+@enduml
+
+
+' ============================================================
+' FILE 2: USE CASE CHI TIẾT - NGƯỜI DÙNG (MEMBER)
+' ============================================================
+@startuml UC_NGUOI_DUNG
+skinparam actorStyle awesome
+skinparam backgroundColor #0f1117
+skinparam usecase { BackgroundColor #1a1d27  BorderColor #3b82f6  FontColor #e2e8f0 }
+skinparam actor    { BackgroundColor #1a1d27  BorderColor #a855f7  FontColor #e2e8f0 }
+skinparam ArrowColor #3b82f6
+
+title Use Case Chi Tiết - Người Dùng (Member)
+
+actor "Thành Viên\n(Member)" as Member
+
+rectangle "Module Xác Thực" {
+  usecase "Đăng Ký bằng\nEmail & Password" as UC_REG
+  usecase "Đăng Nhập\n(Nhận JWT Token)" as UC_LOG
+  usecase "Lưu Token\nvào LocalStorage"  as UC_TOKEN
+  usecase "Xem & Sửa\nHồ Sơ Cá Nhân"    as UC_PROF
+}
+
+rectangle "Module Sản Phẩm" {
+  usecase "Xem Danh Sách\nĐiện Thoại"    as UC_PHONE
+  usecase "Xem Danh Sách\nLaptop"         as UC_LAPTOP
+  usecase "Lọc Theo\nNhu Cầu"             as UC_FILTER
+  usecase "Xem Chi Tiết\nSản Phẩm"        as UC_DET
+  usecase "Thêm vào\nWishlist (♥)"        as UC_WISH
+  usecase "Xem Tất Cả\n(Cửa Hàng)"       as UC_STORE
+  usecase "Mua qua\nShopee / TikTok"      as UC_BUY
+}
+
+rectangle "Module So Sánh" {
+  usecase "Chọn Thiết Bị 1\ntừ Dropdown"  as UC_C1
+  usecase "Chọn Thiết Bị 2\ntừ Dropdown"  as UC_C2
+  usecase "Thêm Thiết Bị 3\n(nút +)"      as UC_C3
+  usecase "Thêm Thiết Bị 4\n(nút +)"      as UC_C4
+  usecase "Xóa Thiết Bị\n(nút ✕)"         as UC_DEL
+  usecase "Xem Biểu Đồ\nRadar Đa Lớp"    as UC_RAD
+  usecase "Xem Bảng\nThông Số Chi Tiết"   as UC_TABLE
+  usecase "Hỏi AI\nPhân Tích So Sánh"     as UC_AIC
+}
+
+rectangle "Module AI Tư Vấn" {
+  usecase "Nhập Câu Hỏi\nBằng Ngôn Ngữ Tự Nhiên" as UC_QST
+  usecase "Nhận Gợi Ý\nƯu Tiên (95%)"             as UC_REC1
+  usecase "Nhận Phương Án\nThay Thế (85%)"          as UC_REC2
+}
+
+rectangle "Module Cộng Đồng" {
+  usecase "Viết Bình Luận\n(+10 XP)"      as UC_CMT
+  usecase "Xem Bình Luận\nCộng Đồng"      as UC_VCMT
+  usecase "Xem Điểm XP\nTích Lũy"         as UC_XP
+}
+
+' -- Associations --
+Member --> UC_REG
+Member --> UC_LOG
+Member --> UC_PROF
+Member --> UC_PHONE
+Member --> UC_LAPTOP
+Member --> UC_FILTER
+Member --> UC_DET
+Member --> UC_WISH
+Member --> UC_STORE
+Member --> UC_C1
+Member --> UC_QST
+Member --> UC_CMT
+Member --> UC_VCMT
+Member --> UC_XP
+
+' -- Include / Extend --
+UC_LOG    ..> UC_TOKEN  : <<include>>
+UC_C1     ..> UC_C2     : <<include>>
+UC_C2     ..> UC_RAD    : <<include>>
+UC_C2     ..> UC_TABLE  : <<include>>
+UC_C3     ..> UC_C2     : <<extend>>
+UC_C4     ..> UC_C3     : <<extend>>
+UC_C2     ..> UC_DEL    : <<extend>>
+UC_C2     ..> UC_AIC    : <<extend>>
+UC_DET    ..> UC_BUY    : <<extend>>
+UC_DET    ..> UC_WISH   : <<extend>>
+UC_QST    ..> UC_REC1   : <<include>>
+UC_QST    ..> UC_REC2   : <<include>>
+UC_PHONE  ..> UC_FILTER : <<extend>>
+UC_CMT    ..> UC_XP     : <<include>>
+
+@enduml
+
+
+' ============================================================
+' FILE 3: USE CASE CHI TIẾT - QUẢN TRỊ VIÊN (ADMIN)
+' ============================================================
+@startuml UC_ADMIN
+skinparam actorStyle awesome
+skinparam backgroundColor #0f1117
+skinparam usecase { BackgroundColor #1a1d27  BorderColor #ee4d2d  FontColor #e2e8f0 }
+skinparam actor    { BackgroundColor #1a1d27  BorderColor #ee4d2d  FontColor #e2e8f0 }
+skinparam ArrowColor #ee4d2d
+
+title Use Case Chi Tiết - Quản Trị Viên (Admin)
+
+actor "Quản Trị Viên\n(Admin)" as Admin
+
+rectangle "Xác Thực Admin" {
+  usecase "Đăng Nhập\nbằng Email Admin" as UC_ALOG
+  usecase "Xác Thực\nJWT + role:Admin"  as UC_AROLE
+}
+
+rectangle "Bảng Quản Trị (AdminPanel)" {
+
+  rectangle "Quản Lý Sản Phẩm" {
+    usecase "Xem Danh Sách\nTất Cả Sản Phẩm"   as UC_ALIST
+    usecase "Thêm Sản Phẩm\nMới (Điện Thoại)"   as UC_AADDP
+    usecase "Thêm Sản Phẩm\nMới (Laptop)"        as UC_AADDL
+    usecase "Sửa Thông Tin\nSản Phẩm"            as UC_AEDIT
+    usecase "Xóa Sản Phẩm\n(Xác nhận)"          as UC_ADEL
+    usecase "Đánh Dấu\nisFeatured ✨"            as UC_AFEAT
+    usecase "Nhập URL\nẢnh Sản Phẩm"             as UC_AIMG
+    usecase "Nhập URL\nShopee & TikTok"           as UC_ALINK
+    usecase "Nhập Thông Số\nKỹ Thuật (Specs)"    as UC_ASPEC
+  }
+
+  rectangle "Quản Lý Bài Viết" {
+    usecase "Xem Danh Sách\nTất Cả Bài Viết"    as UC_PLIST
+    usecase "Đăng Bài Viết\nTin Tức Mới"         as UC_PADD
+    usecase "Nhập Nội Dung\nMarkdown"             as UC_PMD
+    usecase "Xóa Bài Viết\n(Xác nhận)"          as UC_PDEL
+  }
+}
+
+rectangle "Script Seeding (CLI)" {
+  usecase "Chạy seedData.js\n(20 tin + 6 SP)"       as UC_SEED
+  usecase "Chạy seedProductReviews.js\n(Auto Review)" as UC_SEEDR
+}
+
+' -- Associations --
+Admin --> UC_ALOG
+Admin --> UC_ALIST
+Admin --> UC_AADDP
+Admin --> UC_AADDL
+Admin --> UC_AEDIT
+Admin --> UC_ADEL
+Admin --> UC_AFEAT
+Admin --> UC_PLIST
+Admin --> UC_PADD
+Admin --> UC_PDEL
+Admin --> UC_SEED
+Admin --> UC_SEEDR
+
+' -- Include / Extend --
+UC_ALOG   ..> UC_AROLE  : <<include>>
+UC_AADDP  ..> UC_AIMG   : <<include>>
+UC_AADDP  ..> UC_ALINK  : <<include>>
+UC_AADDP  ..> UC_ASPEC  : <<include>>
+UC_AADDL  ..> UC_AIMG   : <<include>>
+UC_AADDL  ..> UC_ALINK  : <<include>>
+UC_AADDL  ..> UC_ASPEC  : <<include>>
+UC_AEDIT  ..> UC_ASPEC  : <<include>>
+UC_AEDIT  ..> UC_AFEAT  : <<extend>>
+UC_PADD   ..> UC_PMD    : <<include>>
+
+@enduml
+
+
+' ============================================================
+' FILE 4: SEQUENCE DIAGRAM - LUỒNG ĐĂNG NHẬP JWT
+' ============================================================
+@startuml SEQ_LOGIN
+skinparam backgroundColor #0f1117
+skinparam sequence {
+  ArrowColor #3b82f6
+  ActorBorderColor #a855f7
+  LifeLineBorderColor #3b82f6
+  ParticipantBackgroundColor #1a1d27
+  ParticipantBorderColor #3b82f6
+  ParticipantFontColor #e2e8f0
+  ActorFontColor #e2e8f0
+  NoteBorderColor #a855f7
+  NoteBackgroundColor #1a1d27
+  NoteFontColor #e2e8f0
+}
+skinparam ArrowFontColor #e2e8f0
+
+title Sequence Diagram - Luồng Đăng Nhập JWT
+
+actor "Người Dùng" as User
+participant "React\nFrontend" as FE
+participant "Express\nBackend" as BE
+database "MongoDB\nAtlas" as DB
+
+User -> FE : Nhập Email + Password\nnhấn Đăng Nhập
+FE -> BE : POST /api/auth/login\n{ email, password }
+BE -> DB : User.findOne({ email })
+DB --> BE : Trả về User document
+alt Không tìm thấy Email
+  BE --> FE : 400 { error: "Tài khoản không tồn tại" }
+  FE --> User : Hiển thị thông báo lỗi
+else Email tồn tại
+  BE -> BE : bcrypt.compare(password, user.password)
+  alt Mật khẩu SAI
+    BE --> FE : 400 { error: "Mật khẩu sai" }
+    FE --> User : Hiển thị lỗi mật khẩu
+  else Mật khẩu ĐÚNG
+    BE -> BE : jwt.sign({ _id, role }, JWT_SECRET)
+    BE --> FE : 200 { token, user }
+    FE -> FE : localStorage.setItem("token", token)
+    FE --> User : Cập nhật UI\nHiện Avatar & Tên
+  end
+end
+
+note over FE, BE
+  Request tiếp theo có xác thực:
+  Header: Authorization: Bearer <token>
+end note
+
+User -> FE : Thực hiện hành động\n(Bình luận, Wishlist...)
+FE -> BE : Request + { Authorization: Bearer <token> }
+BE -> BE : authMiddleware:\njwt.verify(token, secret)
+alt Token hợp lệ
+  BE -> DB : Xử lý nghiệp vụ
+  DB --> BE : Kết quả
+  BE --> FE : 200 OK + Data
+  FE --> User : Cập nhật giao diện
+else Token không hợp lệ
+  BE --> FE : 401 Unauthorized
+  FE --> User : Yêu cầu đăng nhập lại
+end
+@enduml
+
+
+' ============================================================
+' FILE 5: ACTIVITY DIAGRAM - LUỒNG SO SÁNH ĐA THIẾT BỊ
+' ============================================================
+@startuml ACT_COMPARE
+skinparam backgroundColor #0f1117
+skinparam activity {
+  BackgroundColor #1a1d27
+  BorderColor #3b82f6
+  FontColor #e2e8f0
+  DiamondBackgroundColor #1a1d27
+  DiamondBorderColor #a855f7
+  DiamondFontColor #e2e8f0
+  StartColor #3b82f6
+  EndColor #a855f7
+  ArrowColor #3b82f6
+}
+skinparam ArrowFontColor #e2e8f0
+
+title Activity Diagram - Luồng So Sánh Đa Thiết Bị
+
+start
+
+:Người dùng vào tab "So Sánh";
+:Hệ thống fetch GET /api/products;
+:Hiển thị 2 Dropdown chọn sản phẩm;
+
+:Người dùng chọn Thiết Bị 1;
+:Người dùng chọn Thiết Bị 2;
+
+:CompareSection tính chartData;
+:Render Radar Chart 2 lớp\n(Xanh & Đỏ);
+:Render Bảng Thông Số 2 cột;
+
+repeat
+  if (Muốn thêm thiết bị?) then (Có)
+    if (Đã đủ 4 thiết bị?) then (Có)
+      :Ẩn nút "+"\nHiện thông báo giới hạn;
+    else (Chưa)
+      :Hiện Dropdown mới;
+      :Người dùng chọn Thiết Bị mới;
+      :Cập nhật Radar + Bảng;
+    endif
+  else (Không)
+  endif
+
+  if (Muốn xóa thiết bị?) then (Có)
+    if (Còn ≤ 2 thiết bị?) then (Có)
+      :Ẩn nút "✕"\nGiữ tối thiểu 2;
+    else (Không)
+      :Xóa thiết bị đã chọn;
+      :Cập nhật Radar + Bảng;
+    endif
+  else (Không)
+  endif
+repeat while (Tiếp tục điều chỉnh?) is (Có)
+->Không;
+
+if (Muốn tư vấn AI?) then (Có)
+  :Nhấn "Hỏi Nhận Xét Từ AI";
+  :AI phân tích danh sách\nthiết bị đang so sánh;
+  :Hiển thị kết quả Markdown;
+else (Không)
+endif
+
+if (Muốn mua ngay?) then (Có)
+  :Nhấn "MUA NGAY →";
+  :Mở tab Shopee / TikTok;
+else (Không)
+endif
+
+stop
+@enduml
+
+
+' ============================================================
+' FILE 6: CLASS DIAGRAM - MÔ HÌNH DỮ LIỆU MONGODB
+' ============================================================
+@startuml CLASS_DB
+skinparam backgroundColor #0f1117
+skinparam class {
+  BackgroundColor #1a1d27
+  BorderColor #3b82f6
+  FontColor #e2e8f0
+  HeaderBackgroundColor #3b82f6
+  HeaderFontColor #ffffff
+  AttributeFontColor #e2e8f0
+}
+skinparam ArrowColor #a855f7
+skinparam ArrowFontColor #e2e8f0
+
+title Class Diagram - Mô Hình Dữ Liệu MongoDB (Mongoose Schema)
+
+class Product {
+  + _id : ObjectId <<PK>>
+  + id : String <<Unique>>
+  + name : String <<NotNull>>
+  + brand : String <<NotNull>>
+  + price : String
+  + priceValue : Number
+  + category : String
+  + image : String
+  + specs : Mixed <<JSON>>
+  + isFeatured : Boolean = false
+  + links : Object
+  + createdAt : Date
+  + updatedAt : Date
+  --
+  + getRadarScore() : Object
+}
+
+class User {
+  + _id : ObjectId <<PK>>
+  + email : String <<Unique, NotNull>>
+  + password : String <<bcrypt hashed>>
+  + displayName : String
+  + photoURL : String
+  + points : Number = 0
+  + wishlist : String[]
+  + role : String = "User"
+  + createdAt : Date
+  + updatedAt : Date
+}
+
+class Review {
+  + _id : ObjectId <<PK>>
+  + productId : String <<FK→Product.id>>
+  + userId : ObjectId <<FK→User._id>>
+  + userName : String
+  + userPhoto : String
+  + text : String <<NotNull>>
+  + createdAt : Date
+  + updatedAt : Date
+}
+
+class Post {
+  + _id : ObjectId <<PK>>
+  + id : String <<Unique>>
+  + title : String <<NotNull>>
+  + summary : String
+  + content : String <<Markdown>>
+  + image : String
+  + date : String
+  + createdAt : Date
+  + updatedAt : Date
+}
+
+class Specs <<JSON Object>> {
+  + releaseDate : String
+  + weight : String
+  + materials : String
+  + screen : String
+  + chip : String
+  + ram : String
+  + storage : String
+  + camera : String
+  + battery : String
+  + os : String
+}
+
+' -- Relationships --
+Product "1" --> "0..*" Review : productId
+User "1" --> "0..*" Review : userId
+Product "1" *-- "1" Specs : embedded
+User "0..*" --> "0..*" Product : wishlist[]
+
+note right of User
+  role = "User"  → Thành Viên
+  role = "Admin" → Quản Trị Viên
+end note
+
+note bottom of Specs
+  Trường specs dùng Mixed type
+  để linh hoạt giữa Phone & Laptop
+end note
+@enduml
+
+
+' ============================================================
+' FILE 7: DEPLOYMENT DIAGRAM - KIẾN TRÚC TRIỂN KHAI
+' ============================================================
+@startuml DEPLOY
+skinparam backgroundColor #0f1117
+skinparam node {
+  BackgroundColor #1a1d27
+  BorderColor #3b82f6
+  FontColor #e2e8f0
+}
+skinparam artifact {
+  BackgroundColor #1a1d27
+  BorderColor #a855f7
+  FontColor #e2e8f0
+}
+skinparam database {
+  BackgroundColor #1a1d27
+  BorderColor #3b82f6
+  FontColor #e2e8f0
+}
+skinparam ArrowColor #3b82f6
+skinparam ArrowFontColor #e2e8f0
+skinparam component {
+  BackgroundColor #1a1d27
+  BorderColor #a855f7
+  FontColor #e2e8f0
+}
+
+title Deployment Diagram - Kiến Trúc Triển Khai Cloud BETTER
+
+node "Developer Machine\n(Windows)" as DEV {
+  artifact "VS Code\nSource Code" as SRC
+  component "Docker Desktop" as DOCKER
+}
+
+node "GitHub" as GH {
+  artifact "Repository\n(main branch)" as REPO
+  component "GitHub Actions\nCI Pipeline" as CI
+}
+
+node "Vercel CDN\n(Global Edge)" as VERCEL {
+  component "Nginx:alpine\nStatic Server" as NGINX
+  artifact "React Build\n/dist (HTML/CSS/JS)" as BUILD
+}
+
+node "Render.com\n(US East)" as RENDER {
+  component "Node.js 18\nExpress API" as NODE
+  artifact "server.js\nREST API :5000" as API
+}
+
+database "MongoDB Atlas\nCluster0 (Cloud)" as MONGO {
+  artifact "Products\nPosts\nReviews\nUsers" as COLL
+}
+
+node "End User\nBrowser" as CLIENT
+
+' -- Connections --
+SRC --> REPO : git push\n(HTTPS)
+REPO --> CI  : trigger on push
+CI --> VERCEL : Auto deploy\n(on CI pass)
+CI --> RENDER : Auto deploy\n(on CI pass)
+
+NGINX --> BUILD : serves
+NODE --> API    : runs
+
+VERCEL --> RENDER : HTTPS REST API calls\n(CORS enabled)
+RENDER --> MONGO  : Mongoose / TLS\nmongodb+srv://
+
+CLIENT --> VERCEL : HTTPS :443\nbetter.vercel.app
+@enduml

@@ -1,0 +1,390 @@
+ĐẠI HỌC KINH T Ế QUỐC DÂN   
+TRƯ ỜNG CÔNG NGH Ệ 
+----------------  
+ 
+ 
+KHÓA LU ẬN TỐT NGHI ỆP 
+ 
+ 
+ĐỀ TÀI: 
+ XÂY D ỰNG WEBSITE BÁN THÚ CƯNG VÀ  
+ĐỒ DÙNG CHO THÚ CƯNG  
+ 
+ 
+ 
+Họ và tên sinh viên th ực hiện  : Phạm Th ị Phương Th ảo 
+Hệ     : Chính Quy  
+Lớp     : Khoa h ọc máy tính 62  
+Mã sinh viên               : 11203718  
+Giảng viên hư ớng dẫn            : TS. Lê Th ị Hoài Thu  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Hà N ội, năm 2025  
+
+======PAGE======
+ i LỜI CẢM ƠN  
+ 
+Để hoàn t ất chuyên đ ề thực tập này, trư ớc hết em xin bày t ỏ lòng bi ết ơn chân 
+thành và sâu s ắc tới các th ầy cô c ủa Trư ờng Đ ại học Kinh t ế Quốc dân vì đã luôn 
+đồng hành và h ỗ trợ trong su ốt quá trình h ọc tập. 
+Em đ ặc biệt muốn gửi lời cảm ơn đ ến cô Lê Th ị Hoài Thu – người đã luôn t ận 
+tình hư ớng dẫn, giúp đ ỡ và đưa ra nhi ều lời khuyên h ữu ích đ ể em có th ể hoàn thành 
+tốt báo cáo th ực tập này. S ự kiên trì, t ận tâm và nhi ệt huy ết của cô là ngu ồn động lực 
+to lớn đối với em trong su ốt quá trình th ực hiện đề tài. 
+Mặc dù đã n ỗ lực hoàn thành bài khóa lu ận một cách ch ỉn chu nh ất có th ể, 
+nhưng v ới giới hạn về kiến thức và kinh nghi ệm, bài làm c ủa em không tránh kh ỏi 
+những thi ếu sót. Em r ất mon g nhận được những ý ki ến đóng góp t ừ quý th ầy cô đ ể 
+bài khóa lu ận này đư ợc hoàn thi ện tốt hơn.  
+Em xin chân thành c ảm ơn.  
+Phạm Th ị Phương Th ảo 
+ 
+  
+======PAGE======
+ ii MỤC LỤC 
+ 
+LỜI CẢM ƠN  ................................ ................................ ................................ ............. i 
+MỤC LỤC ................................ ................................ ................................ .................  ii 
+LỜI CAM ĐOAN  ................................ ................................ ................................ ...... v 
+DANH M ỤC TỪ VIẾT TẮT ................................ ................................ ................... vi 
+DANH M ỤC HÌNH  ................................ ................................ ................................  vii 
+DANH M ỤC BẢNG ................................ ................................ ...............................  vii 
+LỜI NÓI Đ ẦU ................................ ................................ ................................ ...........  1 
+CHƯƠNG 1 .  TỔNG QU AN V Ề ĐỀ TÀI VÀ H Ệ THỐNG ................................ . 3 
+1.1 Đ ặt vấn đề ................................ ................................ ................................ .........  3 
+1.2 M ục tiêu và ph ạm vi đ ề tài ................................ ................................ ..............  4 
+1.3 Đ ịnh hư ớng gi ải pháp  ................................ ................................ ......................  5 
+1.4 Bố cục đồ án ................................ ................................ ................................ ..... 7 
+CHƯƠNG 2 .  CÁC CÔNG C Ụ HỖ TRỢ XÂY D ỰNG WEBSITE  .....................  8 
+2.1 ReactJS  ................................ ................................ ................................ .............  8 
+2.2 Tailwind Css  ................................ ................................ ................................ ..... 9 
+2.3 Redux To olkit  ................................ ................................ ................................ . 10 
+2.4 Node.js ................................ ................................ ................................ .............  12 
+2.5 Express.js  ................................ ................................ ................................ ........  13 
+2.6 MySQL ................................ ................................ ................................ ............  15 
+2.7 Sequelize v6  ................................ ................................ ................................ .... 15 
+2.8 Socket.IO  ................................ ................................ ................................ ........  16 
+2.9 Google Cloudinary  ................................ ................................ .........................  17 
+2.10 OAuth2 ................................ ................................ ................................ ..........  17 
+2.11 K ết chương  ................................ ................................ ................................ ... 18 
+CHƯƠNG 3 .  PHÂN TÍCH THI ẾT KẾ HỆ THỐNG ................................ .........  19 
+3.1 Kh ảo sát hi ện trạng ................................ ................................ .......................  19 
+3.2 Mô hình hóa h ệ thống ................................ ................................ ....................  21 
+3.2.1 Biểu đồ use case t ổng quát  ................................ ................................ ........  21 
+3.2.2 Use Case chi ti ết cho ngư ời dùng ................................ ..............................  23 
+3.2.3 Use Case chi ti ết cho qu ản trị viên ................................ ............................  24 
+3.2.4 Đ ặc tả chức năng  ................................ ................................ .......................  26 
+3.2.5 UseCase “ Chia s ẻ sản phẩm, bài vi ết” ................................ .....................  29 
+3.2.6 UseCase “ Th ống kê doanh thu”  ................................ ...............................  30 
+3.3 Bi ểu đồ hoạt động các ch ức năng c ủa hệ thống ................................ ..........  31 
+======PAGE======
+ iii 3.3.1 Ch ức năng đăng nh ập ................................ ................................ ................  31 
+3.3.2 Các ch ức năng c ủa khách hàng  ................................ ................................ . 31 
+3.3.3 Các ch ức năng c ủa admin  ................................ ................................ .........  33 
+3.4 C ấu trúc h ệ thống ................................ ................................ ..........................  36 
+3.5 Bi ểu đồ trình t ự các ca s ử dụng ................................ ................................ .... 37 
+3.5.1 Ca s ử dụng đăng nh ập ................................ ................................ ...............  37 
+3.5.2 Các ca s ử dụng của khách hàng  ................................ ................................  37 
+3.5.3 Các ca s ử dụng của admin  ................................ ................................ .........  39 
+3.6 Thi ết kế cơ sử dữ liệu ................................ ................................ ....................  41 
+3.6.1 C ấu trúc d ữ liệu của bài vi ết blogs  ................................ ............................  41 
+3.6.2  C ấu trúc d ữ liệu của danh m ục phân lo ại sản phẩm ................................ . 42 
+3.6.3 C ấu trúc d ữ liệu của Bình lu ận ................................ ................................ .. 43 
+3.6.4 C ấu trúc d ữ liệu của Mô t ả ................................ ................................ ........  43 
+3.6.5 C ấu trúc d ữ liệu của Hình ảnh................................ ................................ ... 44 
+3.6.6 C ấu trúc d ữ liệu của Lượt thích  ................................ ................................  44 
+3.6.7 C ấu trúc d ữ liệu của Thông báo  ................................ ................................  45 
+3.6.8 C ấu trúc d ữ liệu của Mặt hàng trong đơn  ................................ .................  46 
+3.6.9 C ấu trúc d ữ liệu của Đơn hàng ................................ ................................ .. 46 
+3.6.10 C ấu trúc d ữ liệu của Sản phẩm ................................ ...............................  47 
+3.6.11 C ấu trúc d ữ liệu của Đánh giá  ................................ ................................ . 48 
+3.6.12 C ấu trúc d ữ liệu của Giảm giá ................................ ................................ . 49 
+3.6.13 C ấu trúc d ữ liệu của Lịch sử tìm ki ếm ................................ ....................  49 
+3.6.14 C ấu trúc d ữ liệu của Ngư ời dùng  ................................ ............................  50 
+3.7 Yêu c ầu phi ch ức năng  ................................ ................................ ..................  50 
+3.7.1 Yêu c ầu về bảo mật ................................ ................................ ...................  51 
+3.7.2 Yêu c ầu về hiệu năng  ................................ ................................ ................  51 
+3.7.3 Yêu c ầu về giao di ện ................................ ................................ .................  51 
+3.7.4 Yêu c ầu về khả năng m ở rộng ................................ ................................ ... 51 
+3.8 K ết chương  ................................ ................................ ................................ ..... 51 
+CHƯƠNG 4:  THIẾT KẾ GIAO DI ỆN VÀ GI ẢI PHÁP  NỔI BẬT CỦA ĐỀ TÀI 52 
+4.1 Giao di ện ngư ời dùng  ................................ ................................ ....................  52 
+4.1.1 Trang ch ủ ................................ ................................ ................................ .. 52 
+4.1.2 Đăng nh ập ................................ ................................ ................................ . 54 
+4.1.4 Danh sách s ản phẩm ................................ ................................ ..................  55 
+4.1.5 Chi ti ết sản phẩm ................................ ................................ .......................  57 
+4.1.6 Gi ỏ hàng  ................................ ................................ ................................ .... 57 
+======PAGE======
+ iv 4.1.7 Thanh toán  ................................ ................................ ................................ . 58 
+4.1.8 Bài vi ết ................................ ................................ ................................ ...... 61 
+4.1.9 Liên h ệ ................................ ................................ ................................ ....... 62 
+4.2 Giao di ện Admin  ................................ ................................ ............................  63 
+4.2.1 T ổng quan  ................................ ................................ ................................ .. 63 
+4.2.2 Danh s ách s ản phẩm ................................ ................................ ..................  63 
+4.2.3 Thêm s ản phẩm ................................ ................................ .........................  63 
+4.2.4 Danh sách ngư ời dùng  ................................ ................................ ...............  64 
+4.2.5 Ki ểm duy ệt bài vi ết ................................ ................................ ...................  65 
+4.2.6 Danh sách đơn hàng  ................................ ................................ ..................  66 
+4.3.1 Bài toán  ................................ ................................ ................................ ..... 66 
+4.3.2 Gi ải pháp  ................................ ................................ ................................ ... 66 
+4.3.3 K ết quả đạt được ................................ ................................ .......................  69 
+KẾT LU ẬN VÀ HƯ ỚNG PHÁT TRI ỂN ĐỀ TÀI ................................ ..............  71 
+TÀI LI ỆU THAM KH ẢO ................................ ................................ ......................  73 
+ 
+ 
+ 
+ 
+ 
+ 
+  
+======PAGE======
+ v LỜI CAM ĐOAN  
+ 
+Em xin kh ẳng định rằng toàn b ộ nội dung trong khóa lu ận này là thành qu ả từ 
+quá trình nghiên c ứu cá nhân, đư ợc thực hiện một cách đ ộc lập dưới sự hướng dẫn 
+của TS. Lê Th ị Hoài Thu. Các ho ạt động nghiên c ứu cũng như vi ệc hoàn thi ện báo 
+cáo đư ợc thực hiện tại Trư ờng Công ngh ệ, Đại học Kinh t ế Quốc dân.  
+Tất cả các ngu ồn tài li ệu tham kh ảo và s ố liệu thống kê đư ợc sử dụng đều tuân 
+thủ đúng quy đ ịnh và pháp lu ật hiện hành.  
+Các k ết quả và nội dung trình bày trong đ ề tài đều phản ánh trung th ực quá 
+trình th ực hiện và chưa t ừng đư ợc côn g bố trong b ất kỳ công trình hay nghiên c ứu 
+nào trư ớc đó.  
+Tôi xin ch ịu hoàn toàn trách nhi ệm nếu có b ất kỳ vấn đề nào phát sinh liên 
+quan đ ến đề tài này.  
+ 
+Hà n ội, ngày   tháng   năm 2025  
+Sinh Viên  
+ 
+ 
+Phạm Th ị Phương Th ảo 
+  
+  
+======PAGE======
+ vi DANH M ỤC TỪ VIẾT TẮT 
+ 
+TỪ VIẾT TẮT Ý NGHĨA  
+JSX JavaScript XML  
+API Application Programming Interface  
+NPM  Node Package Manager  
+HTTP  HyperText Transfer Protocol  
+CSDL  Cơ sở dữ liệu 
+  
+======PAGE======
+ vii DANH M ỤC HÌNH  
+ 
+Hình 1.1: Bi ểu đồ số lượng thú cưng  [1] ................................ ................................ .... 3 
+Hình 1.2: Bi ểu đồ số lượng thú cưng [2]  ................................ ................................ .... 4 
+Hình 2.1: C ấu trúc Expressjs [11]  ................................ ................................ .............  13 
+Hình 3.1: Giao di ện petmart  ................................ ................................ ......................  19 
+Hình 3.2: Giao di ện Monspet  ................................ ................................ ....................  20 
+Hình 3.3: Giao di ện petxinh  ................................ ................................ ......................  21 
+Hình 3.4 : Usecase t ổng quan  ................................ ................................ .....................  22 
+Hình 3.5: Phân rã UseCase “ Ch ỉnh sửa thông tin”  ................................ ..................  23 
+Hình 3.6: Phân rã UseCase “Bình lu ận bài vi ết” ................................ ......................  23 
+Hình 3.7: Phân giã UseCase “Đánh giá s ản phẩm" ................................ ..................  24 
+Hình 3.8: Phân rã UseCase “Th ống kê doanh thu”  ................................ ...................  24 
+Hình 3.9: Phân rã UseCase “ Qu ản lý ngư ời dùng”  ................................ ..................  25 
+Hình 3.10: Phân rã UseCase “ Qu ản lý bài đăng”  ................................ ....................  25 
+Hình 3.11: Phân rã UseCase “ Qu ản lý s ản phẩm” ................................ ...................  26 
+Hình 3.12: Quy trình khi đăng nh ập hệ thống ................................ ...........................  31 
+Hình 3.13: Quy trình đăng ký tài kho ản ................................ ................................ .... 31 
+Hình 3.14: Quy trình thanh toán tr ực tuy ến ................................ ..............................  32 
+Hình 3.15: Quy trình Đăng bài vi ết ................................ ................................ ...........  32 
+Hình 3.16: Quy trình đăng nh ập Admin  ................................ ................................ ... 33 
+Hình 3.17: Quy trình th ống kê đơn hàng  ................................ ................................ .. 33 
+Hình 3.18: Quy trình Qu ản lý ngư ời dùng  ................................ ................................  34 
+Hình 3.19: Quy trình thêm s ản phẩm ................................ ................................ ........  34 
+Hình 3.20: Quy trình qu ản lý đơn hàng  ................................ ................................ .... 35 
+Hình 3.21: Quy trình duy ệt bài vi ết ................................ ................................ ..........  35 
+Hình 3.22: C ấu trúc h ệ thống ................................ ................................ ....................  36 
+Hình 3.23: Sơ đ ồ trình t ự đăng nh ập vào h ệ thống ................................ ...................  37 
+Hình 3.24: Sơ đ ồ trình t ự đăng ký tài kho ản ................................ .............................  37 
+Hình 3.25: Sơ đ ồ thanh toán đơn hàng Paypal  ................................ ..........................  38 
+Hình 3.26: Sơ đ ồ thanh toán đơn hàng b ằng th ẻ ................................ .......................  38 
+Hình 3.27: Sơ đ ồ trình t ự đăng bài vi ết ................................ ................................ ..... 38 
+Hình 3.28: Sơ đ ồ trình t ự thống kê  ................................ ................................ ............  39 
+Hình 3.29: Sơ đ ồ trình t ự quản lý ngư ời dùng  ................................ ..........................  39 
+Hình 3.30: Sơ đ ồ trình t ự thêm s ản phẩm ................................ ................................ . 40 
+Hình 3.31: Sơ đ ồ trình t ự cập nhật đơn hàng  ................................ ............................  40 
+======PAGE======
+ viii Hình 3.32: Sơ đ ồ trình t ự hủy đơn hàng ................................ ................................ .... 41 
+Hình 3.33: Sơ đ ồ trình t ự duyệt bài vi ết ................................ ................................ .... 41 
+Hình 4.1: Giao di ện trang ch ủ 1 ................................ ................................ ................  52 
+Hình 4.2: Giao di ện trang ch ủ 2 ................................ ................................ ................  52 
+Hình 4.3: Giao di ện trang ch ủ 3 ................................ ................................ ................  53 
+Hình 4.4: Giao di ện trang ch ủ 4 ................................ ................................ ................  53 
+Hình 4.5: Giao di ện trang ch ủ 5 ................................ ................................ ................  54 
+Hình 4.6: Giao di ện đăng nh ập khách hàng  ................................ ..............................  54 
+Hình 4.7: Giao  diện đăng ký tài kho ản ................................ ................................ ..... 55 
+Hình 4.8 : Giao di ện danh sách s ản phẩm (chó c ảnh) ................................ ...............  55 
+Hình 4.9 : Giao di ện danh sách s ản phẩm (mèo c ảnh) ................................ ..............  56 
+Hình 4.10 : Giao di ện danh sách s ản phẩm (đồ ăn) ................................ ..................  56 
+Hình 4.11 : Giao di ện danh sách s ản phẩm (ph ụ kiện) ................................ .............  56 
+Hình 4.12 : Giao di ện chi ti ết sản phẩm 1 ................................ ................................ . 57 
+Hình 4.13 : Giao di ện sản phẩm gợi ý ................................ ................................ ...... 57 
+Hình 4.14 : Giao di ện Giỏ hàng  ................................ ................................ ................  58 
+Hình 4.15 : Giao di ện Thông tin thanh toán  ................................ .............................  58 
+Hình 4.16 : Giao di ện Thông tin thanh toán 2  ................................ ..........................  59 
+Hình 4.17 : Giao di ện Ch ọn hình th ức thanh toán  ................................ ....................  59 
+Hình 4.18 : Giao di ện Thanh toán Paypal  ................................ ................................ . 60 
+Hình 4.19 : Giao di ện Thanh toán b ằng th ẻ tín dụng 1 ................................ .............  60 
+Hình 4.20 : Giao di ện Thanh toán b ằng th ẻ tín dụng 2 ................................ .............  61 
+Hình 4.21 : Giao di ện Bài vi ết mới nhất ................................ ................................ ... 61 
+Hình 4.22 : Giao di ện Tạo bài vi ết ................................ ................................ ............  62 
+Hình 4.23 : Giao di ện Liên h ệ 1 ................................ ................................ ................  62 
+Hình 4.24 : Giao di ện Liên h ệ 2 ................................ ................................ ................  63 
+Hình 4.25 : Giao di ện Danh sách s ản phẩm ................................ ..............................  63 
+Hình 4.26 : Giao di ện Thêm s ản phẩm ................................ ................................ ..... 64 
+Hình 4.27 : Giao di ện Thêm s ản phẩm 2 ................................ ................................ .. 64 
+Hình 4.28 : Giao di ện Danh sách ngư ời dùng  ................................ ...........................  65 
+Hình 4.29 : Giao di ện Kiểm duy ệt bài vi ết ................................ ...............................  65 
+Hình 4.30 : Giao di ện Danh sách đơn hàng  ................................ ..............................  66 
+Hình 4.31: Công th ức TF-IDF [15]  ................................ ................................ ...........  67 
+Hình 4.32: Ví d ụ ma tr ận tương đ ồng ................................ ................................ ....... 69 
+Hình 4.33: Minh h ọa giao di ện sản phẩm gợi ý ................................ ........................  69 
+ 
+======PAGE======
+ ix DANH M ỤC BẢNG 
+ 
+Bảng 2.1: So sánh gi ữa Redux Toolkit và Redux thông thư ờng ..............................  12 
+Bảng 3.1: Bảng đặc tả ca sử dụng “Đăng bài vi ết” ................................ ...................  27 
+Bảng 3.2: B ảng đặc tả ca sử dụng “Mua s ản phẩm” ................................ .................  28 
+Bảng 3.3: B ảng đặc tả ca sử dụng “Chia s ẻ sản phẩm, bài vi ết” ..............................  29 
+Bảng 3.4: B ảng đặc tả ca sử dụng “Th ống kê doanh thu”  ................................ ........  30 
+Bảng 3.5: C ấu trúc d ữ liệu của bài vi ết blogs  ................................ ...........................  42 
+Bảng 3.6: C ấu trúc d ữ liệu của danh m ục phân lo ại sản phẩm ................................ . 42 
+Bảng 3.7: C ấu trúc d ữ liệu của Bình lu ận ................................ ................................ . 43 
+Bảng 3.8: C ấu trúc d ữ liệu của Mô t ả ................................ ................................ ....... 43 
+Bảng 3.9: C ấu trúc d ữ liệu của Hình ảnh ................................ ................................ .. 44 
+Bảng 3.10: C ấu trúc d ữ liệu của Lượt thích  ................................ ..............................  44 
+Bảng 3.11: C ấu trúc d ữ liệu của Thông báo ................................ ..............................  45 
+Bảng 3.12: C ấu trúc d ữ liệu của Mặt hàng trong đơn  ................................ ...............  46 
+Bảng 3.13: C ấu trúc d ữ liệu của Đơn hàng  ................................ ...............................  47 
+Bảng 3.14: C ấu trúc d ữ liệu của Sản phẩm ................................ ...............................  47 
+Bảng 3.15: C ấu trúc d ữ liệu của Đánh giá  ................................ ................................  48 
+Bảng 3.16: C ấu trúc d ữ liệu của Giảm giá  ................................ ................................  49 
+Bảng 3.17: C ấu trúc d ữ liệu của Lịch sử tìm ki ếm ................................ ...................  49 
+Bảng 3.18: C ấu trúc d ữ liệu của Ngư ời dùng  ................................ ...........................  50 
+ 
+ 
+ 
+  
+======PAGE======
+ 1 LỜI NÓI Đ ẦU 
+ 
+Trong nh ững năm g ần đây s ố lượng gia đình b ắt đầu nuôi thú cưng ở vùng 
+nông thôn có xu hư ớng tăng lên. Các c ửa hàng dành cho thú cưng ở thành ph ố đã khá 
+phổ biến nhưng ở nông thôn l ại khá ít, và khó ti ếp cận hơn. Kinh nghi ệm và ki ến thức 
+chăm sóc thú cưng c ủa ngư ời nuôi cũng h ạn chế và sai l ệch. Nguyên nhân m ột phần 
+do phong t ục ngư ời dân trư ớc đây đ ều nuôi thú đ ể lấy thịt hoặc nuôi th ả rông nên 
+cách chăm sóc r ất khác v ới nuôi thú cưng hi ện nay.  
+Bên c ạnh đó, xu hư ớng nuôi thú cưng cũng ngày càng đ ịnh hình rõ nét ở những 
+người trẻ tuổi. Việc sở hữu thú cưng cũng gi ống như vi ệc thể hiện một phong cách 
+sống và cá tín h của ngư ời trẻ hiện đại. Nhu c ầu được chia s ẻ về thú cưng càng tr ở nên 
+mạnh m ẽ và xu ất hiện mong mu ốn có nh ững cộng đồng để hiện thực hóa đi ều đó.  
+Sự mở cửa hội nhập của nền kinh t ế, văn hóa xã h ội cũng làm cho ngư ời trẻ 
+dễ dàng ti ếp cận sự đa dạng của rất nhiều các gi ống loài v ật nuôi cũng như nh ững lo ại 
+thú cưng ph ổ biến như chó, mèo. Đi ều này d ẫn đến nhu c ầu mua s ắm, chăm sóc và 
+sử dụng nhi ều đồ dùng v ật nuôi t ừ ngoài khuôn kh ổ truyền thống trong nư ớc hoặc 
+muốn tiếp cận kiểm các nhà cung c ấp ngo ại nhập có đặc sắc, với chi phí h ợp lý. 
+Với sự bùng n ổ của công ngh ệ thông tin và thương m ại điện tử, ngư ời nuôi thú 
+cưng gi ờ đây hoàn toàn có th ể sở hữu và trao đ ổi những sản phẩm cũng như d ịch vụ 
+dễ dàng qua các trang web hay ứng dụng đư ợc đáp ứng bất kể các kho ảng cách đ ịa lý 
+thực tế. 
+Vì vậy, trong chuyên đ ề thực tập tốt nghi ệp này, em quy ết định lựa chọn đề 
+tài: ”Xây d ựng website bán thú cưng và ph ụ kiện thú cưng” đ ể có th ể giúp m ọi ngư ời 
+tiếp cận đến cửa hàng thú cưng d ễ dàng hơn và có m ột nơi đ ể mọi ngư ời cùn g chia s ẻ 
+kiến thức, kinh nghi ệm khi nuôi thú cưng t ừ đó họ có th ể tham kh ảo và h ọc tập lẫn 
+nhau. Quá trình phân tích và thi ết kế hệ thống đư ợc thực hiện một cách k ỹ lưỡng. 
+Đầu tiên, em s ẽ phân tích chi ti ết về các ch ức năng và tính năng mà h ệ thống 
+cần có, từ đó xác đ ịnh các yêu c ầu cụ thể cho h ệ thống. Cơ s ở dữ liệu và c ấu trúc d ữ 
+liệu đã đư ợc thiết kế sao cho cho phép d ễ lưu tr ữ và truy xu ất thông tin m ột cách th ực 
+tế liên quan. Vi ệc làm ra m ột sản phẩm thân thi ện và d ễ sử dụng đối với ngư ời dùng 
+======PAGE======
+ 2 là vô c ùng quan tr ọng, nh ằm giúp h ọ cập nhật thông tin m ột cách rõ ràng và d ễ hiểu, 
+phù h ợp với hầu hết mọi đối tượng ngư ời dùng.  
+Sản ph ẩm hư ớng đ ến điều này là m ột trang web kinh doanh thú cưng 
+(chó,mèo) và các s ản phẩm dành cho thú cưng. Bên c ạnh đó còn tích h ợp các ch ức 
+năng liên quan đ ến bài vi ết về cách chăm sóc thú cưng, chia s ẻ những bài vi ết về cách 
+chăm sóc ho ặc trải nghi ệm nuôi thú cưng c ủa mình.  
+ 
+ 
+  
+======PAGE======
+ 3 CHƯƠNG 1 .  
+TỔNG QUAN V Ề ĐỀ TÀI VÀ H Ệ THỐNG 
+ 
+1.1 Đ ặt vấn đề 
+- Hiện nay, vi ệc nuôi thú cưng ở Việt Nam đang d ần trở nên ph ổ biến. Số lượng 
+thú cưng không ng ừng tăng lên qua các năm. Hình 1.1 bi ểu diễn số lượng thú 
+cưng (chó và mèo) t ại Việt Nam t ừ năm 2017 đ ến năm 2023.  
+ 
+Hình 1.1: Bi ểu đồ số lượng thú cưng [1]  
+Có th ể thấy số lượng thú cưng (chó và mèo) t ại Việt Nam tăng kho ảng 0.3 
+triệu con m ỗi năm. S ố lượng thú cưng tăng lên là do vi ệc nuôi thú cưng đem l ại những 
+lợi ích như c ải thiện tâm tr ạng, gi ải tỏa căng căng th ẳng sau m ột ngày làm vi ệc và 
+học tập mệt mỏi, sống có trách nhi ệm, kỷ luật hơn, v.v. Hình 1.2 cho  thấy số lượng 
+tìm ki ếm về thú cưng trên Google tăng 34% trong năm 2021.  
+Không ch ỉ ở thành ph ố, việc nuôi thú cưng ở vùng nông thôn đang d ần trở nên 
+phổ biến. Dẫn đến nhu c ầu về mua bán thú cưng, các s ản phẩm cho thú cưng và ki ến 
+thức chăm sóc thú cưng cũn g tăng lên. Tuy nhiên, s ố lượng các c ửa hàng thú cưng ở 
+các vùng nông thôn khá ít. Ngư ời có nhu c ầu nuôi thú cưng khó tìm đư ợc nơi cung 
+cấp thú cưng, s ản phẩm cho thú cưng đáng tin c ậy. 
+
+======PAGE======
+ 4 Ngoài ra, ở nông thôn s ố lượng ngư ời biết cách chăm sóc thú cưng cũng không 
+nhiều. Vi ệc thiếu kiến thức này có nhi ều nguyên nhân như: ít c ập nhật thông tin liên 
+quan đ ến thú cưng, không bi ết chỗ nào d ạy cách nuôi, nuôi thú cưng như cách nuôi 
+động vật để thịt v.v. Vi ệc nuôi thú cưng không đúng cách có th ể khiến thú cưng b ị 
+mắc bệnh (có th ể lây sang ngư ời) và không th ể phát tri ển khỏe mạnh. Khi đó, ngư ời 
+nuôi s ẽ phải tốn thêm nhi ều chi phí đ ể chữa trị cho thú cưng c ủa mình.  
+ 
+Hình 1.2: Bi ểu đồ số lượng thú cưng [2]  
+Nếu vấn đề này đư ợc giải quy ết, có th ể đem l ại nhiều lợi ích nh ư giúp ngư ời 
+nuôi thú cưng và ngư ời có nhu c ầu nuôi thú cưng tìm đư ợc một nơi cung c ấp sản 
+phẩm đáng tin c ậy, tăng doanh thu cho các c ửa hàng thú cưng, t ạo việc làm cho các 
+ngành s ản xuất thức ăn, ph ụ kiện cho thú cưng, t ạo việc làm cho ngành chăm sóc, 
+dịch vụ dành cho thú cưng, t ạo được một cộng đồng nh ững ngư ời nuôi thú cưng t ại 
+Việt Nam.  
+1.2 M ục tiêu và ph ạm vi đ ề tài 
+Để giải quy ết được vấn đề đã nêu ở phần 1.1 thì đ ề tài này bao g ồm 2 m ục tiêu 
+chính: (i) T ạo được một nơi bán hàng tin c ậy, tiện lợi và (i i) Tạo được một nền tảng 
+cho phép chia s ẻ kiến thức chăm sóc thú cưng. C ụ thể như sau:  
+Để có th ể tạo được một nơi bán hàng tin c ậy và ti ện dụng đối với mọi ngư ời thì 
+cần phải không b ị ràng bu ộc về địa lý, th ời gian. Ngư ời mua có th ể đặt hàng ở mọi nơi, 
+mọi lúc. Ngư ời mua có th ể kiểm tra đư ợc mọi thông tin v ề sản phẩm, cũng như các 
+
+======PAGE======
+ 5 đánh giá, ph ản hồi từ người mua khác v ề sản phẩm để xác nh ận độ tin cậy. Hỗ trợ các 
+phương th ức thanh toán tr ực tiếp cho ngư ời mua đ ể tăng s ự tiện lợi khi mua hàng.  
+Để tạo một nền tảng cho phép chia s ẻ kiến thức cho m ọi ngư ời thì c ần phải đa 
+dạng ngu ồn tin, c ần phải kiểm tra n ội dung trong ngu ồn tin, c ần có s ự tương tác, góp 
+ý giữa các ngư ời dùng.  
+Ngoài ra, đ ể tăng tr ải nghi ệm ngư ời dùng và tính ti ện lợi thì trang web c ần 
+được tích  hợp các tính năng như: ch ức năng thông báo th ời gian th ực để người dùng 
+có th ể cập nhật các thông tin v ề bài vi ết, đơn hàng nhanh chóng, ch ức năng thanh 
+toán tr ực tiếp để người dụng có nhi ều lựa chọn hơn trong vi ệc thanh toán đơn hàng, 
+chức năng phân c ấp thành viên đ ể những thành viên c ủa cửa hàng nh ận được những 
+ưu đãi đ ặc biệt khi mua s ản phẩm của cửa hàng.  
+1.3 Đ ịnh hư ớng gi ải pháp  
+Để hiện thực hóa các m ục tiêu đã nêu trong m ục 1.2, chuyên đ ề tốt nghi ệp này 
+xây d ựng m ột trang web bán hàng dành cho thú cư ng, đồng th ời tích h ợp chức 
+năng cho phép ngư ời dùng đăng t ải và chia s ẻ các bài vi ết liên quan đ ến kinh 
+nghi ệm nuôi thú cưng . Website đư ợc phát tri ển dựa trên mô hình Client – Server  
+[3], b ởi mô hình này mang l ại nhiều lợi ích thi ết thực: 
+● Quản lý t ập trun g: Tất cả dữ liệu và thông tin quan tr ọng đều được lưu tr ữ 
+tập trung t ại máy ch ủ (Server), t ạo điều kiện thu ận lợi cho vi ệc theo dõi và v ận 
+hành h ệ thống. Qu ản trị viên có th ể dễ dàng th ực hiện các thao tác qu ản lý, c ập 
+nhật hoặc xử lý sự cố một cách đ ồng bộ. 
+● Tăng cư ờng bảo mật: Với cấu trúc t ập trung, vi ệc bảo vệ thông tin trong mô 
+hình Client – Server tr ở nên hi ệu quả hơn. H ệ thống cho phép phân quy ền 
+người dùng, gi ới hạn quy ền truy c ập phù h ợp với từng vai trò, t ừ đó nâng cao 
+tính an toàn cho d ữ liệu. 
+● Khả năng m ở rộng linh ho ạt: Khi có nhu c ầu mở rộng quy mô h ệ thống, mô 
+hình Client – Server cho phép nâng c ấp tài nguyên ho ặc tăng công su ất máy 
+chủ một cách d ễ dàng mà không làm gián đo ạn hoạt động chung.  
+ 

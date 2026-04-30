@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # Cụm Frontend React Web
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: better_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
+
+  # Cụm Backend Node.js
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: better_backend
+    ports:
+      - "5000:5000"
+    environment:
+      # Nạp động các biến cấu hình từ File env ở môi trường thực
+      - MONGO_URI=${MONGO_URI:-mongodb://localhost:27017/techcompare}
+      - JWT_SECRET=${JWT_SECRET:-techcompare_super_secret}
+      - PORT=5000
+    restart: always

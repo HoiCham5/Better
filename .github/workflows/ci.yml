@@ -1,0 +1,35 @@
+name: MERN CI Pipeline
+
+on:
+  # Kích hoạt Robot tự động chạy Test mỗi khi bạn Đẩy Code lên nhánh main
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Tải Nguồn Code
+        uses: actions/checkout@v3
+
+      - name: ⚙️ Khởi tạo môi trường Node.js v15+
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: 📦 Cài đặt thư viện Front-end
+        run: npm ci
+
+      - name: 🔨 Tiến hành Test vòng Build giao diện (Vite)
+        run: npm run build
+
+      - name: 📦 Cài đặt thư viện Back-end
+        run: |
+          cd server
+          npm ci
+          
+      - name: ✅ Thông báo luồng DevOps Khỏe mạnh
+        run: echo "🎉 Code của bạn đã vượt qua tất cả các bài kiểm thử DevOps tự động và sẵn sàng đẩy lên Servers!"

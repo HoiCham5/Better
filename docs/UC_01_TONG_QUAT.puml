@@ -1,0 +1,102 @@
+@startuml UC_TONG_QUAT
+skinparam actorStyle stick
+skinparam backgroundColor #FFFFFF
+skinparam usecase {
+  BackgroundColor #FFFFFF
+  BorderColor #000000
+  FontColor #000000
+  FontSize 12
+}
+skinparam actor {
+  BackgroundColor #FFFFFF
+  BorderColor #000000
+  FontColor #000000
+  FontSize 13
+}
+skinparam ArrowColor #000000
+skinparam ArrowFontColor #000000
+skinparam ArrowFontSize 11
+
+left to right direction
+
+title Usecase Tổng Quát - Hệ Thống BETTER
+
+' ---- ACTORS ----
+actor "Khách" as Guest
+actor "Thành viên" as Member
+actor "Quản trị viên" as Admin
+
+Member --|> Guest : <<extend>>
+
+' ---- SYSTEM BOUNDARY ----
+rectangle "Hệ Thống BETTER" {
+
+  ' === NHÓM CÔNG KHAI ===
+  usecase "Đăng ký" as UC_REGISTER
+  usecase "Đăng nhập" as UC_LOGIN
+  usecase "Xem thông tin\nsản phẩm" as UC_VIEW
+  usecase "Tra cứu sản phẩm" as UC_SEARCH
+  usecase "Xem bài viết\n& Tin tức" as UC_NEWS
+  usecase "So sánh thiết bị\n(2 - 4 máy)" as UC_COMPARE
+  usecase "Xem biểu đồ Radar" as UC_RADAR
+  usecase "Nhận tư vấn AI" as UC_AI
+  usecase "Lọc sản phẩm" as UC_FILTER
+  usecase "Mua qua Shopee\n/ TikTok" as UC_BUY
+
+  ' === NHÓM THÀNH VIÊN ===
+  usecase "Chỉnh sửa hồ sơ\ncá nhân" as UC_PROFILE
+  usecase "Thêm vào\nWishlist (♥)" as UC_WISH
+  usecase "Bình luận\nsản phẩm" as UC_COMMENT
+  usecase "Nhận điểm XP\ntích lũy" as UC_XP
+  usecase "Xóa bình luận\ncủa mình" as UC_DELCMT
+  usecase "Đăng xuất" as UC_LOGOUT
+
+  ' === NHÓM QUẢN TRỊ VIÊN ===
+  usecase "Quản lý\nngười dùng" as UC_ADMIN_USER
+  usecase "Quản lý sản phẩm\n(CRUD)" as UC_ADMIN_PROD
+  usecase "Thêm sản phẩm mới" as UC_ADDPROD
+  usecase "Xóa sản phẩm" as UC_DELPROD
+  usecase "Đánh dấu Nổi Bật" as UC_FEATURED
+  usecase "Quản lý bài viết\n(CRUD)" as UC_ADMIN_POST
+  usecase "Đăng bài viết mới" as UC_ADDPOST
+  usecase "Xóa bài viết" as UC_DELPOST
+}
+
+' ---- KHÁCH ----
+Guest --> UC_REGISTER
+Guest --> UC_LOGIN
+Guest --> UC_VIEW
+Guest --> UC_SEARCH
+Guest --> UC_NEWS
+Guest --> UC_COMPARE
+Guest --> UC_AI
+
+' ---- THÀNH VIÊN ----
+Member --> UC_PROFILE
+Member --> UC_WISH
+Member --> UC_COMMENT
+Member --> UC_XP
+Member --> UC_LOGOUT
+
+' ---- QUẢN TRỊ VIÊN ----
+Admin --> UC_LOGIN
+Admin --> UC_ADMIN_USER
+Admin --> UC_ADMIN_PROD
+Admin --> UC_ADMIN_POST
+
+' ---- INCLUDE / EXTEND ----
+UC_VIEW    ..> UC_FILTER : <<extend>>
+UC_VIEW    ..> UC_BUY    : <<extend>>
+UC_COMPARE ..> UC_RADAR  : <<include>>
+UC_COMPARE ..> UC_AI     : <<extend>>
+UC_SEARCH  ..> UC_FILTER : <<include>>
+UC_COMMENT ..> UC_XP     : <<include>>
+UC_COMMENT ..> UC_DELCMT : <<extend>>
+
+UC_ADMIN_PROD ..> UC_ADDPROD  : <<include>>
+UC_ADMIN_PROD ..> UC_DELPROD  : <<include>>
+UC_ADMIN_PROD ..> UC_FEATURED : <<extend>>
+UC_ADMIN_POST ..> UC_ADDPOST  : <<include>>
+UC_ADMIN_POST ..> UC_DELPOST  : <<include>>
+
+@enduml
