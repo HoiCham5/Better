@@ -7,12 +7,12 @@ const FilterSidebar = ({ userPreference, setUserPreference }) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', position: 'sticky', top: '80px' }}>
-      
+
       {/* SORT BY */}
       <div style={{ marginBottom: '4px' }}>
         <h4 style={{ fontSize: '0.85rem', fontWeight: '800', marginBottom: '8px', textTransform: 'uppercase', color: 'var(--vs-text-primary)' }}>Sắp xếp theo</h4>
         <select className="select-input" style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid var(--vs-border)', background: 'var(--vs-surface)', cursor: 'pointer', outline: 'none', color: 'var(--vs-text-primary)', fontSize: '0.9rem' }}>
-          <option>Điểm Versus</option>
+          <option>Điểm Better</option>
           <option>Giá: Thấp đến Cao</option>
           <option>Giá: Cao đến Thấp</option>
           <option>Mới nhất</option>
@@ -25,7 +25,7 @@ const FilterSidebar = ({ userPreference, setUserPreference }) => {
           <h4 style={{ fontSize: '1rem', fontWeight: '500', color: 'var(--vs-text-primary)' }}>Giá bán</h4>
           <HelpCircle size={16} color="#999" style={{ cursor: 'pointer' }} />
         </div>
-        
+
         <div>
           {/* Histogram */}
           <div style={{ display: 'flex', alignItems: 'flex-end', height: '60px', gap: '2px', padding: '0 8px' }}>
@@ -33,7 +33,7 @@ const FilterSidebar = ({ userPreference, setUserPreference }) => {
               <div key={i} style={{ flex: 1, backgroundColor: '#e5e7eb', height: `${h * 10}%`, borderTopLeftRadius: '2px', borderTopRightRadius: '2px' }}></div>
             ))}
           </div>
-          
+
           {/* Slider track & handles */}
           <div style={{ position: 'relative', width: '100%', height: '3px', backgroundColor: 'var(--vs-accent)', borderRadius: '2px', marginTop: '-1px' }}>
             {/* Left Handle */}
@@ -43,7 +43,7 @@ const FilterSidebar = ({ userPreference, setUserPreference }) => {
             {/* Unselected right track */}
             <div style={{ position: 'absolute', right: '0', top: '0', bottom: '0', width: '15%', backgroundColor: '#e5e7eb', borderRadius: '0 2px 2px 0' }}></div>
           </div>
-          
+
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--vs-text-primary)', marginTop: '12px' }}>
             <span>2,000,000 ₫</span>
             <span>45,000,000+ ₫</span>
@@ -68,9 +68,9 @@ const FilterSidebar = ({ userPreference, setUserPreference }) => {
       <div className="vs-card" style={{ display: 'flex', flexDirection: 'column', height: '300px', borderRadius: '8px', overflow: 'hidden' }}>
         <div style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--vs-bg)' }}>
           <Search size={16} color="var(--vs-accent)" />
-          <input 
-            type="text" 
-            placeholder="Tìm kiếm hãng..." 
+          <input
+            type="text"
+            placeholder="Tìm kiếm hãng..."
             value={searchBrand}
             onChange={(e) => setSearchBrand(e.target.value)}
             style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%', fontSize: '0.9rem', color: 'var(--vs-accent)' }}
