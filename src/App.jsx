@@ -191,7 +191,7 @@ function App() {
 
             <div style={{ marginTop: '80px', padding: '80px 20px', textAlign: 'center' }}>
                <h2 style={{ fontSize: '3rem', fontWeight: '900', marginBottom: '24px', color: 'var(--vs-text-primary)', lineHeight: '1.2' }}>
-                 94k sản phẩm trong 106 danh mục.<br/>Một mục tiêu duy nhất.
+                 Mọi thiết bị công nghệ bạn cần.<br/>Một mục tiêu duy nhất.
                </h2>
                <p className="text-secondary" style={{ fontSize: '1.1rem', maxWidth: '800px', margin: '0 auto 40px', lineHeight: '1.6' }}>
                  Chúng tôi đã làm việc không ngừng nghỉ để trở thành tài liệu tham khảo đáng tin cậy của bạn trong lĩnh vực so sánh.<br/>
