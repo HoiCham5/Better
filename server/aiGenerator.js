@@ -1,12 +1,15 @@
 require('dotenv').config();
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function generateProductData(keyword) {
   try {
-    console.log(`Bắt đầu sinh dữ liệu bằng Gemini AI cho: ${keyword}...`);
+    console.log(`Bắt đầu sinh dữ liệu bằng Groq AI cho: ${keyword}...`);
     
+    // Kiểm tra API Key
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      throw new Error('Chưa cấu hình GROQ_API_KEY trong file .env');
+    }
+
     const prompt = `Bạn là một chuyên gia về thiết bị công nghệ. 
 Nhiệm vụ: Trả về một file JSON duy nhất chứa cấu hình thực tế của sản phẩm: "${keyword}".
 Yêu cầu định dạng JSON CHÍNH XÁC như sau (KHÔNG CÓ MARKDOWN, CHỈ CÓ JSON):
@@ -34,25 +37,39 @@ Yêu cầu định dạng JSON CHÍNH XÁC như sau (KHÔNG CÓ MARKDOWN, CHỈ 
   }
 }`;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    
-    const result = await model.generateContent({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: {
-            responseMimeType: "application/json",
-        }
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [
+          { role: 'system', content: 'You are a tech specs API that strictly returns pure JSON.' },
+          { role: 'user', content: prompt }
+        ],
+        response_format: { type: "json_object" },
+        temperature: 0.2
+      })
     });
-    
-    const responseText = result.response.text();
+
+    if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`Groq API Error: ${err}`);
+    }
+
+    const data = await res.json();
+    const responseText = data.choices[0].message.content;
     
     // Parse JSON
     const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
     const productData = JSON.parse(cleanJson);
-    console.log("Gemini AI sinh thành công:", productData.name);
+    console.log("Groq AI sinh thành công:", productData.name);
     
     return productData;
   } catch (error) {
-    console.error('Lỗi khi gọi Gemini AI:', error.message);
+    console.error('Lỗi khi gọi Groq AI:', error.message);
     throw new Error('Lỗi AI: Không thể kết nối hoặc API phản hồi sai.');
   }
 }
