@@ -282,7 +282,6 @@ const CompareSection = ({ products, initialDeviceIds }) => {
             </div>
           ))}
         </div>
-          </div>
 
           {/* ── 3.5. AI VERDICT ─────────────────────────────────────────────── */}
           <div>
