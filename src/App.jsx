@@ -20,7 +20,7 @@ import './index.css';
 
 function App() {
   const { currentUser } = useAuth() || {};
-  const [activeTab, setActiveTab] = useState('phones');
+  const [activeTab, setActiveTab] = useState('home');
   const [products, setProducts] = useState([]);
   const [posts, setPosts] = useState([]);
   const [showAdmin, setShowAdmin] = useState(false);
@@ -162,9 +162,51 @@ function App() {
       />
 
       {/* Hero: full-width, outside container */}
-      <VersusHero products={products} onCompare={handleHeroCompare} />
+      {activeTab === 'home' && <VersusHero products={products} onCompare={handleHeroCompare} />}
       
       <main className="main-layout container">
+        {activeTab === 'home' && (
+          <section className="animate-fade-in" style={{ marginBottom: '60px' }}>
+            <h2 style={{ fontSize: '1.8rem', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ width: '40px', height: '4px', background: 'var(--gradient-accent)', borderRadius: '2px' }}></span>
+              Sản Phẩm Nổi Bật
+            </h2>
+            <div className="compare-container" style={{ margin: 0, padding: 0 }}>
+              {[...featuredPhones, ...featuredLaptops].slice(0, 8).map(product => (
+                <ProductCard 
+                  key={product.id} 
+                  product={product} 
+                  userPreference={userPreference === 'Không thiết lập' ? '' : userPreference} 
+                  onViewDetails={() => setSelectedProduct(product)}
+                  compareIds={compareIds}
+                  onToggleCompare={toggleCompare}
+                />
+              ))}
+              {[...featuredPhones, ...featuredLaptops].length === 0 && (
+                <div style={{ gridColumn: '1 / -1', padding: '40px', textAlign: 'center', background: 'var(--bg-secondary)', borderRadius: '15px' }} className="text-secondary">
+                  Chưa có sản phẩm nào được đánh dấu nổi bật. Vui lòng vào Admin để chọn thiết bị hiển thị lên trang chủ!
+                </div>
+              )}
+            </div>
+
+            <div style={{ marginTop: '80px', padding: '60px 40px', background: 'var(--vs-surface)', borderRadius: '24px', border: '1px solid var(--vs-border)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+               <div style={{ position: 'absolute', top: '-50%', left: '-10%', width: '300px', height: '300px', background: 'var(--accent-primary)', filter: 'blur(100px)', opacity: '0.1' }}></div>
+               <div style={{ position: 'absolute', bottom: '-50%', right: '-10%', width: '300px', height: '300px', background: 'var(--accent-secondary)', filter: 'blur(100px)', opacity: '0.1' }}></div>
+               <h2 style={{ fontSize: '2.5rem', marginBottom: '16px', fontWeight: '800' }}>Liên Hệ Với Chúng Tôi</h2>
+               <p className="text-secondary" style={{ fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto 32px' }}>
+                 Bạn có câu hỏi, đóng góp ý kiến hoặc muốn hợp tác? Đội ngũ Better luôn sẵn sàng lắng nghe và hỗ trợ bạn một cách nhanh nhất.
+               </p>
+               <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
+                 <a href="mailto:contact@better.com" className="btn hover-lift" style={{ background: 'var(--gradient-accent)', color: 'white', padding: '14px 36px', borderRadius: '30px', fontWeight: 'bold', border: 'none', cursor: 'pointer', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                   Gửi Email Ngay
+                 </a>
+                 <a href="#" className="btn hover-lift" style={{ background: 'var(--bg-secondary)', color: 'var(--vs-text-primary)', padding: '14px 36px', borderRadius: '30px', fontWeight: 'bold', border: '1px solid var(--vs-border)', cursor: 'pointer', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                   Tìm Hiểu Thêm
+                 </a>
+               </div>
+            </div>
+          </section>
+        )}
 
         {activeTab === 'phones' && (
           <section className="animate-fade-in" style={{ marginBottom: '60px' }}>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Smartphone, Laptop, BarChart2, Cpu, Newspaper, Zap, Sun, Moon, User, Settings } from 'lucide-react';
+import { Home, Smartphone, Laptop, BarChart2, Cpu, Newspaper, Zap, Sun, Moon, User, Settings } from 'lucide-react';
 
 const NAV_ITEMS = [
+  { id: 'home',    label: 'Trang chủ', icon: Home },
   { id: 'phones',  label: 'Điện thoại', icon: Smartphone },
   { id: 'laptops', label: 'Laptop',     icon: Laptop },
   { id: 'compare', label: 'So Sánh',   icon: BarChart2 },
@@ -29,7 +30,7 @@ const Header = ({
       <header className={`vs-header ${scrolled ? 'vs-header--scrolled' : ''}`}>
         <div className="vs-header-inner">
           {/* Logo */}
-          <div className="vs-logo" onClick={() => setActiveTab('phones')}>
+          <div className="vs-logo" onClick={() => setActiveTab('home')}>
             <div className="vs-logo-icon"><Zap size={16} color="white" /></div>
             <span className="vs-logo-text">Better</span>
             <span className="vs-logo-tag">BETA</span>
