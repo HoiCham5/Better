@@ -11,7 +11,7 @@ import AuthModal from './components/AuthModal';
 import ProductDetailsModal from './components/ProductDetailsModal';
 import UserProfileModal from './components/UserProfileModal';
 import VersusHero from './components/VersusHero';
-import { Settings, X, User } from 'lucide-react';
+import { Settings, X, User, Zap } from 'lucide-react';
 import { allProducts } from './data/products';
 import { useEffect } from 'react';
 import { useAuth } from './context/AuthContext';
@@ -189,19 +189,20 @@ function App() {
               )}
             </div>
 
-            <div style={{ marginTop: '80px', padding: '60px 40px', background: 'var(--vs-surface)', borderRadius: '24px', border: '1px solid var(--vs-border)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-               <div style={{ position: 'absolute', top: '-50%', left: '-10%', width: '300px', height: '300px', background: 'var(--accent-primary)', filter: 'blur(100px)', opacity: '0.1' }}></div>
-               <div style={{ position: 'absolute', bottom: '-50%', right: '-10%', width: '300px', height: '300px', background: 'var(--accent-secondary)', filter: 'blur(100px)', opacity: '0.1' }}></div>
-               <h2 style={{ fontSize: '2.5rem', marginBottom: '16px', fontWeight: '800' }}>Liên Hệ Với Chúng Tôi</h2>
-               <p className="text-secondary" style={{ fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto 32px' }}>
-                 Bạn có câu hỏi, đóng góp ý kiến hoặc muốn hợp tác? Đội ngũ Better luôn sẵn sàng lắng nghe và hỗ trợ bạn một cách nhanh nhất.
+            <div style={{ marginTop: '80px', padding: '80px 20px', textAlign: 'center' }}>
+               <h2 style={{ fontSize: '3rem', fontWeight: '900', marginBottom: '24px', color: 'var(--vs-text-primary)', lineHeight: '1.2' }}>
+                 94k sản phẩm trong 106 danh mục.<br/>Một mục tiêu duy nhất.
+               </h2>
+               <p className="text-secondary" style={{ fontSize: '1.1rem', maxWidth: '800px', margin: '0 auto 40px', lineHeight: '1.6' }}>
+                 Chúng tôi đã làm việc không ngừng nghỉ để trở thành tài liệu tham khảo đáng tin cậy của bạn trong lĩnh vực so sánh.<br/>
+                 Chúng tôi là một đội ngũ đam mê công nghệ độc lập: sứ mệnh duy nhất của chúng tôi là giúp bạn đưa ra quyết định sáng suốt.
                </p>
-               <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
-                 <a href="mailto:contact@better.com" className="btn hover-lift" style={{ background: 'var(--gradient-accent)', color: 'white', padding: '14px 36px', borderRadius: '30px', fontWeight: 'bold', border: 'none', cursor: 'pointer', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                   Gửi Email Ngay
-                 </a>
-                 <a href="#" className="btn hover-lift" style={{ background: 'var(--bg-secondary)', color: 'var(--vs-text-primary)', padding: '14px 36px', borderRadius: '30px', fontWeight: 'bold', border: '1px solid var(--vs-border)', cursor: 'pointer', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                   Tìm Hiểu Thêm
+               <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', alignItems: 'center' }}>
+                 <button onClick={() => setActiveTab('store')} className="btn hover-lift" style={{ background: '#3858f6', color: 'white', padding: '14px 32px', borderRadius: '30px', fontWeight: '700', border: 'none', cursor: 'pointer', fontSize: '1rem' }}>
+                   Xem tất cả danh mục
+                 </button>
+                 <a href="#" style={{ color: '#3858f6', fontWeight: '700', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '1rem' }}>
+                   Cách chúng tôi hoạt động →
                  </a>
                </div>
             </div>
@@ -323,9 +324,53 @@ function App() {
         {renderComparePopup()}
       </main>
 
-      <footer className="glass-panel" style={{ marginTop: '80px', padding: '40px 0', textAlign: 'center', borderRadius: 0, borderBottom: 0, borderLeft: 0, borderRight: 0 }}>
-        <div className="container">
-          <p className="text-secondary">&copy; 2026 Better. Built with premium aesthetics and AI.</p>
+      <footer style={{ background: '#111', color: 'white', padding: '60px 0 40px', marginTop: '0', width: '100%' }}>
+        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '40px', maxWidth: '1200px', margin: '0 auto', padding: '0 24px', textAlign: 'left' }}>
+          <div>
+            <h4 style={{ fontSize: '0.8rem', fontWeight: '800', color: '#888', marginBottom: '20px', letterSpacing: '1px' }}>TÀI NGUYÊN</h4>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Blog</a></li>
+              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Thuật ngữ</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 style={{ fontSize: '0.8rem', fontWeight: '800', color: '#888', marginBottom: '20px', letterSpacing: '1px' }}>LIÊN HỆ</h4>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Gợi ý sản phẩm</a></li>
+              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Hợp tác</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 style={{ fontSize: '0.8rem', fontWeight: '800', color: '#888', marginBottom: '20px', letterSpacing: '1px' }}>BETTER</h4>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Về chúng tôi</a></li>
+              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Tiêu chuẩn biên tập</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 style={{ fontSize: '0.8rem', fontWeight: '800', color: '#888', marginBottom: '20px', letterSpacing: '1px' }}>PHÁP LÝ</h4>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Bản quyền</a></li>
+              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Quyền riêng tư</a></li>
+              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Điều khoản</a></li>
+              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Cookies</a></li>
+            </ul>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+              <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'var(--gradient-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Zap size={16} color="white" />
+              </div>
+              <span style={{ fontSize: '1.8rem', fontWeight: '900', color: 'white', letterSpacing: '-0.5px' }}>Better</span>
+            </div>
+            <p style={{ color: '#888', fontSize: '0.9rem', marginBottom: '20px', fontWeight: '600' }}>So sánh mọi thứ</p>
+            <div style={{ display: 'flex', gap: '15px' }}>
+              <a href="#" style={{ color: '#ccc', fontWeight: '700', textDecoration: 'none' }}>YT</a>
+              <a href="#" style={{ color: '#ccc', fontWeight: '700', textDecoration: 'none' }}>TK</a>
+              <a href="#" style={{ color: '#ccc', fontWeight: '700', textDecoration: 'none' }}>IG</a>
+              <a href="#" style={{ color: '#ccc', fontWeight: '700', textDecoration: 'none' }}>X</a>
+            </div>
+          </div>
         </div>
       </footer>
 

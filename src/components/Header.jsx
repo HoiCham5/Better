@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Home, Smartphone, Laptop, BarChart2, Cpu, Newspaper, Zap, Sun, Moon, User, Settings } from 'lucide-react';
 
 const NAV_ITEMS = [
-  { id: 'home',    label: 'Trang chủ', icon: Home },
   { id: 'phones',  label: 'Điện thoại', icon: Smartphone },
   { id: 'laptops', label: 'Laptop',     icon: Laptop },
   { id: 'compare', label: 'So Sánh',   icon: BarChart2 },
