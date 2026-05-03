@@ -1,347 +1,530 @@
 ## CHƯƠNG 2. CÁC CÔNG CỤ HỖ TRỢ XÂY DỰNG WEBSITE
 
-### 2.1 Kiến Trúc MERN Stack
-
-MERN Stack là mô hình phát triển ứng dụng web full-stack sử dụng hoàn toàn ngôn ngữ **JavaScript** ở cả tầng giao diện (Frontend) lẫn tầng xử lý dữ liệu (Backend). MERN là viết tắt của 4 công nghệ nền tảng:
-
-| Ký tự | Công Nghệ | Vai Trò |
-|-------|-----------|---------|
-| **M** | MongoDB | Cơ sở dữ liệu NoSQL dạng tài liệu (Document-Oriented) |
-| **E** | Express.js | Framework server-side xây dựng trên Node.js |
-| **R** | React.js | Thư viện JavaScript xây dựng giao diện người dùng |
-| **N** | Node.js | Môi trường chạy JavaScript phía máy chủ |
-
-**Ưu điểm của MERN Stack:**
-- **Tính nhất quán ngôn ngữ**: Toàn bộ codebase dùng JavaScript/JSON, giảm chi phí chuyển đổi ngữ pháp giữa frontend và backend.
-- **Hiệu năng cao**: Node.js với mô hình non-blocking I/O và Event Loop cho phép xử lý hàng nghìn request đồng thời mà không tốn nhiều tài nguyên CPU.
-- **Hệ sinh thái npm phong phú**: Hơn 2 triệu thư viện mã nguồn mở sẵn sàng tích hợp qua npm.
-- **Phổ biến trong ngành**: Theo Stack Overflow Developer Survey 2024, Node.js và React nằm trong top 5 công nghệ được sử dụng rộng rãi nhất toàn cầu.
-- **Phù hợp với dữ liệu JSON**: Dữ liệu thông số kỹ thuật thiết bị (specs) có cấu trúc không đồng đều giữa điện thoại và laptop – MongoDB lưu trữ dạng JSON linh hoạt, không cần schema cứng nhắc như SQL.
-
-#### 2.1.1 MongoDB và Mongoose ODM
-
-**MongoDB** là hệ quản trị cơ sở dữ liệu NoSQL (Not Only SQL) thuộc dạng lưu trữ tài liệu (Document-Oriented). Khác với cơ sở dữ liệu quan hệ truyền thống (MySQL, PostgreSQL), MongoDB lưu trữ dữ liệu theo định dạng **BSON** (Binary JSON), không yêu cầu cấu trúc bảng cố định (schema-less).
-
-**Đặc điểm nổi bật của MongoDB:**
-- Lưu trữ dữ liệu dạng Document (tương đương một hàng trong SQL), mỗi document là một JSON object.
-- Hỗ trợ dữ liệu lồng nhau (nested documents) – phù hợp để lưu thông số kỹ thuật phức tạp của thiết bị.
-- Khả năng mở rộng ngang (horizontal scaling) thông qua Sharding.
-- **MongoDB Atlas** cung cấp dịch vụ đám mây với Free Tier 512MB – đủ cho mục đích demo đồ án.
-
-**Tại sao chọn MongoDB cho Better:**
-Thông số kỹ thuật của điện thoại thông minh và laptop có cấu trúc rất khác nhau:
-- Điện thoại: camera, pin, màn hình OLED, hỗ trợ 5G...
-- Laptop: GPU rời, ổ cứng NVMe, cổng kết nối, thời lượng pin (giờ)...
-
-Mô hình document linh hoạt của MongoDB cho phép mỗi sản phẩm lưu đúng các trường cần thiết mà không cần tạo hàng chục cột NULL trong bảng quan hệ như SQL.
-
-**Mongoose** là thư viện ODM (Object Document Mapper) giúp định nghĩa schema và tương tác với MongoDB thông qua mô hình đối tượng JavaScript. Dự án Better sử dụng Mongoose để định nghĩa 4 Schema chính:
-
-```javascript
-// models.js - Định nghĩa Mongoose Schema
-const productSchema = new mongoose.Schema({
-  id: { type: String, required: true, unique: true },
-  name: { type: String, required: true },
-  brand: { type: String, required: true },
-  price: { type: String },
-  priceValue: { type: Number },
-  image: { type: String },
-  category: { type: String },          // "phone" hoặc "laptop"
-  specs: { type: mongoose.Schema.Types.Mixed }, // JSON linh hoạt
-  youtubeUrl: { type: String },
-  isFeatured: { type: Boolean, default: false }
-}, { strict: false, timestamps: true });
-```
-
-Tùy chọn `strict: false` cho phép lưu trữ các trường không được định nghĩa trong schema (ví dụ: links.shopee, links.tiktok), tăng tính linh hoạt khi mở rộng dữ liệu.
-
-#### 2.1.2 Node.js và Express.js
-
-**Node.js** là môi trường chạy JavaScript phía máy chủ, được xây dựng trên V8 JavaScript Engine của Google Chrome. Điểm đặc biệt của Node.js là mô hình **non-blocking I/O** và **Event Loop** – cho phép xử lý nhiều request đồng thời mà không tạo thread riêng cho mỗi request, tiết kiệm tài nguyên hệ thống đáng kể so với mô hình truyền thống.
-
-**Express.js** là framework web nhẹ và nhanh (minimalist) cho Node.js. Express cung cấp:
-- **Routing**: Định tuyến HTTP request đến handler tương ứng.
-- **Middleware**: Chuỗi xử lý request trước khi đến route handler (authentication, logging, parsing...).
-- **Error Handling**: Xử lý lỗi tập trung.
-
-Trong Better, Express.js được dùng để xây dựng toàn bộ REST API với 14 endpoint:
-
-```javascript
-// server.js - Cấu trúc Express App
-const app = express();
-app.use(cors());          // Cho phép CORS từ frontend Vercel
-app.use(express.json());  // Parse body JSON
-
-// Routes
-app.post('/api/auth/register', ...);
-app.post('/api/auth/login', ...);
-app.get('/api/products', ...);
-app.post('/api/products', authMiddleware, ...);
-// ... 10 endpoint khác
-```
-
-**Nguyên tắc REST được áp dụng:**
-- Sử dụng đúng HTTP verbs: GET (đọc), POST (tạo/cập nhật), DELETE (xóa).
-- URI tài nguyên rõ ràng: `/api/products`, `/api/posts`, `/api/reviews/:productId`.
-- HTTP Status Code chuẩn: 200 (OK), 201 (Created), 400 (Bad Request), 401 (Unauthorized), 500 (Server Error).
-
-#### 2.1.3 React.js và Vite
-
-**React.js** là thư viện JavaScript do Meta (Facebook) phát triển năm 2013, sử dụng mô hình lập trình dựa trên **Component** (Component-based). Mỗi phần của giao diện (Header, ProductCard, CompareSection...) là một Component độc lập, có thể tái sử dụng và quản lý trạng thái (state) riêng.
-
-Cơ chế **Virtual DOM** của React cho phép cập nhật giao diện hiệu quả: thay vì cập nhật toàn bộ DOM thật, React tính toán phần thay đổi tối thiểu và chỉ cập nhật đúng phần đó, giúp UI phản hồi nhanh.
-
-**React Hooks** được sử dụng trong Better:
-- `useState`: Quản lý trạng thái nội bộ component (sản phẩm đang chọn, tab đang active...).
-- `useEffect`: Thực thi logic có tác dụng phụ (fetch API khi component mount, lắng nghe sự kiện...).
-- `useContext`: Chia sẻ trạng thái toàn cục thông qua AuthContext (thông tin người dùng đăng nhập).
-
-**Vite** là công cụ build thế hệ mới (Next Generation Frontend Tooling), thay thế Create React App (CRA) truyền thống. Vite sử dụng kiến trúc module ES (ESM) gốc của trình duyệt trong quá trình phát triển, cho phép:
-- Khởi động máy chủ phát triển **nhanh hơn 10-100 lần** so với CRA.
-- Hot Module Replacement (HMR) gần như tức thì khi thay đổi code.
-- Build production tối ưu bằng Rollup bundler.
-
-**Cấu hình Vite trong Better:**
-```javascript
-// vite.config.js
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-export default defineConfig({ plugins: [react()] })
-```
-
----
-
-### 2.2 Bảo Mật Ứng Dụng Web
-
-#### 2.2.1 JSON Web Token (JWT)
-
-**JWT** là tiêu chuẩn mở (RFC 7519) để truyền tải thông tin giữa các bên dưới dạng JSON object được ký kỹ thuật số. JWT cho phép xác thực **stateless** (không lưu session phía server), phù hợp với kiến trúc REST API.
-
-Cấu trúc JWT gồm 3 phần ngăn cách bởi dấu chấm (.):
-
-```
-HEADER.PAYLOAD.SIGNATURE
-
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
-.eyJfaWQiOiI2NjFhYmNkZWYwMTIzNDU2NzgiLCJyb2xlIjoiVXNlciJ9
-.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
-```
-
-- **Header**: Chứa loại token và thuật toán ký (HS256 – HMAC SHA-256).
-- **Payload**: Chứa dữ liệu người dùng (`_id`, `role`). **Không lưu mật khẩu!**
-- **Signature**: Chữ ký số để xác minh tính toàn vẹn của token.
-
-**Luồng xác thực JWT trong Better:**
-1. Người dùng đăng nhập với email/password → Backend xác thực → Tạo JWT Token và trả về.
-2. Frontend lưu token trong `localStorage`.
-3. Mọi request cần xác thực đều gửi kèm header `Authorization: Bearer <token>`.
-4. Backend middleware (`authMiddleware`) giải mã token, xác minh chữ ký và tiếp tục xử lý.
-
-```javascript
-// authMiddleware trong server.js
-const authMiddleware = (req, res, next) => {
-  const token = req.header('Authorization');
-  if (!token) return res.status(401).json({ error: 'Truy cập bị từ chối!' });
-  try {
-    const verified = jwt.verify(token.replace('Bearer ', ''), JWT_SECRET);
-    req.user = verified; // Gán thông tin user vào request
-    next();
-  } catch (error) {
-    res.status(400).json({ error: 'Token không hợp lệ!' });
-  }
-};
-```
-
-#### 2.2.2 Bcrypt và Hashing Mật Khẩu
-
-Mật khẩu người dùng **tuyệt đối không được lưu dạng plaintext** vì nếu cơ sở dữ liệu bị xâm phạm, toàn bộ mật khẩu sẽ bị lộ. Dự án sử dụng thư viện `bcryptjs` để:
-
-- **Hash mật khẩu** với salt factor 10 trước khi lưu vào MongoDB.
-- **So sánh mật khẩu** khi đăng nhập bằng hàm `bcrypt.compare()` (thuật toán một chiều, không thể giải mã ngược).
-
-```javascript
-// Đăng ký - Hash mật khẩu trước khi lưu
-const salt = await bcrypt.genSalt(10);
-const hashedPassword = await bcrypt.hash(password, salt);
-const newUser = new User({ email, password: hashedPassword, displayName });
-
-// Đăng nhập - So sánh mật khẩu
-const validPass = await bcrypt.compare(password, user.password);
-if (!validPass) return res.status(400).json({ error: 'Mật khẩu sai' });
-```
-
-Salt factor 10 có nghĩa là bcrypt thực hiện 2^10 = 1024 vòng lặp hash, làm cho các cuộc tấn công brute-force cực kỳ tốn kém về thời gian.
-
-#### 2.2.3 Google OAuth và Firebase Authentication
-
-Ngoài đăng nhập Email/Password, hệ thống Better tích hợp **Google OAuth** thông qua Firebase Authentication, cho phép người dùng đăng nhập bằng tài khoản Google của họ mà không cần tạo mật khẩu mới.
-
-Luồng xác thực Google OAuth:
-1. Người dùng nhấn "Tiếp tục với Google".
-2. Firebase SDK mở popup xác thực Google.
-3. Google trả về `idToken` cho Firebase.
-4. Frontend nhận thông tin user (email, displayName, photoURL) từ Firebase.
-5. Thông tin được đồng bộ với MongoDB backend thông qua API.
-
----
-
-### 2.3 Thư Viện Giao Diện và Biểu Đồ
-
-#### 2.3.1 Recharts – Thư Viện Biểu Đồ
-
-**Recharts** là thư viện vẽ biểu đồ được xây dựng hoàn toàn trên React và D3.js. Better sử dụng **Radar Chart** (biểu đồ mạng nhện) từ Recharts để trực quan hóa điểm số kỹ thuật của thiết bị theo 5 chiều:
-
-| Chiều Đánh Giá | Căn Cứ Tính Điểm |
-|----------------|------------------|
-| Hiệu Năng | Tên chip (Apple A18 = 98, Snapdragon 8 Gen 3 = 95...) |
-| Màn Hình | Loại tấm nền, tần số quét (OLED+120Hz = cao điểm) |
-| Camera | Số megapixel, tính năng (48MP = 90, 200MP = 95...) |
-| Pin & Sạc | Dung lượng mAh và tốc độ sạc (5000mAh+90W = cao điểm) |
-| Thiết Kế | Vật liệu (Titan = 95, Nhôm = 80, Nhựa = 65...) |
-
-Ưu điểm của Radar Chart trong ngữ cảnh so sánh thiết bị:
-- Người dùng nhìn thấy **tổng thể 5 chiều cùng lúc** – điều mà bảng thống số không làm được.
-- Hỗ trợ **đặt chồng nhiều lớp** (overlay) của các sản phẩm khác nhau, so sánh tối đa 4 thiết bị trong 1 biểu đồ.
-- Màu sắc phân biệt rõ ràng: Xanh dương, Đỏ, Vàng, Xanh lá – tương ứng 4 thiết bị.
-
-#### 2.3.2 Lucide React – Thư Viện Icon
-
-**Lucide React** cung cấp hơn 1000 icon SVG được tối ưu hóa cho React. Better sử dụng các icon từ Lucide như `Smartphone`, `Laptop`, `BarChart2`, `Cpu`, `Newspaper`, `ShoppingBag`, `Heart`, `Star`, `X`, `LogIn`... để tạo giao diện trực quan và nhất quán.
-
-**Lý do chọn Lucide React thay vì Font Awesome:**
-- Tree-shakeable – chỉ bundle những icon thực sự dùng, giảm kích thước file.
-- Thiết kế hiện đại, đường nét mảnh và tinh tế phù hợp với phong cách Glassmorphism.
-- Hỗ trợ TypeScript và dễ tùy chỉnh kích thước/màu sắc qua props.
-
----
-
-### 2.4 DevOps và Containerization
-
-#### 2.4.1 Docker
-
-**Docker** là nền tảng containerization mã nguồn mở, cho phép đóng gói ứng dụng và toàn bộ môi trường chạy (runtime, dependencies, cấu hình) vào một "container" hoàn chỉnh. Container này có thể chạy nhất quán trên bất kỳ hệ điều hành nào có Docker Engine.
-
-**Các khái niệm cốt lõi:**
-- **Image**: Bản thiết kế chỉ đọc của container (như file ISO của hệ điều hành).
-- **Container**: Instance đang chạy của một Image.
-- **Dockerfile**: Script hướng dẫn Docker cách xây dựng Image từng bước.
-- **Docker Compose**: Công cụ định nghĩa và chạy nhiều container cùng lúc qua file YAML.
-
-**Dockerfile Backend (Node.js):**
-```dockerfile
-FROM node:18-alpine    # Image nhẹ ~165MB (Alpine Linux)
-WORKDIR /app
-COPY package*.json ./  # Cache layer: chỉ rebuild khi package.json thay đổi
-RUN npm install
-COPY . .
-EXPOSE 5000
-CMD ["node", "server.js"]
-```
-
-**Dockerfile Frontend (Multi-stage Build):**
-```dockerfile
-# Stage 1: Build React app
-FROM node:18-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build       # Output: /app/dist/
-
-# Stage 2: Serve với Nginx (~23MB)
-FROM nginx:alpine
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=builder /app/dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
-```
-
-Multi-stage Build giúp image production không chứa Node.js hay source code, giảm kích thước từ ~950MB xuống còn ~30MB và tăng bảo mật.
-
-#### 2.4.2 GitHub Actions CI/CD
-
-**CI/CD** (Continuous Integration/Continuous Deployment) là quy trình tự động hóa kiểm thử và triển khai phần mềm mỗi khi có thay đổi code.
-
-**GitHub Actions** là nền tảng CI/CD tích hợp sẵn trong GitHub. Better sử dụng workflow tự động:
-
-```yaml
-# .github/workflows/ci.yml
-name: MERN CI Pipeline
-on:
-  push:    { branches: ["main"] }
-  pull_request: { branches: ["main"] }
-jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with: { node-version: '18' }
-      - run: npm ci           # Cài đặt Frontend dependencies
-      - run: npm run build    # Test Vite build thành công
-      - run: cd server && npm ci  # Cài đặt Backend dependencies
-```
-
-Mỗi khi developer push code lên nhánh `main`, GitHub Actions tự động chạy pipeline. Nếu tất cả bước PASS, Vercel và Render.com tự động triển khai phiên bản mới. Nếu có lỗi, hệ thống gửi thông báo và ngăn không cho cập nhật lên production.
-
-#### 2.4.3 Nginx Web Server
-
-**Nginx** là web server hiệu năng cao, được sử dụng trong Better làm **Static File Server** cho ứng dụng React đã build. Nginx xử lý đúng routing của Single Page Application bằng cấu hình `try_files`:
-
-```nginx
-# nginx.conf
-server {
-    listen 80;
-    root /usr/share/nginx/html;
-    index index.html;
-    location / {
-        try_files $uri $uri/ /index.html;
-        # Nếu không tìm thấy file → trả về index.html → React Router xử lý
-    }
+Chương này trình bày chi tiết các công nghệ, thư viện và công cụ đã được sử dụng trong quá trình phát triển hệ thống Better. Mỗi công nghệ được phân tích về ưu điểm, nhược điểm và lý do lựa chọn cho đề tài.
+
+### Tổng Quan Các Công Cụ Sử Dụng
+
+```plantuml
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontSize 12
+
+map "TỔNG QUAN CÔNG CỤ HỆ THỐNG BETTER" as overview {
+  FRONTEND => React.js 19 · Vite 5 · Recharts 3 · Lucide React · Firebase Auth
+  BACKEND => Node.js 18 · Express.js 5 · Mongoose 9 · JWT · bcryptjs
+  DATABASE => MongoDB Atlas (NoSQL Cloud)
+  DEVOPS => Docker · Docker Compose · GitHub Actions CI/CD · Nginx
+  CLOUD => Vercel (Frontend) · Render.com (Backend)
+  TOOLS => VS Code · Git/GitHub · npm · ESLint · Postman
 }
+@enduml
 ```
-
-Cấu hình này đảm bảo khi người dùng truy cập trực tiếp URL bất kỳ (ví dụ: `/compare`, `/news`), Nginx vẫn trả về `index.html` và React Router sẽ xử lý điều hướng phía client.
 
 ---
 
-### 2.5 Nền Tảng Triển Khai Đám Mây
+### 2.1 React.js
 
-#### 2.5.1 MongoDB Atlas
+**React.js** là thư viện JavaScript mã nguồn mở do Meta (Facebook) phát triển từ năm 2013, chuyên dùng để xây dựng giao diện người dùng (UI) theo mô hình Component-based. Dự án Better sử dụng **React phiên bản 19.2.4**.
 
-**MongoDB Atlas** là dịch vụ cơ sở dữ liệu MongoDB được quản lý hoàn toàn trên đám mây. Better sử dụng Free Tier (M0 Cluster) với:
-- Dung lượng lưu trữ: 512MB.
-- Replica Set gồm 3 node (tự động backup).
-- Kết nối qua chuỗi `mongodb+srv://` với TLS encryption.
-- Dashboard theo dõi hiệu suất và dung lượng.
+**Ưu điểm:**
+- **Virtual DOM:** React tạo một bản sao DOM ảo trong bộ nhớ, chỉ cập nhật các phần thay đổi thực sự lên DOM thật, giúp hiệu suất render nhanh vượt trội so với thao tác DOM truyền thống.
+- **Component-based Architecture:** Giao diện được chia thành các component độc lập (`Header`, `ProductCard`, `CompareSection`, `AIAnalyzer`...), dễ tái sử dụng và bảo trì.
+- **React Hooks:** Hệ thống Hooks (`useState`, `useEffect`, `useContext`) cho phép quản lý trạng thái và vòng đời component mà không cần viết class, giúp code gọn gàng và dễ đọc hơn.
+- **Hệ sinh thái lớn:** Hơn 2 triệu package trên npm, tài liệu phong phú và cộng đồng hỗ trợ đông đảo.
 
-#### 2.5.2 Vercel
+**Nhược điểm:**
+- Chỉ là thư viện UI, không phải framework hoàn chỉnh – cần kết hợp thêm thư viện routing, state management nếu ứng dụng phức tạp.
+- Tốc độ cập nhật nhanh, đôi khi gây khó khăn khi nâng cấp phiên bản.
 
-**Vercel** là nền tảng triển khai frontend tối ưu cho React/Next.js. Đặc điểm:
-- Tự động phát hiện Vite framework và cấu hình build.
-- Global CDN (Edge Network) với hơn 100 data center toàn cầu.
-- Latency < 50ms cho người dùng Việt Nam (thông qua các node tại Singapore, Hong Kong).
-- Tự động deploy khi có push lên nhánh main của GitHub repository.
+**Lý do chọn cho đề tài:** React là thư viện front-end phổ biến nhất thế giới (theo Stack Overflow Survey 2024), phù hợp với mô hình SPA của Better và đảm bảo sinh viên tiếp cận công nghệ đúng chuẩn công nghiệp.
 
-#### 2.5.3 Render.com
+---
 
-**Render.com** là nền tảng triển khai backend phổ biến cho các dự án Node.js. Đặc điểm:
-- Hỗ trợ deploy từ GitHub repository trực tiếp.
-- Tự động cài đặt dependencies và khởi động server.
-- Cung cấp HTTPS miễn phí với Let's Encrypt certificate.
-- Free tier có giới hạn: server "ngủ" sau 15 phút không có request (cold start ~2 giây).
+### 2.2 Vite
 
-#### 2.5.4 Công Cụ Phát Triển Khác
+**Vite** là công cụ build (build tool) thế hệ mới cho ứng dụng JavaScript, được tạo bởi Evan You (tác giả Vue.js). Dự án sử dụng **Vite phiên bản 5.4.21** với plugin `@vitejs/plugin-react`.
 
-| Công Cụ | Mục Đích |
-|---------|----------|
-| Visual Studio Code | IDE chính để viết code |
-| Git | Quản lý phiên bản mã nguồn |
-| GitHub | Lưu trữ repository và CI/CD |
-| Postman | Kiểm thử API endpoint |
-| MongoDB Compass | GUI quản lý MongoDB |
-| Chrome DevTools | Debug frontend và kiểm tra hiệu năng |
-| Lighthouse | Đánh giá Performance, Accessibility, SEO |
-| PlantUML | Vẽ các biểu đồ UML |
+**Ưu điểm:**
+- **Hot Module Replacement (HMR) cực nhanh:** Vite sử dụng native ES Modules (ESM) của trình duyệt trong môi trường phát triển, cho phép thời gian khởi động server dev **nhanh hơn 10-100 lần** so với Create React App (Webpack).
+- **Build tối ưu:** Sử dụng Rollup cho production build, tạo ra bundle nhỏ gọn và tối ưu.
+- **Cấu hình đơn giản:** File `vite.config.js` chỉ vài dòng, dễ tùy biến.
+
+**Nhược điểm:**
+- Hệ sinh thái plugin còn trẻ hơn so với Webpack.
+- Một số thư viện cũ chưa tương thích hoàn toàn với ESM.
+
+**Lý do chọn cho đề tài:** Vite thay thế hoàn toàn CRA (đã ngừng phát triển), mang lại trải nghiệm phát triển nhanh chóng và hiệu quả.
+
+```plantuml
+@startuml
+skinparam backgroundColor #FEFEFE
+skinparam activityBackgroundColor #E3F2FD
+
+start
+:Developer lưu file .jsx;
+:Vite phát hiện thay đổi (File Watcher);
+if (Môi trường?) then (Development)
+  :Chuyển đổi qua ESM trực tiếp;
+  :Gửi module đã thay đổi đến trình duyệt;
+  :HMR cập nhật component (< 100ms);
+else (Production)
+  :Rollup bundle toàn bộ source;
+  :Tối ưu hóa: tree-shaking, minify;
+  :Xuất file tĩnh vào thư mục dist/;
+endif
+stop
+
+@enduml
+```
+
+---
+
+### 2.3 Node.js
+
+**Node.js** là môi trường chạy (runtime environment) JavaScript phía máy chủ, xây dựng trên engine V8 của Google Chrome. Dự án sử dụng **Node.js phiên bản 18 LTS**.
+
+**Ưu điểm:**
+- **Non-blocking I/O & Event Loop:** Mô hình xử lý bất đồng bộ cho phép xử lý hàng nghìn kết nối đồng thời mà không cần tạo thread mới cho mỗi request, rất phù hợp cho ứng dụng I/O intensive như REST API.
+- **Nhất quán ngôn ngữ:** Sử dụng JavaScript cả ở Frontend (React) và Backend (Node.js), giảm chi phí chuyển đổi ngôn ngữ.
+- **npm – Hệ sinh thái package lớn nhất thế giới:** Hơn 2 triệu thư viện mã nguồn mở sẵn sàng tích hợp.
+
+**Nhược điểm:**
+- Không phù hợp cho tác vụ tính toán nặng (CPU-intensive) do chạy đơn luồng.
+- Callback hell nếu không sử dụng đúng async/await.
+
+**Lý do chọn cho đề tài:** Node.js là thành phần "N" trong MERN Stack, cho phép toàn bộ hệ thống dùng một ngôn ngữ duy nhất – JavaScript.
+
+---
+
+### 2.4 Express.js
+
+**Express.js** là web framework nhẹ và linh hoạt nhất cho Node.js, cung cấp cơ chế routing, middleware và xử lý HTTP request/response. Dự án sử dụng **Express phiên bản 5.2.1**.
+
+**Ưu điểm:**
+- **Minimalist & Flexible:** Không áp đặt cấu trúc cứng nhắc, cho phép tự do tổ chức code theo nhu cầu.
+- **Middleware Pipeline:** Hệ thống middleware mạnh mẽ cho phép xử lý xác thực (JWT), CORS, logging... theo chuỗi tuần tự.
+- **RESTful Routing:** Hỗ trợ đầy đủ HTTP verbs (GET, POST, PUT, DELETE) với cú pháp khai báo route đơn giản.
+
+**Nhược điểm:**
+- Không có cấu trúc thư mục chuẩn – dễ dẫn đến code lộn xộn nếu không có quy ước rõ ràng.
+- Xử lý lỗi mặc định còn đơn giản, cần cấu hình thêm.
+
+**Lý do chọn cho đề tài:** Express là framework server-side phổ biến nhất trong hệ sinh thái Node.js, là thành phần "E" chuẩn của kiến trúc MERN.
+
+---
+
+### 2.5 MongoDB và Mongoose ODM
+
+**MongoDB** là hệ quản trị cơ sở dữ liệu NoSQL dạng document (tài liệu), lưu trữ dữ liệu theo định dạng BSON (Binary JSON). Dự án sử dụng **MongoDB Atlas** – dịch vụ đám mây chính thức.
+
+**Mongoose** là thư viện ODM (Object Document Mapper) cho MongoDB trong Node.js, phiên bản **9.4.1**.
+
+**Ưu điểm:**
+- **Schema linh hoạt (Schema-less):** Thông số kỹ thuật điện thoại và laptop có cấu trúc rất khác nhau. Trường `specs` kiểu `Mixed` cho phép mỗi sản phẩm lưu đúng các trường cần thiết mà không tạo cột NULL.
+- **Mongoose Schema Validation:** Dù MongoDB schema-less, Mongoose vẫn cung cấp lớp xác thực dữ liệu (required, unique, default) trước khi ghi vào DB.
+- **MongoDB Atlas Free Tier:** Cung cấp 512MB miễn phí, đủ cho mục đích demo đồ án.
+
+**Nhược điểm:**
+- Không hỗ trợ JOIN phức tạp như SQL – phải dùng `aggregate` hoặc truy vấn nhiều lần.
+- Thiếu tính ACID hoàn chỉnh cho các giao dịch đa document (đã cải thiện từ MongoDB 4.0+).
+
+**Lý do chọn cho đề tài:** MongoDB là thành phần "M" trong MERN Stack, mô hình document phù hợp hoàn hảo với dữ liệu đa dạng của nhiều loại sản phẩm công nghệ.
+
+```plantuml
+@startuml
+skinparam backgroundColor #FEFEFE
+
+package "MongoDB Atlas Cloud" {
+  database "Products" as prod {
+  }
+  database "Users" as usr {
+  }
+  database "Posts" as pst {
+  }
+  database "Reviews" as rev {
+  }
+}
+
+note right of prod
+  id, name, brand, price,
+  priceValue, image, category,
+  specs (Mixed), isFeatured,
+  youtubeUrl, timestamps
+end note
+
+note right of usr
+  email (unique), password (hashed),
+  displayName, photoURL,
+  points, wishlist[], role,
+  timestamps
+end note
+
+note left of pst
+  id, title, summary,
+  content, image, date,
+  timestamps
+end note
+
+note left of rev
+  productId (FK→Product),
+  userId (FK→User),
+  userName, userPhoto,
+  text, timestamps
+end note
+
+prod "1" --> "N" rev : có nhiều
+usr "1" --> "N" rev : viết bởi
+usr "M" ..> "N" prod : wishlist[]
+
+@enduml
+```
+
+---
+
+### 2.6 JSON Web Token (JWT) và bcryptjs
+
+#### 2.6.1 JSON Web Token
+
+**JWT** là tiêu chuẩn mở (RFC 7519) cho phép truyền tải thông tin xác thực giữa client và server dưới dạng JSON object có chữ ký số. Dự án sử dụng thư viện `jsonwebtoken` phiên bản **9.0.3**.
+
+**Ưu điểm:**
+- **Stateless Authentication:** Server không cần lưu session, giảm tải database và dễ scale ngang.
+- **Tự chứa (Self-contained):** Token chứa đầy đủ thông tin user (userId, role) mà không cần truy vấn DB thêm.
+- **Cross-domain support:** Hoạt động tốt trong kiến trúc tách biệt Frontend/Backend trên các domain khác nhau.
+
+**Nhược điểm:**
+- Token không thể thu hồi (revoke) trước khi hết hạn nếu không dùng blacklist.
+- Payload tăng kích thước header HTTP.
+
+#### 2.6.2 bcryptjs
+
+**bcryptjs** là thư viện mã hóa mật khẩu một chiều (one-way hashing), phiên bản **3.0.3**. Sử dụng thuật toán Blowfish với salt factor 10.
+
+**Ưu điểm:**
+- Mã hóa không thể đảo ngược – ngay cả khi database bị lộ, mật khẩu vẫn an toàn.
+- Salt tự động tạo random cho mỗi lần hash, chống tấn công Rainbow Table.
+
+**Lý do chọn cho đề tài:** JWT + bcryptjs là bộ đôi bảo mật tiêu chuẩn cho ứng dụng web REST API hiện đại, đảm bảo an toàn xác thực mà không cần hạ tầng session phức tạp.
+
+```plantuml
+@startuml
+skinparam backgroundColor #FEFEFE
+
+actor "Người dùng" as User
+participant "React Frontend" as FE
+participant "Express Backend" as BE
+database "MongoDB" as DB
+
+== Đăng Ký ==
+User -> FE: Nhập email + password
+FE -> BE: POST /api/auth/register
+BE -> BE: bcrypt.hash(password, salt=10)
+BE -> DB: Lưu user (password đã hash)
+DB --> BE: OK
+BE --> FE: {message: "Thành công"}
+
+== Đăng Nhập ==
+User -> FE: Nhập email + password
+FE -> BE: POST /api/auth/login
+BE -> DB: Tìm user theo email
+DB --> BE: user (password hashed)
+BE -> BE: bcrypt.compare(input, hashed)
+BE -> BE: jwt.sign({_id, role}, SECRET)
+BE --> FE: {token, user}
+FE -> FE: localStorage.setItem("token")
+
+== Truy Cập Route Bảo Vệ ==
+User -> FE: Thực hiện thao tác
+FE -> BE: GET /api/users/me\nAuthorization: Bearer <token>
+BE -> BE: authMiddleware:\njwt.verify(token, SECRET)
+BE -> DB: User.findById(decoded._id)
+DB --> BE: user data
+BE --> FE: {user}
+
+@enduml
+```
+
+---
+
+### 2.7 Recharts
+
+**Recharts** là thư viện vẽ biểu đồ được xây dựng hoàn toàn trên React và D3.js. Dự án sử dụng **Recharts phiên bản 3.8.1**.
+
+**Ưu điểm:**
+- **Declarative API:** Khai báo biểu đồ bằng JSX component giống cách viết giao diện React, dễ tích hợp.
+- **Responsive & Animated:** Biểu đồ tự co giãn theo container và có animation mượt mà mặc định.
+- **Radar Chart hỗ trợ overlay:** Cho phép đặt chồng nhiều lớp dữ liệu, lý tưởng cho việc so sánh nhiều thiết bị.
+
+**Nhược điểm:**
+- Kích thước bundle tương đối lớn (~300KB gzipped) do phụ thuộc D3.
+- Tùy biến sâu (custom tooltip, legend) đôi khi phức tạp.
+
+**Lý do chọn cho đề tài:** Recharts cung cấp Radar Chart đa lớp – loại biểu đồ phù hợp nhất để trực quan hóa so sánh 5 chiều kỹ thuật của thiết bị, vượt trội hơn bảng thông số thuần túy.
+
+---
+
+### 2.8 Lucide React
+
+**Lucide React** là thư viện icon mã nguồn mở, kế thừa từ Feather Icons với hơn 1.400 icon vector dạng SVG. Phiên bản sử dụng: **1.7.0**.
+
+**Ưu điểm:**
+- Icon dạng SVG – sắc nét ở mọi kích thước, nhẹ hơn icon font (Font Awesome).
+- Tree-shakeable: Chỉ import icon cần dùng, không bundle toàn bộ thư viện.
+- API đơn giản: `<Settings size={20} />`, `<X size={16} />`.
+
+**Nhược điểm:**
+- Số lượng icon ít hơn so với Font Awesome hay Material Icons.
+
+**Lý do chọn cho đề tài:** Lucide cung cấp bộ icon hiện đại, nhẹ và phù hợp phong cách thiết kế tối giản của Better.
+
+---
+
+### 2.9 Firebase Authentication (Google OAuth)
+
+**Firebase** là nền tảng phát triển ứng dụng của Google. Dự án sử dụng module **Firebase Authentication** (phiên bản **12.11.0**) cho chức năng đăng nhập bằng tài khoản Google.
+
+**Ưu điểm:**
+- **Google OAuth tích hợp sẵn:** Người dùng đăng nhập bằng tài khoản Google chỉ với 1 click, không cần nhập email/password.
+- **SDK đơn giản:** Chỉ cần vài dòng code để kích hoạt popup đăng nhập Google.
+- **Free tier rộng rãi:** Miễn phí cho hầu hết use case xác thực.
+
+**Nhược điểm:**
+- Phụ thuộc vào dịch vụ bên thứ ba (Google) – nếu Firebase gặp sự cố thì chức năng OAuth bị ảnh hưởng.
+- Cần tạo project trên Firebase Console và cấu hình API Key.
+
+**Lý do chọn cho đề tài:** Firebase Auth bổ sung phương thức đăng nhập nhanh bằng Google bên cạnh hệ thống email/password tự xây dựng, nâng cao trải nghiệm người dùng.
+
+---
+
+### 2.10 Docker và Docker Compose
+
+**Docker** là nền tảng containerization mã nguồn mở, cho phép đóng gói ứng dụng cùng toàn bộ môi trường chạy vào container. **Docker Compose** là công cụ quản lý nhiều container cùng lúc.
+
+**Ưu điểm:**
+- **"Works on my machine" problem solved:** Container chạy nhất quán trên mọi hệ điều hành có Docker Engine.
+- **Multi-stage Build:** Dockerfile của Better sử dụng 2 stage – stage 1 build React bằng `node:18-alpine`, stage 2 phục vụ bằng `nginx:alpine`, giúp image cuối chỉ chứa file tĩnh và Nginx, kích thước rất nhỏ.
+- **Docker Compose orchestration:** Chỉ cần 1 lệnh `docker-compose up` để khởi động đồng thời Frontend (port 80) và Backend (port 5000).
+
+**Nhược điểm:**
+- Đường cong học tập ban đầu cao cho người mới.
+- Tiêu tốn tài nguyên hơn so với chạy trực tiếp trên máy.
+
+**Lý do chọn cho đề tài:** Docker chứng minh khả năng áp dụng DevOps thực tế, đóng gói toàn bộ hệ thống Better thành container có thể triển khai ở bất kỳ đâu.
+
+```plantuml
+@startuml
+skinparam backgroundColor #FEFEFE
+
+node "Docker Host" {
+  package "docker-compose.yml" {
+    rectangle "better_frontend\n(nginx:alpine)" as fe {
+      file "dist/index.html" as html
+      file "dist/assets/*.js" as js
+      file "nginx.conf" as nginx
+    }
+
+    rectangle "better_backend\n(node:18-alpine)" as be {
+      file "server.js" as srv
+      file "models.js" as mod
+      file ".env" as env
+    }
+  }
+}
+
+cloud "MongoDB Atlas" as db
+
+fe --> be : API calls\nport 5000
+be --> db : Mongoose queries\nover TLS
+
+actor "Người dùng" as user
+user --> fe : HTTP port 80
+
+@enduml
+```
+
+---
+
+### 2.11 Nginx
+
+**Nginx** là web server và reverse proxy hiệu năng cao, được sử dụng để phục vụ file tĩnh (static files) sau khi React build.
+
+**Ưu điểm:**
+- Hiệu suất phục vụ file tĩnh cực cao – xử lý hàng chục nghìn kết nối đồng thời.
+- Cấu hình `try_files $uri /index.html` giải quyết hoàn hảo vấn đề routing của SPA (Single Page Application).
+- Image `nginx:alpine` rất nhẹ (~5MB).
+
+**Nhược điểm:**
+- Cấu hình phức tạp nếu cần nhiều tính năng nâng cao (load balancing, SSL termination...).
+
+**Lý do chọn cho đề tài:** Nginx là web server tiêu chuẩn công nghiệp để hosting SPA React trong container Docker.
+
+---
+
+### 2.12 GitHub Actions (CI/CD Pipeline)
+
+**GitHub Actions** là nền tảng CI/CD tích hợp sẵn trong GitHub, cho phép tự động hóa quy trình build, test và deploy thông qua file YAML.
+
+**Ưu điểm:**
+- **Tích hợp trực tiếp với GitHub:** Không cần cấu hình server CI riêng (Jenkins, GitLab CI).
+- **Workflow as Code:** Pipeline được định nghĩa trong file `.github/workflows/ci.yml`, dễ quản lý phiên bản.
+- **Free cho public repositories:** Không mất chi phí cho dự án mã nguồn mở.
+
+**Nhược điểm:**
+- Giới hạn 2.000 phút/tháng cho private repository (free tier).
+- Debug workflow lỗi khó hơn so với CI chạy local.
+
+**Pipeline của Better:**
+
+```plantuml
+@startuml
+skinparam backgroundColor #FEFEFE
+
+|Developer|
+start
+:Push code lên nhánh main;
+
+|GitHub Actions|
+:Trigger CI Pipeline;
+:Checkout source code;
+:Setup Node.js 18;
+:npm ci (Frontend);
+:npm run build (Vite);
+:cd server && npm ci (Backend);
+:Thông báo "Build thành công";
+stop
+
+@enduml
+```
+
+**Lý do chọn cho đề tài:** GitHub Actions giúp sinh viên thực hành quy trình DevOps CI/CD thực tế mà không cần hạ tầng riêng.
+
+---
+
+### 2.13 Nền Tảng Triển Khai Đám Mây
+
+#### 2.13.1 Vercel (Frontend Hosting)
+
+**Vercel** là nền tảng hosting tối ưu cho ứng dụng Frontend (React, Next.js), cung cấp CDN toàn cầu.
+
+**Ưu điểm:**
+- Deploy tự động từ GitHub – mỗi lần push code, Vercel tự build và deploy.
+- CDN edge network toàn cầu, tốc độ tải trang nhanh.
+- Free SSL/HTTPS tự động.
+
+#### 2.13.2 Render.com (Backend Hosting)
+
+**Render.com** là nền tảng cloud hosting cho web service, hỗ trợ Node.js natively.
+
+**Ưu điểm:**
+- Free tier cho web service Node.js (750 giờ/tháng).
+- Tự động deploy từ GitHub.
+- Hỗ trợ biến môi trường (Environment Variables) cho MONGO_URI, JWT_SECRET.
+
+**Nhược điểm chung:**
+- Free tier có giới hạn: Render.com tự tắt server sau 15 phút không hoạt động (cold start ~30 giây).
+- Vercel free tier giới hạn bandwidth và serverless function execution time.
+
+---
+
+### 2.14 Các Công Cụ Phát Triển Khác
+
+#### 2.14.1 Visual Studio Code
+
+IDE miễn phí của Microsoft, hỗ trợ JavaScript/JSX natively với extensions phong phú (ESLint, Prettier, GitLens).
+
+#### 2.14.2 Git và GitHub
+
+Hệ thống quản lý phiên bản phân tán (DVCS). GitHub lưu trữ mã nguồn và tích hợp CI/CD qua GitHub Actions.
+
+#### 2.14.3 npm (Node Package Manager)
+
+Trình quản lý gói mặc định của Node.js, quản lý dependencies qua file `package.json` và `package-lock.json`.
+
+#### 2.14.4 ESLint
+
+Công cụ phân tích mã tĩnh (static code analysis) cho JavaScript, giúp phát hiện lỗi cú pháp và enforce coding style nhất quán. Dự án sử dụng `eslint` phiên bản **9.39.4** với plugin `eslint-plugin-react-hooks`.
+
+#### 2.14.5 Postman
+
+Công cụ kiểm thử API, sử dụng để test các endpoint REST API của Backend trong quá trình phát triển.
+
+#### 2.14.6 CORS Middleware
+
+Thư viện `cors` (phiên bản **2.8.6**) cho Express.js, cho phép Frontend (Vercel) gọi API đến Backend (Render.com) trên domain khác mà không bị trình duyệt chặn.
+
+#### 2.14.7 dotenv
+
+Thư viện `dotenv` (phiên bản **17.4.1**) tải biến môi trường từ file `.env` vào `process.env`, tách biệt cấu hình nhạy cảm (MONGO_URI, JWT_SECRET) khỏi source code.
+
+#### 2.14.8 Axios và Cheerio
+
+- **Axios** (phiên bản **1.15.2**): HTTP client cho Node.js, sử dụng trong module AI Generator để gọi API bên ngoài.
+- **Cheerio** (phiên bản **1.2.0**): Thư viện phân tích HTML phía server (server-side jQuery), hỗ trợ trích xuất dữ liệu từ trang web.
+
+#### 2.14.9 Pollinations AI API
+
+API AI miễn phí được sử dụng trong module `aiGenerator.js` để sinh dữ liệu thông số kỹ thuật sản phẩm tự động từ tên sản phẩm, thông qua prompt engineering.
+
+---
+
+### 2.15 Tổng Hợp Phiên Bản Các Công Cụ
+
+```plantuml
+@startuml
+skinparam backgroundColor #FEFEFE
+
+map "FRONTEND DEPENDENCIES" as fe {
+  react => 19.2.4
+  react-dom => 19.2.4
+  recharts => 3.8.1
+  lucide-react => 1.7.0
+  firebase => 12.11.0
+  vite => 5.4.21
+  eslint => 9.39.4
+}
+
+map "BACKEND DEPENDENCIES" as be {
+  express => 5.2.1
+  mongoose => 9.4.1
+  bcryptjs => 3.0.3
+  jsonwebtoken => 9.0.3
+  cors => 2.8.6
+  dotenv => 17.4.1
+  axios => 1.15.2
+  cheerio => 1.2.0
+}
+
+map "DEVOPS & INFRASTRUCTURE" as dev {
+  Node.js => 18 LTS
+  Docker => Multi-stage build
+  Nginx => alpine
+  GitHub_Actions => ubuntu-latest
+  MongoDB_Atlas => Cloud Free Tier
+  Vercel => CDN Global
+  Render.com => Free Web Service
+}
+
+@enduml
+```
+
+---
+
+### Kết Chương 2
+
+Chương 2 đã trình bày toàn diện **15 công nghệ, thư viện và công cụ** được sử dụng trong quá trình xây dựng hệ thống Better, phân tích cụ thể ưu điểm, nhược điểm và lý do lựa chọn từng công cụ cho đề tài.
+
+Nhìn tổng thể, toàn bộ công nghệ stack của dự án có thể được phân thành bốn nhóm chức năng rõ ràng:
+
+- **Nhóm Frontend** (React.js, Vite, Recharts, Lucide React, Firebase Auth): Đảm nhận toàn bộ giao diện người dùng theo kiến trúc Component-based SPA, với biểu đồ Radar Chart trực quan và xác thực Google OAuth tiện lợi.
+
+- **Nhóm Backend** (Node.js, Express.js, MongoDB/Mongoose, JWT, bcryptjs, CORS, dotenv, Axios): Cung cấp hệ thống REST API hoàn chỉnh với 14 endpoint, xác thực bảo mật đa lớp và cơ sở dữ liệu NoSQL linh hoạt.
+
+- **Nhóm DevOps** (Docker, Docker Compose, Nginx, GitHub Actions): Đảm bảo hệ thống có thể được đóng gói, kiểm thử tự động và triển khai nhất quán trên mọi môi trường.
+
+- **Nhóm Cloud & Công cụ phát triển** (Vercel, Render.com, MongoDB Atlas, VS Code, Git, ESLint, Postman): Hỗ trợ triển khai sản phẩm lên môi trường đám mây và đảm bảo chất lượng mã nguồn trong quá trình phát triển.
+
+Điểm nổi bật nhất của toàn bộ tech stack là tính **nhất quán ngôn ngữ**: từ giao diện React.js ở tầng Frontend, đến logic xử lý Express.js/Node.js ở tầng Backend, đến định nghĩa Mongoose Schema ở tầng Database – tất cả đều sử dụng **JavaScript/JSON**. Sự nhất quán này không chỉ giúp giảm chi phí chuyển đổi ngữ pháp giữa các tầng mà còn tạo nên một codebase dễ bảo trì, dễ mở rộng và phù hợp với tiêu chuẩn phát triển phần mềm hiện đại.
+
+Những kiến thức nền tảng về công nghệ được trình bày trong chương này là cơ sở lý luận trực tiếp cho các quyết định thiết kế hệ thống trong **Chương 3** – nơi các công nghệ này được áp dụng cụ thể vào phân tích yêu cầu, thiết kế cơ sở dữ liệu, thiết kế API và thiết kế giao diện người dùng của hệ thống Better.
 
 ---
