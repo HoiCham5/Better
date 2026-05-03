@@ -172,15 +172,16 @@ function App() {
               Sản Phẩm Nổi Bật
             </h2>
             <div className="compare-container" style={{ margin: 0, padding: 0 }}>
-              {[...featuredPhones, ...featuredLaptops].slice(0, 8).map(product => (
-                <ProductCard 
-                  key={product.id} 
-                  product={product} 
-                  userPreference={userPreference === 'Không thiết lập' ? '' : userPreference} 
-                  onViewDetails={() => setSelectedProduct(product)}
-                  compareIds={compareIds}
-                  onToggleCompare={toggleCompare}
-                />
+              {[...featuredPhones, ...featuredLaptops].slice(0, 8).map((product, idx) => (
+                <div key={product.id} className="animate-slide-up" style={{ animationDelay: `${idx * 0.1}s`, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  <ProductCard 
+                    product={product} 
+                    userPreference={userPreference === 'Không thiết lập' ? '' : userPreference} 
+                    onViewDetails={() => setSelectedProduct(product)}
+                    compareIds={compareIds}
+                    onToggleCompare={toggleCompare}
+                  />
+                </div>
               ))}
               {[...featuredPhones, ...featuredLaptops].length === 0 && (
                 <div style={{ gridColumn: '1 / -1', padding: '40px', textAlign: 'center', background: 'var(--bg-secondary)', borderRadius: '15px' }} className="text-secondary">
@@ -189,19 +190,19 @@ function App() {
               )}
             </div>
 
-            <div style={{ marginTop: '80px', padding: '80px 20px', textAlign: 'center' }}>
-               <h2 style={{ fontSize: '3rem', fontWeight: '900', marginBottom: '24px', color: 'var(--vs-text-primary)', lineHeight: '1.2' }}>
+            <div className="animate-slide-up" style={{ marginTop: '100px', padding: '80px 20px', textAlign: 'center', animationDelay: '0.4s' }}>
+               <h2 className="animate-slide-up" style={{ fontSize: '3rem', fontWeight: '900', marginBottom: '24px', color: 'var(--vs-text-primary)', lineHeight: '1.2', animationDelay: '0.5s' }}>
                  Mọi thiết bị công nghệ bạn cần.<br/>Một mục tiêu duy nhất.
                </h2>
-               <p className="text-secondary" style={{ fontSize: '1.1rem', maxWidth: '800px', margin: '0 auto 40px', lineHeight: '1.6' }}>
+               <p className="text-secondary animate-slide-up" style={{ fontSize: '1.1rem', maxWidth: '800px', margin: '0 auto 40px', lineHeight: '1.6', animationDelay: '0.6s' }}>
                  Chúng tôi đã làm việc không ngừng nghỉ để trở thành tài liệu tham khảo đáng tin cậy của bạn trong lĩnh vực so sánh.<br/>
                  Chúng tôi là một đội ngũ đam mê công nghệ độc lập: sứ mệnh duy nhất của chúng tôi là giúp bạn đưa ra quyết định sáng suốt.
                </p>
-               <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', alignItems: 'center' }}>
-                 <button onClick={() => setActiveTab('store')} className="btn hover-lift" style={{ background: '#3858f6', color: 'white', padding: '14px 32px', borderRadius: '30px', fontWeight: '700', border: 'none', cursor: 'pointer', fontSize: '1rem' }}>
+               <div className="animate-slide-up" style={{ display: 'flex', gap: '24px', justifyContent: 'center', alignItems: 'center', animationDelay: '0.7s' }}>
+                 <button onClick={() => setActiveTab('store')} className="btn hover-lift" style={{ background: '#3858f6', color: 'white', padding: '14px 32px', borderRadius: '30px', fontWeight: '700', border: 'none', cursor: 'pointer', fontSize: '1rem', transition: 'transform 0.2s, box-shadow 0.2s' }} onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(56,88,246,0.3)'; }} onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
                    Xem tất cả danh mục
                  </button>
-                 <a href="#" style={{ color: '#3858f6', fontWeight: '700', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '1rem' }}>
+                 <a href="#" style={{ color: '#3858f6', fontWeight: '700', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '1rem', transition: 'color 0.2s, transform 0.2s' }} onMouseOver={e => { e.currentTarget.style.color = '#8224e3'; e.currentTarget.style.transform = 'translateX(4px)'; }} onMouseOut={e => { e.currentTarget.style.color = '#3858f6'; e.currentTarget.style.transform = 'translateX(0)'; }}>
                    Cách chúng tôi hoạt động →
                  </a>
                </div>
@@ -329,31 +330,31 @@ function App() {
           <div>
             <h4 style={{ fontSize: '0.8rem', fontWeight: '800', color: '#888', marginBottom: '20px', letterSpacing: '1px' }}>TÀI NGUYÊN</h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Blog</a></li>
-              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Thuật ngữ</a></li>
+              <li><a href="#" className="footer-link">Blog</a></li>
+              <li><a href="#" className="footer-link">Thuật ngữ</a></li>
             </ul>
           </div>
           <div>
             <h4 style={{ fontSize: '0.8rem', fontWeight: '800', color: '#888', marginBottom: '20px', letterSpacing: '1px' }}>LIÊN HỆ</h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Gợi ý sản phẩm</a></li>
-              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Hợp tác</a></li>
+              <li><a href="#" className="footer-link">Gợi ý sản phẩm</a></li>
+              <li><a href="#" className="footer-link">Hợp tác</a></li>
             </ul>
           </div>
           <div>
             <h4 style={{ fontSize: '0.8rem', fontWeight: '800', color: '#888', marginBottom: '20px', letterSpacing: '1px' }}>BETTER</h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Về chúng tôi</a></li>
-              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Tiêu chuẩn biên tập</a></li>
+              <li><a href="#" className="footer-link">Về chúng tôi</a></li>
+              <li><a href="#" className="footer-link">Tiêu chuẩn biên tập</a></li>
             </ul>
           </div>
           <div>
             <h4 style={{ fontSize: '0.8rem', fontWeight: '800', color: '#888', marginBottom: '20px', letterSpacing: '1px' }}>PHÁP LÝ</h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Bản quyền</a></li>
-              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Quyền riêng tư</a></li>
-              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Điều khoản</a></li>
-              <li><a href="#" style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.9rem' }}>Cookies</a></li>
+              <li><a href="#" className="footer-link">Bản quyền</a></li>
+              <li><a href="#" className="footer-link">Quyền riêng tư</a></li>
+              <li><a href="#" className="footer-link">Điều khoản</a></li>
+              <li><a href="#" className="footer-link">Cookies</a></li>
             </ul>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
@@ -365,10 +366,10 @@ function App() {
             </div>
             <p style={{ color: '#888', fontSize: '0.9rem', marginBottom: '20px', fontWeight: '600' }}>So sánh mọi thứ</p>
             <div style={{ display: 'flex', gap: '15px' }}>
-              <a href="#" style={{ color: '#ccc', fontWeight: '700', textDecoration: 'none' }}>YT</a>
-              <a href="#" style={{ color: '#ccc', fontWeight: '700', textDecoration: 'none' }}>TK</a>
-              <a href="#" style={{ color: '#ccc', fontWeight: '700', textDecoration: 'none' }}>IG</a>
-              <a href="#" style={{ color: '#ccc', fontWeight: '700', textDecoration: 'none' }}>X</a>
+              <a href="#" className="footer-social">YT</a>
+              <a href="#" className="footer-social">TK</a>
+              <a href="#" className="footer-social">IG</a>
+              <a href="#" className="footer-social">X</a>
             </div>
           </div>
         </div>

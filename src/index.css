@@ -304,6 +304,10 @@ a { text-decoration: none; color: inherit; }
   from { opacity: 0; transform: translateY(-10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 @keyframes pulse-ring {
   0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56,88,246,0.4); }
   70%  { transform: scale(1);    box-shadow: 0 0 0 10px rgba(56,88,246,0); }
@@ -312,6 +316,31 @@ a { text-decoration: none; color: inherit; }
 
 .animate-fade-in { animation: fadeIn 0.5s ease forwards; }
 .animate-slide-down { animation: slideDown 0.3s ease forwards; }
+.animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+
+/* Footer Link Hover */
+.footer-link {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+}
+.footer-link:hover {
+  color: #fff;
+  transform: translateX(4px);
+}
+.footer-social {
+  color: #ccc;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+}
+.footer-social:hover {
+  color: #fff;
+  transform: translateY(-2px) scale(1.1);
+}
 
 /* ===========================
    LAYOUT HELPERS
