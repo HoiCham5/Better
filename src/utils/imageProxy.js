@@ -1,9 +1,8 @@
 const API_URL = import.meta.env.VITE_API_URL || 'https://better-grg6.onrender.com';
 
 /**
- * Chuyển URL ảnh gốc sang URL qua image proxy của server.
- * - Nếu URL đã là ảnh local (data:, blob:, /...) thì dùng thẳng.
- * - Nếu là URL bên ngoài → route qua /api/image-proxy để bypass hotlink.
+ * Chuyển URL ảnh gốc sang URL qua image proxy công cộng (wsrv.nl)
+ * để tránh bị lỗi CORS hoặc hotlinking block khi lấy ảnh từ các trang web khác.
  */
 export function proxyImage(url) {
   if (!url) return '';
@@ -13,10 +12,12 @@ export function proxyImage(url) {
     url.startsWith('/') ||
     url.includes('localhost') ||
     url.includes('placehold.co') ||
-    url.includes('unsplash.com')
+    url.includes('unsplash.com') ||
+    url.includes('wsrv.nl')
   ) {
     return url;
   }
-  return `${API_URL}/api/image-proxy?url=${encodeURIComponent(url)}`;
+  
+  // Dùng dịch vụ wsrv.nl để tự động fetch ảnh và bypass CORS
+  return `https://wsrv.nl/?url=${encodeURIComponent(url)}&output=webp`;
 }
-
