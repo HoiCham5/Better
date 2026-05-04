@@ -42,11 +42,11 @@ const getReasons = (dev) => {
   return [allReasons[h % 6], allReasons[(h+1) % 6], allReasons[(h+2) % 6]];
 };
 
-const COLORS = ['#3858f6', '#10b981', '#8224e3']; // Blue, Green, Purple
+const COLORS = ['#3858f6', '#10b981', '#8224e3', '#f59e0b']; // Blue, Green, Purple, Orange
 
 const CompareSection = ({ products, initialDeviceIds }) => {
   const [selectedIds, setSelectedIds] = useState(
-    initialDeviceIds?.length >= 2 ? initialDeviceIds.slice(0, 3) : [products[0]?.id || '', products[1]?.id || '']
+    initialDeviceIds?.length >= 2 ? initialDeviceIds.slice(0, 4) : [products[0]?.id || '', products[1]?.id || '']
   );
   const [isThinking, setIsThinking] = useState(false);
   const [aiResponse, setAiResponse] = useState('');
@@ -55,7 +55,7 @@ const CompareSection = ({ products, initialDeviceIds }) => {
 
   useEffect(() => {
     if (initialDeviceIds?.length >= 2) {
-      setSelectedIds(initialDeviceIds.slice(0, 3));
+      setSelectedIds(initialDeviceIds.slice(0, 4));
     }
   }, [initialDeviceIds]);
 
@@ -71,7 +71,7 @@ const CompareSection = ({ products, initialDeviceIds }) => {
   };
 
   const handleAdd = (newId) => {
-    if (selectedIds.length < 3 && !selectedIds.includes(newId)) {
+    if (selectedIds.length < 4 && !selectedIds.includes(newId)) {
       setSelectedIds([...selectedIds, newId]);
       setAiResponse('');
     }
@@ -182,7 +182,7 @@ const CompareSection = ({ products, initialDeviceIds }) => {
           );
         })}
 
-        {selectedDevs.length < 3 && (
+        {selectedDevs.length < 4 && (
           <React.Fragment>
             <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px' }}>
               <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--bg-tertiary)', color: 'var(--vs-text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.9rem', border: '1px solid var(--vs-border)' }}>VS</div>
