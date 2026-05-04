@@ -29,10 +29,10 @@ const ProductDetailsModal = ({ product, onClose }) => {
     { name: 'TikTok Shop', price: basePrice - 200000, tag: 'Freeship Max', color: '#25F4EE', link: product.links?.tiktok || '#' }
   ];
 
-  // Video Demo tuỳ theo Phân loại
+  // Video Demo tuỳ theo Phân loại (Sửa embed URL)
   const videoUrls = {
-    phone: 'https://www.youtube.com/embed/S26A-0yS2bA', // Ví dụ video iPhone/Samsung
-    laptop: 'https://www.youtube.com/embed/5mZ5I2Knt4o'
+    phone: 'https://www.youtube.com/embed/S26A-0yS2bA?autoplay=0&rel=0', // Ví dụ video iPhone/Samsung
+    laptop: 'https://www.youtube.com/embed/5mZ5I2Knt4o?autoplay=0&rel=0'
   };
 
   const formatCurrency = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
@@ -99,13 +99,13 @@ const ProductDetailsModal = ({ product, onClose }) => {
             <h3 style={{ fontSize: '1.3rem', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
               <PlayCircle className="text-[#ff0000]" /> Review Thực Tế (YouTube)
             </h3>
-            <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '15px', border: '1px solid var(--glass-border)' }}>
+            <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '15px', border: '1px solid var(--glass-border)', background: 'black' }}>
               <iframe 
                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                 src={videoUrls[product.category]} 
                 title="YouTube video player" 
                 frameBorder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowFullScreen
               ></iframe>
             </div>
@@ -131,13 +131,14 @@ const ProductDetailsModal = ({ product, onClose }) => {
                <ResponsiveContainer width="100%" height="100%">
                  <LineChart data={priceHistory}>
                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                   <XAxis dataKey="month" stroke="var(--text-secondary)" />
-                   <YAxis tickFormatter={(val) => `${(val / 1000000).toFixed(1).replace(/\\.0$/, '')}Tr`} stroke="var(--text-secondary)" domain={[(dataMin) => Math.floor(dataMin - 1000000), (dataMax) => Math.ceil(dataMax + 1000000)]} />
+                   <XAxis dataKey="month" stroke="var(--text-secondary)" tick={{fontSize: 12, fill: 'var(--text-secondary)'}} tickLine={false} axisLine={{stroke: 'var(--vs-border)'}} />
+                   <YAxis tickFormatter={(val) => `${(val / 1000000).toFixed(1).replace(/\\.0$/, '')}Tr`} stroke="var(--text-secondary)" domain={[(dataMin) => Math.floor(dataMin - 1000000), (dataMax) => Math.ceil(dataMax + 1000000)]} tick={{fontSize: 12, fill: 'var(--text-secondary)'}} tickLine={false} axisLine={false} />
                    <RechartsTooltip 
                       formatter={(val) => formatCurrency(val)}
-                      contentStyle={{ background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', borderRadius: '8px' }}
+                      contentStyle={{ background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-primary)', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                      itemStyle={{ color: 'var(--accent-primary)', fontWeight: 'bold' }}
                    />
-                   <Line type="monotone" dataKey="Giá Bán (VNĐ)" stroke="var(--gradient-accent)" strokeWidth={4} dot={{ r: 6, fill: 'var(--bg-primary)', strokeWidth: 2 }} activeDot={{ r: 8 }} />
+                   <Line type="monotone" dataKey="Giá Bán (VNĐ)" stroke="#3858f6" strokeWidth={3} dot={{ r: 5, fill: '#3858f6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 7, fill: '#8224e3', stroke: '#fff', strokeWidth: 2 }} />
                  </LineChart>
                </ResponsiveContainer>
             </div>

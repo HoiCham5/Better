@@ -163,7 +163,7 @@ const CompareSection = ({ products, initialDeviceIds }) => {
                 </select>
 
                 <div style={{ position: 'relative', flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-end', minHeight: '220px' }}>
-                  <img src={dev.image} alt={dev.name} style={{ width: '100%', maxWidth: '200px', height: '220px', objectFit: 'contain' }} />
+                  <img src={proxyImage(dev.image)} alt={dev.name} style={{ width: '100%', maxWidth: '200px', height: '220px', objectFit: 'contain' }} />
                   {isWinner && (
                     <div className="animate-fade-in" style={{ position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)', background: '#9eff00', color: '#1a1a1a', fontWeight: 900, padding: '6px 18px', borderRadius: '30px', whiteSpace: 'nowrap', fontSize: '0.8rem', boxShadow: '0 4px 15px rgba(158, 255, 0, 0.4)', textTransform: 'uppercase', letterSpacing: '1px' }}>
                       BETTER
@@ -248,11 +248,11 @@ const CompareSection = ({ products, initialDeviceIds }) => {
           <div style={{ width: '100%', height: '320px' }}>
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart cx="50%" cy="50%" outerRadius="65%" data={radarData}>
-                <PolarGrid stroke="var(--vs-border)" />
-                <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--vs-text-secondary)', fontSize: 10, fontWeight: 600 }} />
+                <PolarGrid stroke="var(--vs-border)" strokeWidth={1.5} />
+                <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--vs-text-primary)', fontSize: 11, fontWeight: 700 }} />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                 {selectedDevs.map((dev, i) => (
-                  <Radar key={dev.id} name={dev.name} dataKey={`dev${i}`} stroke={COLORS[i]} fill={COLORS[i]} fillOpacity={0.4} strokeWidth={2} />
+                  <Radar key={dev.id} name={dev.name} dataKey={`dev${i}`} stroke={COLORS[i]} fill={COLORS[i]} fillOpacity={0.25} strokeWidth={2.5} activeDot={{ r: 5, fill: COLORS[i], stroke: '#fff', strokeWidth: 2 }} />
                 ))}
               </RadarChart>
             </ResponsiveContainer>
@@ -382,7 +382,7 @@ const CompareSection = ({ products, initialDeviceIds }) => {
                       style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 15px', background: 'var(--bg-secondary)', borderRadius: '12px', cursor: 'pointer', border: '1px solid var(--glass-border)' }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <img src={p.image} style={{ width: '35px', height: '35px', objectFit: 'contain' }} />
+                        <img src={proxyImage(p.image)} style={{ width: '35px', height: '35px', objectFit: 'contain' }} />
                         <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--vs-text-primary)' }}>{p.name}</span>
                       </div>
                       <div style={{ background: 'var(--bg-tertiary)', padding: '6px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800, color: 'var(--vs-text-primary)', border: '1px solid var(--vs-border)' }}>

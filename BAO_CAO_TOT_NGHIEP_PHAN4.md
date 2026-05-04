@@ -96,17 +96,23 @@ Thanh điều hướng cố định (sticky) ở đầu trang, hiển thị xuy�
 
 **Mô tả chức năng:**
 
-Giao diện chính của tab **Điện Thoại** gồm hai khu vực:
+Giao diện tab **Điện Thoại** được tổ chức theo bố cục hai cột (tỉ lệ 1:3): `FilterSidebar` cố định bên trái và lưới `ProductCard` bên phải. Hệ thống chỉ hiển thị các điện thoại được quản trị viên đánh dấu `isFeatured = true`, đảm bảo nội dung luôn được kiểm duyệt trước khi xuất hiện công khai.
 
-**Thanh lọc FilterSidebar (bên trái):**
-- Bộ lọc **Ưu tiên cá nhân**: dropdown chọn tiêu chí quan trọng nhất (Camera / Hiệu năng / Pin / Màn hình / Thiết kế). Khi chọn, các card sản phẩm sẽ hiển thị badge "Phù hợp với bạn" tương ứng.
+**Thanh lọc FilterSidebar (bên trái, sticky):**
+- **Sắp xếp theo:** Dropdown cho phép chọn thứ tự hiển thị gồm 4 tùy chọn: *Điểm Better*, *Giá: Thấp đến Cao*, *Giá: Cao đến Thấp*, *Mới nhất*.
+- **Lọc theo Giá bán:** Thanh kéo (range slider) trực quan với biểu đồ histogram phân bổ sản phẩm theo khoảng giá, hỗ trợ đổi đơn vị tiền tệ giữa VNĐ (₫) và USD ($).
+- **Hiện tất cả phiên bản:** Toggle switch bật/tắt việc hiển thị các phiên bản màu sắc / bộ nhớ khác nhau của cùng một sản phẩm.
+- **Lọc theo Thương hiệu:** Ô tìm kiếm nhanh kết hợp danh sách checkbox hiển thị toàn bộ thương hiệu trong hệ thống (Apple, Samsung, Xiaomi, OPPO, vivo, Sony…), có thanh cuộn để duyệt khi danh sách dài.
+- **Thiết kế:** Khu vực lọc theo kiểu dáng (đang phát triển).
 
-**Danh sách ProductCard (bên phải):**
-- Mỗi card hiển thị: ảnh sản phẩm, tên, thương hiệu, giá bán, badge danh mục và 2 nút hành động:
-  - **"Xem Chi Tiết"**: mở modal `ProductDetailsModal`.
-  - **"So Sánh"**: thêm sản phẩm vào danh sách so sánh (floating popup góc phải màn hình).
-- Nút **"Xem Toàn Bộ Mẫu Điện Thoại Khác →"** dẫn đến tab Cửa Hàng.
-- Bên dưới danh sách là khu vực `CompareSection` thu nhỏ cho phép so sánh ngay trong tab.
+**Lưới ProductCard (bên phải):**
+- Mỗi `ProductCard` hiển thị: ảnh sản phẩm (qua image proxy để bypass hotlink), **điểm Better** (badge tròn góc trái), badge **"Nổi Bật ⭐"** nếu được đánh dấu, tên thiết bị, giá bán nổi bật và ba thông số kỹ thuật chính (Màn hình / Chip / Pin / Camera tùy danh mục).
+- Hai nút hành động chính trên mỗi card:
+  - **"Xem Chi Tiết"**: mở `ProductDetailsModal` — overlay toàn bộ thông số kỹ thuật, video YouTube, bình luận và nút mua hàng.
+  - **Nút VS (So Sánh)**: thêm/xóa sản phẩm khỏi danh sách so sánh. Khi có ít nhất 1 sản phẩm được chọn, một **floating popup** xuất hiện ở góc dưới phải màn hình, liệt kê các thiết bị đã chọn (tối đa 3) và nút **"So Sánh Ngay"** chuyển thẳng sang tab So Sánh.
+  - **Nút Wishlist (❤️)**: lưu sản phẩm vào danh sách yêu thích của tài khoản (yêu cầu đăng nhập).
+- Nút **"Xem Toàn Bộ Mẫu Điện Thoại Khác →"** hiển thị cuối lưới, chuyển sang tab **Cửa Hàng** để xem toàn bộ kho sản phẩm chưa được lọc nổi bật.
+- Phía dưới lưới card (khi có từ 2 điện thoại trở lên trong hệ thống): khu vực `CompareSection` thu gọn hiển thị sẵn, cho phép người dùng chọn và so sánh ngay mà không cần chuyển tab.
 
 ---
 
@@ -116,12 +122,14 @@ Giao diện chính của tab **Điện Thoại** gồm hai khu vực:
 
 **Mô tả chức năng:**
 
-Tương tự tab Điện Thoại nhưng lọc riêng `category === 'laptop'`. Giao diện hiển thị:
+Giao diện tab **Laptop** có cấu trúc bố cục và luồng tương tác hoàn toàn tương đồng với tab Điện Thoại, nhưng dữ liệu được lọc riêng biệt theo điều kiện `category === 'laptop'`. Điều này đảm bảo mỗi danh mục sản phẩm có không gian trình bày độc lập, tránh nhầm lẫn cho người dùng.
 
-- Danh sách laptop được Admin đánh dấu nổi bật với đầy đủ thông tin.
-- `FilterSidebar` với bộ lọc ưu tiên dành riêng cho laptop (CPU / RAM / Màn hình / Pin / Thiết kế).
-- Nút **"Xem Toàn Bộ Mẫu Laptop Khác →"** dẫn đến tab Cửa Hàng.
-- `CompareSection` laptop phía dưới để so sánh nhanh.
+**Điểm khác biệt so với tab Điện Thoại:**
+- Tiêu đề section hiển thị **"Laptop Làm Việc / Chơi Game"**, phản ánh đúng phân khúc người dùng mục tiêu.
+- Lưới `ProductCard` chỉ hiển thị các laptop có `isFeatured = true` và `category === 'laptop'`.
+- Thông số kỹ thuật trọng tâm trên card thay đổi theo danh mục: hiển thị **RAM & Lưu trữ** (thay cho Camera Selfie ở điện thoại) và **Card đồ họa GPU** (nếu có).
+- Nút cuối lưới là **"Xem Toàn Bộ Mẫu Laptop Khác →"** dẫn đến tab Cửa Hàng với màu sắc riêng (tím – accent-secondary) để phân biệt trực quan với tab Điện Thoại.
+- `CompareSection` phía dưới sử dụng danh sách `laptopsList` (toàn bộ laptop trong hệ thống), cho phép so sánh chi tiết bất kỳ hai laptop nào kể cả khi không được đánh dấu nổi bật.
 
 ---
 

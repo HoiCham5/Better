@@ -2,6 +2,7 @@ import React from 'react';
 import { ShoppingCart, Video, Cpu, Monitor, Battery, Camera, MemoryStick, Award, Info, Heart } from 'lucide-react';
 import Tooltip from './Tooltip';
 import { useAuth } from '../context/AuthContext';
+import { proxyImage } from '../utils/imageProxy';
 
 const ProductCard = ({ product, userPreference = '', onViewDetails, compareIds = [], onToggleCompare }) => {
   const { userProfile, toggleWishlist } = useAuth() || {};
@@ -65,7 +66,13 @@ const ProductCard = ({ product, userPreference = '', onViewDetails, compareIds =
           </button>
         </div>
 
-        <img src={product.image} alt={product.name} className="product-image" />
+        <img 
+          src={proxyImage(product.image)} 
+          alt={product.name} 
+          className="product-image" 
+          referrerPolicy="no-referrer"
+          onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/400x400/1a1a2e/6c63ff?text=${encodeURIComponent(product.name)}`; }}
+        />
       </div>
 
       <div className="product-info">

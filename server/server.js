@@ -4,11 +4,45 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const axios = require('axios');
 const { Product, Post, Review, User } = require('./models');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// =======================
+// IMAGE PROXY
+// =======================
+app.get('/api/image-proxy', async (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.status(400).send('Missing url parameter');
+
+  try {
+    const decoded = decodeURIComponent(url);
+    const response = await axios.get(decoded, {
+      responseType: 'stream',
+      timeout: 10000,
+      headers: {
+        // Giả mạo là browser thông thường, không kèm Referer
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
+      }
+    });
+
+    const contentType = response.headers['content-type'] || 'image/jpeg';
+    if (!contentType.startsWith('image/')) {
+      return res.status(400).send('URL không phải ảnh hợp lệ');
+    }
+
+    res.set('Content-Type', contentType);
+    res.set('Cache-Control', 'public, max-age=604800'); // cache 7 ngày
+    response.data.pipe(res);
+  } catch (err) {
+    console.error('Image proxy error:', err.message);
+    res.status(502).send('Không thể tải ảnh từ URL này');
+  }
+});
 
 const JWT_SECRET = process.env.JWT_SECRET || 'techcompare_super_secret';
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Lock, Package, FileText, Plus, LogOut, Edit3, Trash2, Smartphone, Laptop } from 'lucide-react';
 import ProductForm from './ProductForm';
 import NewsForm from './NewsForm';
+import { proxyImage } from '../utils/imageProxy';
 
 const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -250,7 +251,7 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
                       <tr key={p.id}>
                         <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                            <img src={p.image} alt={p.name} style={{ width: '50px', height: '50px', objectFit: 'contain', background: 'white', padding: '5px', borderRadius: '8px', border: '1px solid var(--vs-border)' }} />
+                            <img src={proxyImage(p.image)} alt={p.name} referrerPolicy="no-referrer" onError={(e) => { e.target.onerror=null; e.target.src=`https://placehold.co/50x50/1a1a2e/6c63ff?text=${encodeURIComponent(p.name[0])}`; }} style={{ width: '50px', height: '50px', objectFit: 'contain', background: 'white', padding: '5px', borderRadius: '8px', border: '1px solid var(--vs-border)' }} />
                             <strong style={{ fontSize: '1rem' }}>{p.name}</strong>
                           </div>
                         </td>
@@ -291,7 +292,7 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
                       <tr key={p.id}>
                         <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                            <img src={p.image} alt={p.name} style={{ width: '50px', height: '50px', objectFit: 'contain', background: 'white', padding: '5px', borderRadius: '8px', border: '1px solid var(--vs-border)' }} />
+                            <img src={proxyImage(p.image)} alt={p.name} referrerPolicy="no-referrer" onError={(e) => { e.target.onerror=null; e.target.src=`https://placehold.co/50x50/1a1a2e/6c63ff?text=${encodeURIComponent(p.name[0])}`; }} style={{ width: '50px', height: '50px', objectFit: 'contain', background: 'white', padding: '5px', borderRadius: '8px', border: '1px solid var(--vs-border)' }} />
                             <strong style={{ fontSize: '1rem' }}>{p.name}</strong>
                           </div>
                         </td>
@@ -348,7 +349,7 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
                     <tr key={p.id}>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                          <img src={p.image} alt={p.title} style={{ width: '80px', height: '50px', objectFit: 'cover', borderRadius: '6px' }} />
+                          <img src={proxyImage(p.image)} alt={p.title} referrerPolicy="no-referrer" onError={(e) => { e.target.onerror=null; e.target.src='https://placehold.co/80x50/1a1a2e/6c63ff?text=Bài+Viết'; }} style={{ width: '80px', height: '50px', objectFit: 'cover', borderRadius: '6px' }} />
                           <strong style={{ fontSize: '1rem', maxWidth: '400px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.title}</strong>
                         </div>
                       </td>

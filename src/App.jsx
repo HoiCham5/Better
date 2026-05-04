@@ -15,6 +15,7 @@ import { Settings, X, User, Zap } from 'lucide-react';
 import { allProducts } from './data/products';
 import { useEffect } from 'react';
 import { useAuth } from './context/AuthContext';
+import { proxyImage } from './utils/imageProxy';
 import './index.css';
 import './index.css';
 
@@ -126,7 +127,7 @@ function App() {
             return (
               <div key={id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid var(--vs-border)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <img src={p.image} style={{ width: '30px', height: '30px', objectFit: 'contain' }} />
+                  <img src={proxyImage(p.image)} style={{ width: '30px', height: '30px', objectFit: 'contain' }} />
                   <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--vs-text-primary)' }}>{p.name}</span>
                 </div>
                 <button onClick={() => toggleCompare(id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--vs-text-secondary)', padding: '4px' }}><X size={16} /></button>

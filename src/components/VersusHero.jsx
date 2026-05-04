@@ -57,7 +57,7 @@ const VersusHero = ({ products = [], onCompare }) => {
             onMouseEnter={e => e.currentTarget.style.background = '#f0f4ff'}
             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
           >
-            <img src={p.image} alt={p.name} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '8px', background: '#f3f4f6' }} />
+            <img src={proxyImage(p.image)} alt={p.name} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '8px', background: '#f3f4f6' }} />
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: '0.92rem', fontWeight: 700, color: '#1a1a1a' }}>{p.name}</div>
               <div style={{ fontSize: '0.78rem', color: '#6b7280' }}>{p.brand} · {p.price}</div>
