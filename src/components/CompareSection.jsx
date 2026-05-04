@@ -193,23 +193,27 @@ const CompareSection = ({ products, initialDeviceIds }) => {
               className="hover-lift" 
               onClick={() => setShowAddModal(true)}
               style={{ 
-                flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', 
-                cursor: 'pointer', background: 'transparent', transition: 'opacity 0.2s', opacity: 0.7 
+                width: '160px', flexShrink: 0, position: 'relative', overflow: 'hidden',
+                cursor: 'pointer', background: 'transparent', transition: 'opacity 0.2s', opacity: 0.7,
+                WebkitMaskImage: 'linear-gradient(to right, black 60%, transparent 100%)',
+                maskImage: 'linear-gradient(to right, black 60%, transparent 100%)'
               }}
               onMouseOver={(e) => e.currentTarget.style.opacity = '1'}
               onMouseOut={(e) => e.currentTarget.style.opacity = '0.7'}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
-                <div style={{ width: '70px', height: '70px', borderRadius: '50%', border: '4px solid var(--vs-border)', boxSizing: 'border-box' }}></div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ height: '18px', width: '70%', background: 'var(--vs-border)', borderRadius: '4px' }}></div>
+              <div style={{ width: '280px', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+                  <div style={{ width: '70px', height: '70px', borderRadius: '50%', border: '4px solid var(--vs-border)', boxSizing: 'border-box' }}></div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ height: '18px', width: '60%', background: 'var(--vs-border)', borderRadius: '4px' }}></div>
+                  </div>
                 </div>
-              </div>
-              
-              <div style={{ height: '42px', width: '100%', background: 'var(--vs-border)', borderRadius: '8px', marginBottom: '20px' }}></div>
-              
-              <div style={{ position: 'relative', flex: 1, width: '100%', background: 'var(--vs-border)', borderRadius: '12px', minHeight: '220px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                 <Plus size={40} color="var(--vs-text-secondary)" opacity={0.5} />
+                
+                <div style={{ height: '42px', width: '100%', background: 'var(--vs-border)', borderRadius: '8px', marginBottom: '20px' }}></div>
+                
+                <div style={{ position: 'relative', width: '100%', background: 'var(--vs-border)', borderRadius: '12px', minHeight: '220px', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', paddingLeft: '60px' }}>
+                   <Plus size={40} color="var(--vs-text-secondary)" opacity={0.5} />
+                </div>
               </div>
             </div>
           </React.Fragment>
