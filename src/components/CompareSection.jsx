@@ -252,7 +252,7 @@ const CompareSection = ({ products, initialDeviceIds }) => {
                 <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--vs-text-primary)', fontSize: 11, fontWeight: 700 }} />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                 {selectedDevs.map((dev, i) => (
-                  <Radar key={dev.id} name={dev.name} dataKey={`dev${i}`} stroke={COLORS[i]} fill={COLORS[i]} fillOpacity={0.25} strokeWidth={2.5} activeDot={{ r: 5, fill: COLORS[i], stroke: '#fff', strokeWidth: 2 }} />
+                  <Radar key={dev.id} name={dev.name} dataKey={`dev${i}`} stroke={COLORS[i]} fill={COLORS[i]} fillOpacity={0.25} strokeWidth={2.5} />
                 ))}
               </RadarChart>
             </ResponsiveContainer>
