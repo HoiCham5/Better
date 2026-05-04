@@ -12,7 +12,7 @@ const ProductCard = ({ product, userPreference = '', onViewDetails, compareIds =
   const isComparing = compareIds.includes(product.id);
 
   return (
-    <div className="product-card glass-panel animate-fade-in">
+    <div className="product-card glass-panel animate-fade-in" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div className="product-image-container">
         <div style={{ position: 'absolute', top: '10px', left: '10px', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start', zIndex: 10 }}>
           <div style={{
@@ -75,7 +75,7 @@ const ProductCard = ({ product, userPreference = '', onViewDetails, compareIds =
         />
       </div>
 
-      <div className="product-info">
+      <div className="product-info" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <h2>{product.name}</h2>
         <div className="product-price">{product.price}</div>
 
@@ -123,7 +123,7 @@ const ProductCard = ({ product, userPreference = '', onViewDetails, compareIds =
           )}
         </div>
 
-        <div className="buy-actions" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '15px' }}>
+        <div className="buy-actions" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: 'auto', paddingTop: '15px' }}>
           <button onClick={onViewDetails} className="btn" style={{ width: '100%', background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', padding: '10px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
             <Info size={18} /> Xem Chi Tiết
           </button>
