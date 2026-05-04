@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { X, Award, Heart, Shield, LogOut, Edit2, Save, Image as ImageIcon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { allProducts } from '../data/products';
 import { proxyImage } from '../utils/imageProxy';
 
-const UserProfileModal = ({ onClose, onViewDetails }) => {
+const UserProfileModal = ({ products, onClose, onViewDetails }) => {
   const { currentUser, userProfile, logout, updateProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(userProfile?.displayName || currentUser?.email || '');
@@ -25,7 +24,7 @@ const UserProfileModal = ({ onClose, onViewDetails }) => {
     setIsEditing(false);
   };
 
-  const wishlistProducts = allProducts.filter(p => userProfile?.wishlist?.includes(p.id));
+  const wishlistProducts = products.filter(p => userProfile?.wishlist?.includes(p.id));
 
   // Tính toán Gamification
   const xp = userProfile?.points || 0;

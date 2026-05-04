@@ -423,6 +423,7 @@ function App() {
       {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
       {showProfileModal && (
         <UserProfileModal 
+          products={products}
           onClose={() => setShowProfileModal(false)} 
           onViewDetails={(p) => {
              setShowProfileModal(false);
