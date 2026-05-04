@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Bot, Sparkles, Monitor, Cpu, Camera, Battery, Weight, Wifi, Plus, X, Check } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
+import { proxyImage } from '../utils/imageProxy';
 
 const getScore = (device) => {
   if (!device) return 0;

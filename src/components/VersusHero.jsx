@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Zap, Smartphone, Laptop } from 'lucide-react';
+import { proxyImage } from '../utils/imageProxy';
 
 const POPULAR_SEARCHES = [
   'iPhone 16 Pro', 'Samsung Galaxy S24', 'MacBook Air M3',
