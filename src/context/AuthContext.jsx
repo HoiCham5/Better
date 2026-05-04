@@ -96,6 +96,19 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
+  const updateProfile = async (updates) => {
+    if (!currentUser || !userProfile) return;
+    setUserProfile({ ...userProfile, ...updates });
+    setCurrentUser({ ...currentUser, ...updates });
+
+    const token = localStorage.getItem('token');
+    await fetch(`${import.meta.env.VITE_API_URL || 'https://better-grg6.onrender.com'}/api/users/me`, {
+       method: 'PUT',
+       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+       body: JSON.stringify(updates)
+    });
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     setCurrentUser(null);
@@ -111,6 +124,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     toggleWishlist,
     addXP,
+    updateProfile,
     isConfigured: true
   };
 
