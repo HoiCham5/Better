@@ -185,7 +185,7 @@ const CompareSection = ({ products, initialDeviceIds }) => {
         {selectedDevs.length < 3 && (
           <React.Fragment>
             <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px' }}>
-              <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'var(--bg-tertiary)', color: 'var(--vs-text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.7rem', border: '1px solid var(--vs-border)' }}>VS</div>
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--bg-tertiary)', color: 'var(--vs-text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.9rem', border: '1px solid var(--vs-border)' }}>VS</div>
             </div>
             
             <div 
@@ -193,19 +193,24 @@ const CompareSection = ({ products, initialDeviceIds }) => {
               className="hover-lift" 
               onClick={() => setShowAddModal(true)}
               style={{ 
-                width: '140px', flexShrink: 0, position: 'relative', display: 'flex', flexDirection: 'column', 
-                alignItems: 'center', padding: '20px 10px', cursor: 'pointer', 
-                border: '1px dashed rgba(130, 36, 227, 0.3)', borderRadius: '16px', background: 'transparent', overflow: 'hidden' 
-              }}>
-              <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'rgba(130, 36, 227, 0.1)', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(130, 36, 227, 0.2)' }}>
-                <Plus size={20} color="rgba(130, 36, 227, 0.7)" />
+                flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', 
+                cursor: 'pointer', background: 'transparent', transition: 'opacity 0.2s', opacity: 0.7 
+              }}
+              onMouseOver={(e) => e.currentTarget.style.opacity = '1'}
+              onMouseOut={(e) => e.currentTarget.style.opacity = '0.7'}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+                <div style={{ width: '70px', height: '70px', borderRadius: '50%', border: '4px solid var(--vs-border)', boxSizing: 'border-box' }}></div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ height: '18px', width: '70%', background: 'var(--vs-border)', borderRadius: '4px' }}></div>
+                </div>
               </div>
               
-              <div style={{ width: '90%', height: '38px', background: 'rgba(130, 36, 227, 0.1)', borderRadius: '8px', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(130, 36, 227, 0.2)' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'rgba(130, 36, 227, 0.7)' }}>+ Thêm...</span>
-              </div>
+              <div style={{ height: '42px', width: '100%', background: 'var(--vs-border)', borderRadius: '8px', marginBottom: '20px' }}></div>
               
-              <div style={{ width: '80%', flex: 1, background: 'rgba(130, 36, 227, 0.1)', borderRadius: '12px', minHeight: '150px', border: '1px solid rgba(130, 36, 227, 0.2)' }}></div>
+              <div style={{ position: 'relative', flex: 1, width: '100%', background: 'var(--vs-border)', borderRadius: '12px', minHeight: '220px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                 <Plus size={40} color="var(--vs-text-secondary)" opacity={0.5} />
+              </div>
             </div>
           </React.Fragment>
         )}
