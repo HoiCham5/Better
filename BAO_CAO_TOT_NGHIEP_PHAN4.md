@@ -122,14 +122,17 @@ Giao diện tab **Điện Thoại** được tổ chức theo bố cục hai c�
 
 **Mô tả chức năng:**
 
-Giao diện tab **Laptop** có cấu trúc bố cục và luồng tương tác hoàn toàn tương đồng với tab Điện Thoại, nhưng dữ liệu được lọc riêng biệt theo điều kiện `category === 'laptop'`. Điều này đảm bảo mỗi danh mục sản phẩm có không gian trình bày độc lập, tránh nhầm lẫn cho người dùng.
+Giao diện tab **Laptop** mang thiết kế cấu trúc bố cục và luồng tương tác thống nhất với tab Điện Thoại (vẫn sử dụng lưới `ProductCard` và bộ lọc `FilterSidebar` bên trái), nhưng được tinh chỉnh để phục vụ mục tiêu tìm kiếm máy tính xách tay:
 
-**Điểm khác biệt so với tab Điện Thoại:**
-- Tiêu đề section hiển thị **"Laptop Làm Việc / Chơi Game"**, phản ánh đúng phân khúc người dùng mục tiêu.
-- Lưới `ProductCard` chỉ hiển thị các laptop có `isFeatured = true` và `category === 'laptop'`.
-- Thông số kỹ thuật trọng tâm trên card thay đổi theo danh mục: hiển thị **RAM & Lưu trữ** (thay cho Camera Selfie ở điện thoại) và **Card đồ họa GPU** (nếu có).
-- Nút cuối lưới là **"Xem Toàn Bộ Mẫu Laptop Khác →"** dẫn đến tab Cửa Hàng với màu sắc riêng (tím – accent-secondary) để phân biệt trực quan với tab Điện Thoại.
-- `CompareSection` phía dưới sử dụng danh sách `laptopsList` (toàn bộ laptop trong hệ thống), cho phép so sánh chi tiết bất kỳ hai laptop nào kể cả khi không được đánh dấu nổi bật.
+**Các điểm đặc trưng của Tab Laptop:**
+- **Tiêu đề phân loại:** Khu vực hiển thị tiêu đề lớn **"Laptop Làm Việc / Chơi Game"**, hướng tới hai tệp khách hàng chính của hệ thống.
+- **Dữ liệu độc lập:** Lưới sản phẩm chỉ hiển thị các thiết bị thỏa mãn hai điều kiện: `category === 'laptop'` và được Admin đánh dấu nổi bật (`isFeatured = true`).
+- **Tùy biến hiển thị trên ProductCard:** 
+  - Khác với điện thoại (hiển thị thông số Camera), thẻ `ProductCard` của laptop tự động chuyển đổi sang hiển thị thông số **"RAM & Lưu trữ"** (ví dụ: 16GB / 512GB) để phù hợp với sự quan tâm của người dùng PC.
+  - Vẫn giữ nguyên các thông số nền tảng: Màn hình, Chíp xử lý (CPU) và Pin & Sạc.
+  - Các nút hành động gồm: Xem Chi Tiết, link mua sắm trực tiếp qua Shopee/TikTok Shop, chức năng So sánh (VS) và Yêu thích (❤️).
+- **Phân biệt bằng màu sắc (Accent Secondary):** Nút **"Xem Toàn Bộ Mẫu Laptop Khác →"** nằm ở cuối danh sách sử dụng màu nhận diện phụ của hệ thống (màu tím - `var(--accent-secondary)`), giúp phân biệt hoàn toàn với màu xanh dương của nhóm thiết bị Điện thoại. 
+- **Công cụ so sánh riêng biệt:** Khu vực `CompareSection` thu gọn nằm bên dưới sử dụng dữ liệu nguồn là `laptopsList` (tập hợp tất cả laptop, không kể có được nổi bật hay không), cho phép khách hàng đưa vào đối chiếu nhanh bất cứ mẫu laptop nào trong cơ sở dữ liệu.
 
 ---
 
@@ -211,20 +214,19 @@ Khu vực hiển thị bài viết tin tức và đánh giá công nghệ:
 
 ---
 
-##### Giao diện 10 – Cửa Hàng & Tìm Kiếm (Tab "Cửa Hàng" / StoreSection)
+##### Giao diện 10 – Kho Lưu Trữ & Tìm Kiếm (Tab "Kho Better" / StoreSection)
 
-> **[CHỤP ẢNH]:** Tab Cửa Hàng với ô tìm kiếm, bộ lọc và danh sách toàn bộ sản phẩm
+> **[CHỤP ẢNH]:** Tab Kho Better với ô tìm kiếm, bộ lọc hãng và danh sách lưới tối giản
 
 **Mô tả chức năng:**
 
-Giao diện hiển thị toàn bộ sản phẩm kèm chức năng tìm kiếm và lọc:
+Giao diện hiển thị kho dữ liệu toàn bộ sản phẩm theo phong cách tối giản và hiện đại:
 
-- **Ô tìm kiếm theo tên**: lọc real-time phía client, không gọi API lại.
-- **Bộ lọc danh mục**: Tất cả / Điện thoại / Laptop (tab buttons).
-- **Bộ lọc khoảng giá**: thanh trượt (range slider) từ 0 đến 50 triệu.
-- Danh sách **tất cả sản phẩm** dạng grid card với: ảnh, tên, giá, badge danh mục.
-- Nút **"Mua Ngay"** trên mỗi card: mở link Shopee/TikTok Shop trong tab mới.
-- Nút **"Xem Chi Tiết"** và **"So Sánh"** tương tự trang chủ.
+- **Bộ lọc theo Hãng (Brand Grouping)**: Thanh công cụ cho phép người dùng lọc sản phẩm theo từng hãng (Apple, Samsung, Google, DJI, v.v.). Khi chọn "Tất cả", kho tự động phân chia làm các khu vực độc lập tương ứng với mỗi hãng, kèm theo số lượng máy có trong kho.
+- **Ô tìm kiếm thông minh**: Lọc real-time theo tên sản phẩm hoặc tên hãng phía client mà không cần gọi lại API.
+- **Giao diện Thẻ Sản Phẩm Tối Giản (Minimal Card)**: Loại bỏ các thông số phức tạp, mỗi sản phẩm được hiển thị bằng một hình ảnh lớn, bo góc bo sát với tên sản phẩm phủ màu trắng nổi bật ở mép dưới ảnh.
+- **Thông tin chú thích quốc tế**: Phía dưới ảnh hiển thị thông tin tối giản theo chuẩn `New product / Tên Hãng`.
+- **Thao tác nhanh**: Nhấn trực tiếp vào thẻ sản phẩm để mở nhanh popup Xem Chi Tiết (Product Details Modal) mà không cần thêm nút bấm dư thừa.
 
 ---
 
