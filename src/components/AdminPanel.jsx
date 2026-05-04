@@ -9,8 +9,16 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
   const [password, setPassword] = useState('');
   const [adminTab, setAdminTab] = useState('products');
   const [productBrandFilter, setProductBrandFilter] = useState('all');
+  const [postTimeFilter, setPostTimeFilter] = useState('all');
 
   const uniqueBrands = [...new Set(products.map(p => p.brand).filter(Boolean))].sort();
+  
+  const uniqueMonths = [...new Set(posts.map(p => {
+    if (!p.date) return 'Khác';
+    const parts = p.date.split('/');
+    if (parts.length >= 3) return `Tháng ${parts[1]}/${parts[2]}`;
+    return p.date;
+  }))].sort((a,b) => b.localeCompare(a));
   
   // Product state
   const [editingProduct, setEditingProduct] = useState(null);
@@ -282,10 +290,38 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
 
       {adminTab === 'news' && (
         <>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h3 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', gap: '15px' }}>
+            <h3 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
               Quản Lý Bài Viết
             </h3>
+            
+            {!isAddingPost && !editingPost && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', background: 'var(--vs-surface)', borderRadius: '12px', padding: '6px', border: '1px solid var(--vs-border)' }}>
+                <button 
+                  onClick={() => setPostTimeFilter('all')}
+                  style={{ 
+                    padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold',
+                    background: postTimeFilter === 'all' ? 'var(--vs-accent)' : 'transparent',
+                    color: postTimeFilter === 'all' ? 'white' : 'var(--vs-text-secondary)'
+                  }}
+                >
+                  <FileText size={16} /> Tất cả Thời Gian
+                </button>
+                {uniqueMonths.map(month => (
+                  <button 
+                    key={month}
+                    onClick={() => setPostTimeFilter(month)}
+                    style={{ 
+                      padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 'bold',
+                      background: postTimeFilter === month ? 'var(--vs-accent)' : 'transparent',
+                      color: postTimeFilter === month ? 'white' : 'var(--vs-text-secondary)'
+                    }}
+                  >
+                    {month}
+                  </button>
+                ))}
+              </div>
+            )}
             <button onClick={() => { setIsAddingPost(true); setEditingPost(null); }} className="btn btn-primary hover-focus-btn" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '8px', border: 'none' }}>
               <Plus size={18} /> Thêm Bài Viết
             </button>
@@ -308,7 +344,13 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {posts.map(p => (
+                  {posts.filter(p => {
+                    if (postTimeFilter === 'all') return true;
+                    if (!p.date) return postTimeFilter === 'Khác';
+                    const parts = p.date.split('/');
+                    const monthStr = parts.length >= 3 ? `Tháng ${parts[1]}/${parts[2]}` : p.date;
+                    return monthStr === postTimeFilter;
+                  }).map(p => (
                     <tr key={p.id}>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
