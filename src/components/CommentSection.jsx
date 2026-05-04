@@ -135,7 +135,7 @@ const CommentSection = ({ productId }) => {
            </div>
          )) : (
            <div style={{ textAlign: 'center', padding: '30px', color: 'var(--text-secondary)' }}>
-             Chưa có bình luận nào. Hãy là người đầu tiên bóc tem sản phẩm này!
+             Chưa có bình luận nào. Hãy là người đầu tiên bóc seal sản phẩm này!
            </div>
          )}
       </div>
