@@ -46,7 +46,8 @@ const ProductDetailsModal = ({ product, onClose }) => {
     }}>
       <div className="glass-panel animate-fade-in" style={{ 
         width: '100%', maxWidth: '1000px', maxHeight: '90vh', overflowY: 'auto',
-        position: 'relative', borderRadius: '20px', padding: '0', display: 'flex', flexDirection: 'column'
+        position: 'relative', borderRadius: '20px', padding: '0', display: 'flex', flexDirection: 'column',
+        background: 'var(--bg-primary)'
       }}>
         {/* Sticky Header */}
         <div style={{ position: 'sticky', top: 0, background: 'var(--bg-primary)', padding: '20px 30px', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
@@ -95,6 +96,14 @@ const ProductDetailsModal = ({ product, onClose }) => {
                 </div>
               ))}
             </div>
+            <div style={{ padding: '20px', background: 'rgba(245, 158, 11, 0.08)', borderLeft: '4px solid #f59e0b', borderRadius: '12px' }}>
+              <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#d97706', marginBottom: '10px' }}>
+                <AlertCircle size={20} /> Dự báo Của Chuyên Gia Mua Sắm
+              </h4>
+              <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+                Biểu đồ cho thấy giá của <strong>{product.name}</strong> đang nằm ở vùng <strong>Tốt Nhất</strong> trong chu kì nửa năm. Nếu bạn cần ngay bây giờ, Shopee Mall đang đưa ra cơ hội rẻ nhất. Nếu vẫn chưa gấp, khả năng sẽ có thêm đợt Flash Sale giảm sâu vào đợt siêu sale sắp tới!
+              </p>
+            </div>
           </div>
 
           {/* CỘT PHẢI: Lịch Sử Giá & Nhắc nhở */}
@@ -102,10 +111,10 @@ const ProductDetailsModal = ({ product, onClose }) => {
             <h3 style={{ fontSize: '1.3rem', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
               <TrendingDown className="text-accent-secondary" /> Lịch Sử Giảm Giá (6 Tháng Qua)
             </h3>
-            <div style={{ height: '350px', background: 'var(--bg-secondary)', padding: '20px', borderRadius: '15px', marginBottom: '30px' }}>
+            <div style={{ height: '350px', background: 'var(--bg-secondary)', padding: '20px', borderRadius: '15px', border: '1px solid var(--vs-border)', marginBottom: '30px' }}>
                <ResponsiveContainer width="100%" height="100%">
                  <LineChart data={priceHistory}>
-                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                   <CartesianGrid strokeDasharray="3 3" stroke="var(--vs-border)" />
                    <XAxis dataKey="month" stroke="var(--text-secondary)" tick={{fontSize: 12, fill: 'var(--text-secondary)'}} tickLine={false} axisLine={{stroke: 'var(--vs-border)'}} />
                    <YAxis tickFormatter={(val) => `${(val / 1000000).toFixed(1).replace(/\\.0$/, '')}Tr`} stroke="var(--text-secondary)" domain={[(dataMin) => Math.floor(dataMin - 1000000), (dataMax) => Math.ceil(dataMax + 1000000)]} tick={{fontSize: 12, fill: 'var(--text-secondary)'}} tickLine={false} axisLine={false} />
                    <RechartsTooltip 
@@ -116,15 +125,6 @@ const ProductDetailsModal = ({ product, onClose }) => {
                    <Line type="monotone" dataKey="Giá Bán (VNĐ)" stroke="#3858f6" strokeWidth={3} dot={{ r: 5, fill: '#3858f6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 7, fill: '#8224e3', stroke: '#fff', strokeWidth: 2 }} />
                  </LineChart>
                </ResponsiveContainer>
-            </div>
-
-            <div style={{ padding: '20px', background: 'rgba(245, 158, 11, 0.1)', borderLeft: '4px solid #f59e0b', borderRadius: '12px' }}>
-              <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#f59e0b', marginBottom: '10px' }}>
-                <AlertCircle size={20} /> Dự báo Của Chuyên Gia Mua Sắm
-              </h4>
-              <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-                Biểu đồ cho thấy giá của <strong>{product.name}</strong> đang nằm ở vùng <strong>Tốt Nhất</strong> trong chu kì nửa năm. Nếu bạn cần ngay bây giờ, Shopee Mall đang đưa ra cơ hội rẻ nhất. Nếu vẫn chưa gấp, khả năng sẽ có thêm đợt Flash Sale giảm sâu vào đợt siêu sale sắp tới!
-              </p>
             </div>
           </div>
           
