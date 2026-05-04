@@ -57,7 +57,7 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     }
     setIsThinking(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/scrape?query=${encodeURIComponent(formData.name)}`);
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://better-grg6.onrender.com'}/api/scrape?query=${encodeURIComponent(formData.name)}`);
       if (!res.ok) throw new Error("Không thể kết nối với AI Server");
       const data = await res.json();
       
@@ -245,3 +245,4 @@ const ProductForm = ({ product, onSave, onCancel }) => {
 };
 
 export default ProductForm;
+

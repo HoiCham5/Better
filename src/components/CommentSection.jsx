@@ -11,7 +11,7 @@ const CommentSection = ({ productId }) => {
   // Hàm lấy danh sách bình luận (có thể poll hoặc gọi 1 lần khi load)
   const fetchComments = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reviews/${productId}`);
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://better-grg6.onrender.com'}/api/reviews/${productId}`);
       const data = await res.json();
       setComments(data);
     } catch (e) {
@@ -44,7 +44,7 @@ const CommentSection = ({ productId }) => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reviews`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://better-grg6.onrender.com'}/api/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -162,3 +162,4 @@ const ShieldIcon = () => (
 );
 
 export default CommentSection;
+
