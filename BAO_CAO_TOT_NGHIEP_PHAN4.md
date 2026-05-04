@@ -143,7 +143,6 @@ Modal overlay hiển thị toàn bộ thông tin kỹ thuật của một sản 
 
 - **Ảnh sản phẩm** kích thước lớn + tên + thương hiệu + giá bán + badge danh mục.
 - **Bảng thông số kỹ thuật** đầy đủ: CPU/Chip, RAM, Bộ nhớ, Màn hình, Camera, Pin, Hệ điều hành, Kết nối...
-- **Video YouTube review** nhúng trực tiếp (iframe) bên dưới thông số.
 - **Khu vực bình luận** (`CommentSection`): hiển thị danh sách đánh giá từ cộng đồng; Thành viên đăng nhập mới có thể gửi bình luận.
 - Nút **"X"** góc trên phải để đóng modal, quay về trang trước đó.
 

@@ -95,31 +95,6 @@ const ProductDetailsModal = ({ product, onClose }) => {
                 </div>
               ))}
             </div>
-
-            <h3 style={{ fontSize: '1.3rem', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <PlayCircle className="text-[#ff0000]" /> Review Thực Tế (YouTube)
-            </h3>
-            <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '15px', border: '1px solid var(--glass-border)', background: 'black' }}>
-              <iframe 
-                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                src={videoUrls[product.category]} 
-                title="YouTube video player" 
-                frameBorder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen
-              ></iframe>
-            </div>
-            
-            <div style={{ marginTop: '20px', padding: '20px', background: 'rgba(59, 130, 246, 0.05)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '15px' }}>
-              <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-primary)', marginBottom: '10px' }}>
-                <Sparkles size={18} /> AI Tóm Tắt Nhanh Video Tuần Này
-              </h4>
-              <ul style={{ paddingLeft: '20px', lineHeight: '1.8', color: 'var(--text-secondary)' }}>
-                 <li><strong>Điểm cộng lớn nhất:</strong> Thiết bị có chất lượng hoàn thiện tuyệt hảo, {product.specs.screen} hiển thị nội dung media vô cùng chân thực và sắc nét.</li>
-                 <li><strong>Đáng chú ý:</strong> Khả năng đa nhiệm vượt trội nhờ chip {product.specs.chip}. Hiệu suất không sụt giảm dù chơi game liên tục.</li>
-                 <li><strong>Điểm trừ nhẹ:</strong> Thiết kế chưa có nhiều đột phá so với thế hệ tiền nhiệm, mức giá ở thời điểm ra mắt còn khá cao.</li>
-              </ul>
-            </div>
           </div>
 
           {/* CỘT PHẢI: Lịch Sử Giá & Nhắc nhở */}
