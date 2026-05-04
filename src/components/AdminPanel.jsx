@@ -8,7 +8,9 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [password, setPassword] = useState('');
   const [adminTab, setAdminTab] = useState('products');
-  const [productTypeFilter, setProductTypeFilter] = useState('phone');
+  const [productBrandFilter, setProductBrandFilter] = useState('all');
+
+  const uniqueBrands = [...new Set(products.map(p => p.brand).filter(Boolean))].sort();
   
   // Product state
   const [editingProduct, setEditingProduct] = useState(null);
@@ -195,27 +197,30 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
               Quản Lý Thiết Bị
             </h3>
             {!isAddingProduct && !editingProduct && (
-              <div style={{ display: 'flex', background: 'var(--vs-surface)', borderRadius: '12px', padding: '4px', border: '1px solid var(--vs-border)' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', background: 'var(--vs-surface)', borderRadius: '12px', padding: '6px', border: '1px solid var(--vs-border)' }}>
                 <button 
-                  onClick={() => setProductTypeFilter('phone')}
+                  onClick={() => setProductBrandFilter('all')}
                   style={{ 
                     padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold',
-                    background: productTypeFilter === 'phone' ? 'var(--vs-accent)' : 'transparent',
-                    color: productTypeFilter === 'phone' ? 'white' : 'var(--vs-text-secondary)'
+                    background: productBrandFilter === 'all' ? 'var(--vs-accent)' : 'transparent',
+                    color: productBrandFilter === 'all' ? 'white' : 'var(--vs-text-secondary)'
                   }}
                 >
-                  <Smartphone size={16} /> Điện Thoại
+                  <Package size={16} /> Tất cả Hãng
                 </button>
-                <button 
-                  onClick={() => setProductTypeFilter('laptop')}
-                  style={{ 
-                    padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold',
-                    background: productTypeFilter === 'laptop' ? 'var(--vs-accent)' : 'transparent',
-                    color: productTypeFilter === 'laptop' ? 'white' : 'var(--vs-text-secondary)'
-                  }}
-                >
-                  <Laptop size={16} /> Laptop
-                </button>
+                {uniqueBrands.map(brand => (
+                  <button 
+                    key={brand}
+                    onClick={() => setProductBrandFilter(brand)}
+                    style={{ 
+                      padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 'bold',
+                      background: productBrandFilter === brand ? 'var(--vs-accent)' : 'transparent',
+                      color: productBrandFilter === brand ? 'white' : 'var(--vs-text-secondary)'
+                    }}
+                  >
+                    {brand}
+                  </button>
+                ))}
               </div>
             )}
             <button onClick={() => { setIsAddingProduct(true); setEditingProduct(null); }} className="btn btn-primary hover-focus-btn" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '8px', border: 'none' }}>
@@ -232,10 +237,10 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
               
-              {productTypeFilter === 'phone' && (
               <div className="glass-panel animate-fade-in" style={{ overflowX: 'auto', padding: '20px', borderRadius: '16px' }}>
-                <h4 style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem' }}>
-                  <Smartphone className="text-accent-primary" /> Điện Thoại
+                <h4 style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem', color: 'var(--vs-text-primary)' }}>
+                  <Package className="text-accent-primary" /> 
+                  {productBrandFilter === 'all' ? 'Tất Cả Thiết Bị' : `Thiết Bị Hãng: ${productBrandFilter}`}
                 </h4>
                 <table className="compare-table" style={{ width: '100%', textAlign: 'left' }}>
                   <thead>
@@ -247,7 +252,7 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {products.filter(p => p.category === 'phone').map(p => (
+                    {products.filter(p => productBrandFilter === 'all' || p.brand === productBrandFilter).map(p => (
                       <tr key={p.id}>
                         <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
@@ -270,48 +275,6 @@ const AdminPanel = ({ products, setProducts, posts, setPosts }) => {
                   </tbody>
                 </table>
               </div>
-              )}
-
-              {/* Laptop Table */}
-              {productTypeFilter === 'laptop' && (
-              <div className="glass-panel animate-fade-in" style={{ overflowX: 'auto', padding: '20px', borderRadius: '16px' }}>
-                <h4 style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem' }}>
-                  <Laptop className="text-accent-secondary" /> Laptop
-                </h4>
-                <table className="compare-table" style={{ width: '100%', textAlign: 'left' }}>
-                  <thead>
-                    <tr>
-                      <th>Thiết Bị</th>
-                      <th>Hãng</th>
-                      <th>Giá Bán</th>
-                      <th style={{ textAlign: 'right' }}>Thao Tác</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {products.filter(p => p.category === 'laptop').map(p => (
-                      <tr key={p.id}>
-                        <td>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                            <img src={proxyImage(p.image)} alt={p.name} referrerPolicy="no-referrer" onError={(e) => { e.target.onerror=null; e.target.src=`https://placehold.co/50x50/1a1a2e/6c63ff?text=${encodeURIComponent(p.name[0])}`; }} style={{ width: '50px', height: '50px', objectFit: 'contain', background: 'white', padding: '5px', borderRadius: '8px', border: '1px solid var(--vs-border)' }} />
-                            <strong style={{ fontSize: '1rem' }}>{p.name}</strong>
-                          </div>
-                        </td>
-                        <td>{p.brand}</td>
-                        <td style={{ color: 'var(--vs-accent)', fontWeight: 'bold' }}>{p.price}</td>
-                        <td style={{ textAlign: 'right' }}>
-                          <button onClick={() => setEditingProduct(p)} className="btn hover-focus-btn" title="Chỉnh sửa" style={{ padding: '8px', marginRight: '10px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', border: 'none', borderRadius: '8px' }}>
-                            <Edit3 size={18} />
-                          </button>
-                          <button onClick={() => handleDeleteProduct(p.id)} className="btn hover-focus-btn" title="Xoá" style={{ padding: '8px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', borderRadius: '8px' }}>
-                            <Trash2 size={18} />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              )}
             </div>
           )}
         </>
